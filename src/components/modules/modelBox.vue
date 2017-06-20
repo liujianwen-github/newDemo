@@ -20,7 +20,13 @@ export default {
       togg: 0,
       modelOne: null,
       modelTwo: null,
-      modelThree: null
+      modelThree: null,
+      pagination1: 0,
+      pagination2: 0,
+      pagination3: 0,
+      getParams: {
+        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageCount': 0
+      }
     }
   },
   props: ['notice', 'toModels'],
@@ -28,28 +34,52 @@ export default {
     model1, model2, model3
   },
   methods: {
+    getTotal: function () {
+      // 今日到访
+      Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
+        this.modelOne = res.data.results.list
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
     getStranger: function () {
       // 陌生人
       Axios.get(config.HOST + 'apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
-        this.personList = res.data.results.list
+        this.modelTwo = res.data.results.list
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    getUser: function () {
+      // 注册用户
+      Axios.get(config.HOST + 'apiServer/facetrackManage/getMatchedList', {params: this.getParams}).then((res) => {
+        this.modelThree = res.data.results.list
+        console.log(res)
       }, (err) => {
         console.log(err)
       })
     }
   },
   watch: {
-    toModels: function (val, old) {
+    notice: function (val, old) {
       console.log(this.notice)
       if (this.notice === 0) {
-        this.modelOne = val
+        this.getTotal()
       } else if (this.notice === 1) {
-        this.modelTwo = val
+        this.getStranger()
       } else if (this.notice === 2) {
-        this.modelThree = val
+        this.getUser()
       } else {
         'moduleBox wcnm'
       }
     }
+  },
+  created () {
+    // console.log(this.notice)
+    console.log('created mmodelbox')
+    this.getTotal()
   }
 }
 </script>

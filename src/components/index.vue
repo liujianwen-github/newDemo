@@ -2,7 +2,7 @@
   <div class="container">
   <!-- index -->
     <indexHead @currentContent="go"></indexHead>
-    <modelBox :notice="type" :to-models="personList"></modelBox>
+    <modelBox :notice="type"></modelBox>
   </div>
     
 </template>
@@ -10,8 +10,8 @@
 <script>
 import indexHead from '@/components/modules/indexHead'
 import modelBox from '@/components/modules/modelBox'
-import config from '@/config'
-import Axios from 'axios'
+// import config from '@/config'
+// import Axios from 'axios'
 
 export default {
   name: 'Index',
@@ -23,10 +23,7 @@ export default {
       currentRoute: window.location.pathname,
       type: 0,
       personList: null,
-      page: 0,
-      getParams: {
-        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageCount': 0
-      }
+      page: 0
     }
   },
   components: {indexHead, modelBox},
@@ -34,18 +31,7 @@ export default {
     go: function (msg) {
       // 子页面跳转
       this.type = msg
-    },
-    getTotal: function () {
-      // 今日到访
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
-        this.personList = res.data.results.list
-      }, (err) => {
-        console.log(err)
-      })
     }
-  },
-  created () {
-    this.getTotal()
   }
 }
 </script>

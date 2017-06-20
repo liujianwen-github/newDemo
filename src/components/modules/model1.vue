@@ -17,7 +17,7 @@
 
 <script>
 // import config from '@/config'
-import Fill from '@/fill'
+// import Fill from '@/fill'
 export default {
   name: 'model1',
   data () {
@@ -31,10 +31,11 @@ export default {
   },
   watch: {
     toFirst: function (val, old) {
-      // alert('model1')
-      // console.log(Fill)
+      if (this.list === val) {
+        return
+      }
       this.list = val
-      Fill.pushItem(val)
+      // Fill.pushItem(val)
     }
   }
 }
