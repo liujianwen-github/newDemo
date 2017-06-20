@@ -39,7 +39,7 @@ export default {
   height: 100%;
   /*background-color: red;*/
   position: relative;
-  top:-50%;
+  /*top:-50%;*/
   left: -50%;
   border-radius: 1%;
   overflow: hidden;

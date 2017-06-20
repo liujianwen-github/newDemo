@@ -28,7 +28,10 @@ export default {
   },
   props: ['toSecond'],
   methods: {
-    //
+    setIntell: function (msg) {
+      console.log(msg)
+      // TODO item点击触发事件，修改data中的参数，传值到intell组件中
+    }
   },
   components: {Intell},
   watch: {

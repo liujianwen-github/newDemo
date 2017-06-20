@@ -29,7 +29,7 @@ export default {
   // `params` are the URL parameters to be sent with the request 
   // Must be a plain object or a URLSearchParams object 
   params: {
-    ID: 12345
+    // ID: 12345
   },
  
   // `paramsSerializer` is an optional function in charge of serializing `params` 
