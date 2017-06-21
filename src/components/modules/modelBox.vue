@@ -25,7 +25,7 @@ export default {
       pagination2: 0,
       pagination3: 0,
       getParams: {
-        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageCount': 0
+        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageNum': 0
       }
     }
   },

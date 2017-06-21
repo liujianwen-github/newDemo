@@ -1,0 +1,40 @@
+.popup{
+  width: 680px;
+  height: 500px;
+  position: absolute;
+  top:50%;
+  left: 50%;
+}
+.popup>div{
+  width: 100%;
+  height: 100%;
+  /*background-color: red;*/
+  position: relative;
+  top:-50%;
+  left: -50%;
+  border-radius: 1%;
+  overflow: hidden;
+  border: 1px solid red;
+  padding:20px;
+  box-sizing: border-box;
+  background-color: white
+  /*display: none*/
+}
+.closeWindow{
+  color: red;
+  font-size: 30px;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  margin:0!important;
+  background-color: transparent;
+  cursor: pointer
+}
+.vague {
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+  pointer-events: none;
+}

@@ -50,7 +50,6 @@ export default {
   .container{
   	box-sizing: border-box;
   	border: 1px solid red;
-  	height: 500px;
     background-color: white
   }
   .itemList{

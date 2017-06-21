@@ -1,51 +1,43 @@
 <template>
-  <div class="popup">
+  <div class="popup" id="intell">
    <div>
     <header>
-      <div class="serHead">
-        <img src="" alt="">
+      <div class="closeWindow" @click="close">&times;</div>
+      <div class="setHead">
+        <img src="../../assets/logo.png" alt="">
       </div>
       <div class="addUser">
-        <p class="headInfo">智能分析</p>
-        <p class="headInfo">TA可能是以下某一位</p>
-        <div class="btn btn-info">无匹配用户</div>
+        <p class="headInfo">来访时间</p>
+        <p class="headInfo">采集地点</p>
+        <div class="btn">新建用户</div>
+        <div class="btn">智能分析</div>
       </div>
     </header>
     <article>
-      2
+      <div class="content"></div>
+      <!-- <div class="foot">
+        <button class="btn footBtn">返回</button>
+        <button class="btn footBtn">完成</button>
+      </div> -->
     </article>
    </div>
   </div>
 </template>
-
+<!-- 陌生人操作组件 -->
 <script>
-// import config from '@/config'
-// import Fill from '@/fill'
+import $ from 'jquery'
 export default {
-  name: 'intell'
+  name: 'intell',
+  methods: {
+    close: function () {
+      $('#intell').css('display', 'none')
+    }
+  }
 }
 </script>
 
 <style>
-.popup{
-  width: 680px;
-  height: 500px;
-  position: absolute;
-  top:50%;
-  left: 50%;
-}
-.popup>div{
-  width: 100%;
-  height: 100%;
-  /*background-color: red;*/
-  position: relative;
-  /*top:-50%;*/
-  left: -50%;
-  border-radius: 1%;
-  overflow: hidden;
-  border: 1px solid red;
-  box-sizing: border-box;
-}
+@import '../../assets/style.css'
 </style>
 
 <style scoped>
@@ -53,11 +45,51 @@ export default {
   width: 100%;
   height: 200px;
   background-color: #2B77D5;
-  padding: 20px
+  padding: 20px;
+}
+.popup header>div{
+  /*display: inline-block;*/
+  float:left;
+  height: 160px;
+  /*background-color: green*/
+}
+.popup header .setHead{
+  width: 160px;
+  height: 160px;
+  background-color: white
+}
+.popup header .setHead img{
+  width: 100%;  
+}
+.popup header .addUser{
+  padding-left:10px
+}
+.popup header .btn{
+  border:1px solid white;
+  color: white;
+  font-weight: 800;
+  margin-top: 20px
 }
 .popup article{
+  clear: both;
   width: 100%;
   height: 300px;
   background-color: lightblue
 }
+/*.popup article .foot{
+  text-align: center;
+  letter-spacing: 20px;
+  width: 100%;
+  position: absolute;
+  bottom: 20px
+}
+.popup article .foot .footBtn{
+  width: 100px;
+  height: 36px;
+  background-color: #2B77D5;
+  color: white;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 3px
+}*/
 </style>

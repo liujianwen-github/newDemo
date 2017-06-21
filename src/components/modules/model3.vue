@@ -11,13 +11,18 @@
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
+      <userInfos></userInfos>
+      <history></history>
+      <leaveMessage></leaveMessage>
     </div>
   </div>
 </template>
 
 <script>
 // import Store from '../store.js'
-
+import userInfos from '@/components/popups/userInfos'
+import history from '@/components/popups/history'
+import leaveMessage from '@/components/popups/leaveMessage'
 export default {
   name: 'model3',
   data () {
@@ -29,6 +34,7 @@ export default {
   methods: {
     //
   },
+  components: {userInfos, history, leaveMessage},
   watch: {
     toThird: function (val, old) {
       if (this.list === val) {
@@ -40,11 +46,6 @@ export default {
   }
 }
 </script>
-<!-- 
-  *书写格式要求：①变量声明冒号后边必须有一个空格
-   *           ②字符串单引号
-   *           
-   *             -->
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container{

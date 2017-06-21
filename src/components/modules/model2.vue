@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="item in list">
+      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId)">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -12,6 +12,8 @@
         </div>
       </div>
       <Intell></Intell>
+      <createUser></createUser>
+      <intellAnalyse></intellAnalyse>
     </div>
   </div>
 </template>
@@ -19,6 +21,10 @@
 <script>
 // import Store from '../store.js'
 import Intell from '@/components/popups/intell'
+import createUser from '@/components/popups/createUser'
+import intellAnalyse from '@/components/popups/intellAnalyse'
+// import config from '@/config'
+// import Axios from 'axios'
 export default {
   name: 'model2',
   data () {
@@ -31,9 +37,19 @@ export default {
     setIntell: function (msg) {
       console.log(msg)
       // TODO item点击触发事件，修改data中的参数，传值到intell组件中
+    },
+    getIntell: function (facetrackId) {
+      // alert(config.HOST)
+      // Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: {userkey: config.userkey, facetrackId: facetrackId}}).then((res) => {
+      //   console.log(res)
+      // },
+      // (err) => {
+      //   console.console.log(err)
+      // }
+      // )
     }
   },
-  components: {Intell},
+  components: {Intell, createUser, intellAnalyse},
   watch: {
     toSecond: function (val, old) {
       console.log(val)
