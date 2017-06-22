@@ -2,7 +2,7 @@
   <div class="container">
   <!-- index -->
     <userHead></userHead>
-    <model3></model3>
+    <totalUserList></totalUserList>
   </div>
     
 </template>
@@ -11,11 +11,11 @@
 import config from '@/config'
 import Axios from 'axios'
 import userHead from '@/components/modules/userHead'
-import model3 from '@/components/modules/model3'
+import totalUserList from '@/components/modules/totalUserList'
 
 export default {
   name: 'userManage',
-  components: {userHead, model3},
+  components: {userHead, totalUserList},
   methods: {
     getUser: function () {
       // 注册用户
@@ -27,9 +27,6 @@ export default {
         console.log(err)
       })
     }
-  },
-  created () {
-    this.getUser()
   }
 }
 </script>

@@ -35,13 +35,13 @@ export default {
   data () {
     return {
       msg: 'indexHead',
-      currentContent: 0
+      currentTab: 0
     }
   },
   methods: {
     viewContent: function (arg) {
       // $('.contentBtnList>button').eq(arg)
-      this.currentContent = arg
+      this.currentTab = arg
       $('.contentBtnList>button').eq(arg).addClass('isActive')
       $('.contentBtnList>button').eq(arg).siblings().removeClass('isActive')
       // 向index中传递当前选择的类别

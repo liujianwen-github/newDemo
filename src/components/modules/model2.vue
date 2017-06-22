@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId)">
+      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId,item.facetrackImage,item.createTime,item.sourceId,item.sourceImg)">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -11,9 +11,9 @@
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
-      <Intell></Intell>
-      <createUser></createUser>
-      <intellAnalyse></intellAnalyse>
+      <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
+      <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="intellValue.facetrackImage"></createUser>
+      <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
     </div>
   </div>
 </template>
@@ -29,24 +29,39 @@ export default {
   name: 'model2',
   data () {
     return {
-      list: null
+      list: null,
+      viewWhich: '0',
+      intellValue: {
+        facetrackId: null,
+        facetrackImage: null,
+        createTime: null,
+        sourceId: null,
+        sourceImg: null
+      }
     }
   },
-  props: ['toSecond'],
+  props: ['toSecond', 'popState'],
   methods: {
     setIntell: function (msg) {
       console.log(msg)
       // TODO item点击触发事件，修改data中的参数，传值到intell组件中
     },
-    getIntell: function (facetrackId) {
-      // alert(config.HOST)
-      // Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: {userkey: config.userkey, facetrackId: facetrackId}}).then((res) => {
-      //   console.log(res)
-      // },
-      // (err) => {
-      //   console.console.log(err)
-      // }
-      // )
+    getIntell: function (facetrackId, facetrackImage, createTime, sourceId, sourceImg) {
+      console.log(facetrackId, facetrackImage, createTime, sourceId, sourceImg)
+      this.viewWhich = 'intell'
+      this.intellValue = {
+        facetrackId: facetrackId,
+        facetrackImage: facetrackImage,
+        createTime: createTime,
+        sourceId: sourceId,
+        sourceImg: sourceImg
+      }
+      console.log(this.viewWhich)
+    },
+    changeState: function (msg) {
+      // console.log(msg)
+      this.viewWhich = msg
+      console.log(this.viewWhich)
     }
   },
   components: {Intell, createUser, intellAnalyse},
@@ -71,7 +86,7 @@ export default {
 .container{
     box-sizing: border-box;
     border: 1px solid red;
-    /*height: 500px;*/
+    min-height: 500px;
     background-color: white;
     position: relative;
   }

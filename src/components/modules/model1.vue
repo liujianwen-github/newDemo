@@ -50,7 +50,8 @@ export default {
   .container{
   	box-sizing: border-box;
   	border: 1px solid red;
-    background-color: white
+    background-color: white;
+    min-height: 500px
   }
   .itemList{
     text-align: left

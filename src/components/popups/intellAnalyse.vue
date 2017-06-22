@@ -1,14 +1,14 @@
 <template>
   <div class="popup" id="intellAnalyse">
-   <div>
+   <div v-if="viewWhich=='intellAnalyse'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="personData.facetrackImage" alt="">
       </div>
       <div class="addUser">
-        <p class="headInfo">来访时间:</p>
-        <p class="headInfo">采集地点:</p>
+        <p class="headInfo">来访时间:<span v-text="personData.createTime"></span></p>
+        <p class="headInfo">采集地点:<span v-text="personData.sourceId"></span></p>
         <p>以下是智能分析找到最接近的三名注册用户</p>
       </div>
     </header>
@@ -40,11 +40,48 @@
 <!-- 智能分析组件 -->
 <script>
 import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config.js'
 export default {
   name: 'intellAnalyse',
+  data () {
+    return {
+      dataList: null,
+      personData: null,
+      intellParams: {
+        userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
+        facetrackId: null
+      }
+    }
+  },
+  props: ['viewWhich', 'toIntellAnalyse'],
   methods: {
     close: function () {
       $('#intellAnalyse').css('display', 'none')
+      this.$emit('popState', '0')
+    },
+    getDataList: function () {
+      Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: this.intellParams}).then(
+        (res) => {
+          console.log(res)
+        }, (err) => {
+        console.log(err)
+      })
+    }
+  },
+  watch: {
+    viewWhich: function (val, old) {
+      alert(val)
+      if (val === 'intellAnalyse') {
+        $('#intellAnalyse').css('display', 'block')
+        this.getDataList()
+      } else {
+        $('#intellAnalyse').css('display', 'none')
+      }
+    },
+    toIntellAnalyse: function (val, old) {
+      this.personData = val
+      this.intellParams.facetrackId = val.facetrackId
     }
   }
 }
@@ -55,6 +92,9 @@ export default {
 </style>
 
 <style scoped>
+#intellAnalyse{
+  display: none
+}
 .popup header{
   width: 100%;
   height: 200px;

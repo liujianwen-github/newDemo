@@ -1,11 +1,11 @@
 <template>
-  <div class="popup" id="createUser">
-   <div>
+  <div class="popup" id="createUser" >
+   <div v-if="viewWhich=='createUser'">
     <header>
       <h3>新建用户</h3>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="img" alt="">
         <div class="changePic">修改头像</div>
       </div>
       <div class="addUser">
@@ -30,7 +30,7 @@
     </header>
     <article>
       <div class="content">
-        <button class="footBtn btn">取消</button>
+        <button class="footBtn btn" @click="returnHistory">取消</button>
         <button class="footBtn btn">确定</button>
       </div>
     </article>
@@ -42,9 +42,34 @@
 import $ from 'jquery'
 export default {
   name: 'createUser',
+  data () {
+    return {
+      img: null
+    }
+  },
+  props: ['viewWhich', 'toCreateUser'],
   methods: {
     close: function () {
       $('#createUser').css('display', 'none')
+    },
+    gogo: function (msg) {
+      alert(msg)
+    },
+    returnHistory: function () {
+      this.$emit('popState', 'intell')
+    }
+  },
+  watch: {
+    viewWhich: function (val, old) {
+      console.log('createUser->viewwhich:' + val)
+      if (val === 'createUser') {
+        $('#createUser').css('display', 'block')
+      } else {
+        $('#createUser').css('display', 'none')
+      }
+    },
+    toCreateUser: function (val, old) {
+      this.img = val
     }
   }
 }
@@ -55,13 +80,12 @@ export default {
 </style>
 
 <style scoped>
-/*.popup{
-  width: 400px;
-  height: 300px
-}*/
+#createUser{
+  display: none
+}
 .popup>div{
   border:1px solid red;
-  background-color: green
+  background-color: pink
 }
 header>div{
   display: inline-block;

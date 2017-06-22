@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="item in list">
+      <div class="item" v-for="item in list" @click="addadd">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -11,40 +11,52 @@
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
-      <userInfos></userInfos>
-      <history></history>
-      <leaveMessage></leaveMessage>
-      <!-- <registerUser></registerUser> -->
+      <registerUser></registerUser>
     </div>
   </div>
 </template>
 
 <script>
-// import Store from '../store.js'
-import userInfos from '@/components/popups/userInfos'
-import history from '@/components/popups/history'
-import leaveMessage from '@/components/popups/leaveMessage'
-// import registerUser from '@/components/popups/registerUser'
+import registerUser from '@/components/popups/registerUser'
+import config from '@/config'
+import Axios from 'axios'
 export default {
-  name: 'model3',
+  name: 'totalUserList',
   data () {
     return {
-      list: null
+      list: null,
+      getParams: {
+        userkey: config.userkey,
+        deviceId: 'aaa-a01-001',
+        beginTime: 0,
+        endTime: new Date().getTime(),
+        pageNo: 1
+      }
     }
   },
-  props: ['toThird'],
+  props: ['toUserList'],
   methods: {
+    getAllUser: function () {
+      Axios.get(config.HOST + 'apiServer/facetrackManage/getMatchedList', {params: this.getParams}).then(
+        (res) => {
+          console.log(res)
+          this.list = res.data.results.list
+        }, (err) => {
+        console.log(err)
+      })
+    },
+    addadd: function (argument) {
+      console.log('flip next')
+      this.getParams.pageNo++
+      this.getAllUser()
+    }
+  },
+  components: {registerUser},
+  watch: {
     //
   },
-  components: {userInfos, history, leaveMessage},
-  watch: {
-    toThird: function (val, old) {
-      if (this.list === val) {
-        return
-      }
-      console.log(val)
-      this.list = val
-    }
+  created () {
+    this.getAllUser()
   }
 }
 </script>

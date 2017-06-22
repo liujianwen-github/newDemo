@@ -4,12 +4,15 @@
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
     </div>
-    <div class="userMessage">
-      <!-- <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt=""> -->
-    </div>
+<!--     <div class="userMessage">
+      <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt="">
+    </div> -->
     <div class="contentBtnList">
       <span class="glyphicon glyphicon-user"></span>
       <input type="text" name="">
+    </div>
+    <div class="contentBtnList">
+      <button class="btn">新建用户</button>
     </div>
     <div class="toUser">
       <router-link to="/">
@@ -55,14 +58,17 @@ export default {
     /*left: 0;*/
     line-height: 35px
   }
+  .container .contentBtnList{
+    display: inline-block;
+  }
   .container .contentBtnList button{
     width: 100px;
     height: 35px;
     border-radius: 2.5em;
-    background-color: transparent;
+    background-color: #005BAB;
     /*background-color: #005BAB;*/
     /*color: white;*/
-    color:#005BAB;
+    color:white;
     font-size: 14px;
     border: 0
   }

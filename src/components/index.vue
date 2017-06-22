@@ -16,7 +16,7 @@ import modelBox from '@/components/modules/modelBox'
 export default {
   name: 'Index',
   // ①：indexHead当前选择tab栏
-  props: ['currentContent'],
+  // props: ['currentContent'],
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
