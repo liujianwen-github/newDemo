@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p> 	 -->
     <div class="itemList">
-      <div class="item" v-for="item in list">
+      <div class="item" v-for="item in list" @click="flipNext">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
@@ -27,7 +27,10 @@ export default {
   },
   props: ['toFirst'],
   methods: {
-    //
+    flipNext: function () {
+      // alert('1')
+      this.$emit('fromfa', 1)
+    }
   },
   watch: {
     toFirst: function (val, old) {

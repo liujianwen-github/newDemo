@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <model1 v-show="notice==0" :to-first="modelOne"></model1>
+    <model1 v-show="notice==0" :to-first="modelOne" @fromfa="mimi"></model1>
     <model2 v-show="notice==1" :to-second="modelTwo"></model2>
     <model3 v-show="notice==2" :to-third="modelThree"></model3>
   </div>
@@ -60,6 +60,10 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    mimi: function (msg) {
+      this.getParams.pageNo++
+      this.getTotal()
     }
   },
   watch: {

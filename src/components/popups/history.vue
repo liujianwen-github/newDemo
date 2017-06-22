@@ -82,6 +82,9 @@ export default {
 </style>
 
 <style scoped>
+.popup{
+  display: none
+}
 .popup header{
   width: 100%;
   height: 200px;

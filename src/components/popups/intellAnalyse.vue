@@ -29,8 +29,8 @@
       </div>
       <div class="foot">
         <div>
-          <button class="btn footBtn">返回</button>
-          <button class="btn footBtn">完成</button>
+          <button class="btn footBtn" @click="returnHistory">返回</button>
+          <button class="btn footBtn" @click="close">完成</button>
         </div>
       </div>
     </article>
@@ -67,6 +67,9 @@ export default {
         }, (err) => {
         console.log(err)
       })
+    },
+    returnHistory: function () {
+      this.$emit('popState', 'intell')
     }
   },
   watch: {

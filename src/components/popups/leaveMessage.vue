@@ -1,6 +1,6 @@
 <template>
-  <div class="popup" id="leaveMessage">
-   <div>
+  <div class="popup" id="leaveMessage" :class="{show:isShow}">
+   <div v-if="viewWhich=='leaveMessage'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
@@ -43,9 +43,16 @@
 import $ from 'jquery'
 export default {
   name: 'history',
+  data () {
+    return {
+      isShow: false
+    }
+  },
+  props: ['viewWhich'],
   methods: {
     close: function () {
       $('#leaveMessage').css('display', 'none')
+      this.$emit('popState', '0')
     },
     viewGif: function () {
       alert('viewgif')
@@ -59,6 +66,13 @@ export default {
     setMessage: function () {
       alert('set message')
     }
+  },
+  watch: {
+    viewWhich: function (val, old) {
+      if (val === 'leaveMessage') {
+        this.isShow = true
+      }
+    }
   }
 }
 </script>
@@ -68,6 +82,9 @@ export default {
 </style>
 
 <style scoped>
+.popup{
+  display: none
+}
 .popup header{
   width: 100%;
   height: 200px;
@@ -110,7 +127,8 @@ export default {
 }
 textarea{
   width: 100%;
-  height: 180px
+  height: 180px;
+  resize: none
 }
 .foot{
   /*text-align: center;*/
