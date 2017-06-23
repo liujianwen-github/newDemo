@@ -1,10 +1,10 @@
 <template>
-  <div class="popup" id="history">
-   <div>
+  <div class="popup" id="history" :class="{show:isShow}">
+   <div v-if="viewWhich=='history'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="personData.image" alt="">
       </div>
       <div class="addUser">
         <p class="headInfo">
@@ -19,8 +19,8 @@
             <input type="checkbox" name="chooseTime" value="time5">自定义
         </p>
         <div>
-          <button class="btn">查找</button>
-          <button class="btn">返回</button>
+          <button class="btn" @click="searchNoMatchedList">查找</button>
+          <button class="btn" @click="returnUserInfos">返回</button>
         </div>
       </div>
     </header>
@@ -30,7 +30,7 @@
          <img src="../../assets/search.png"  alt="">
          <p>date time</p>
          <p>
-           <button class="btn">确定</button>
+           <button class="btn" @click="pushImg">确定</button>
          </p>
        </div>
        <div class="item">
@@ -54,12 +54,21 @@
 </template>
 <!-- 查看用户信息组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 export default {
   name: 'history',
+  data () {
+    return {
+      isShow: false,
+      personData: null,
+      searchImgList: null// 查找未成功识别记录数据
+    }
+  },
+  props: ['viewWhich', 'toHistory'],
   methods: {
     close: function () {
-      $('#history').css('display', 'none')
+      this.$emit('popState', '0')
+      this.isShow = false
     },
     viewGif: function () {
       alert('viewgif')
@@ -72,6 +81,27 @@ export default {
     },
     setMessage: function () {
       alert('set message')
+    },
+    pushImg: function (val, old) {
+      alert('push img')
+    },
+    searchNoMatchedList: function () {
+      alert('查找未成功识别记录数据,post请求')
+    },
+    returnUserInfos: function () {
+      this.$emit('popState', 'userInfos')
+      this.isShow = false
+    }
+  },
+  watch: {
+    viewWhich: function (val, old) {
+      if (val === 'history') {
+        this.isShow = true
+      }
+    },
+    toHistory: function (val, old) {
+      this.personData = val
+      console.log(this.personData)
     }
   }
 }

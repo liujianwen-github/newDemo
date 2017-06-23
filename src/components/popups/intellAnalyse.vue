@@ -8,23 +8,15 @@
       </div>
       <div class="addUser">
         <p class="headInfo">来访时间:<span v-text="personData.createTime"></span></p>
-        <p class="headInfo">采集地点:<span v-text="personData.sourceId"></span></p>
+        <p class="headInfo">采集地点:<span v-text="personData.sourceDes"></span></p>
         <p>以下是智能分析找到最接近的三名注册用户</p>
       </div>
     </header>
     <article>
       <div class="content">
-        <div class="item">
-          <img src="../../assets/Admin_48px_582776_easyicon.net.png" alt="">
-          <p>name</p>
-        </div>
-        <div class="item">
-          <img src="../../assets/Admin_48px_582776_easyicon.net.png" alt="">
-          <p>name</p>
-        </div>
-        <div class="item">
-          <img src="../../assets/Admin_48px_582776_easyicon.net.png" alt="">
-          <p>name</p>
+        <div class="item" v-for="item in dataList">
+          <img :src="item.headImage" alt="">
+          <p v-text="item.name">name</p>
         </div>
       </div>
       <div class="foot">
@@ -50,7 +42,8 @@ export default {
       personData: null,
       intellParams: {
         userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
-        facetrackId: null
+        facetrackId: null,
+        deviceId: config.deviceId
       }
     }
   },
@@ -63,7 +56,8 @@ export default {
     getDataList: function () {
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: this.intellParams}).then(
         (res) => {
-          console.log(res)
+          this.dataList = res.data.results.matchs
+          console.log(this.dataList)
         }, (err) => {
         console.log(err)
       })
@@ -138,7 +132,8 @@ export default {
 }
 .popup article .content{
   display: flex;
-  justify-content: center;
+  /*justify-content: center;*/
+  justify-content: space-around;
   padding-top: 20px
 }
 .popup article .content>.item{
@@ -160,6 +155,7 @@ export default {
 }
 .popup article .foot>div{
   width: 200px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
 }

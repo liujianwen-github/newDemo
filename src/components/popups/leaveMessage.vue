@@ -4,34 +4,34 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="personData.image" alt="">
       </div>
       <div class="addUser">
         <p class="headInfo">
-          <span>name</span>
+          <span v-text="personData.name"></span>
         </p>
         <p class="headInfo">留言设置</p>
         <div class="headInfo">
           <div>
-            <input type="radio" name="timeLine" value="short">短期留言
+            <input type="radio" name="timeLine" value="short" v-model="messageForm.timeLine">短期留言
           </div>
           <div>
-            <input type="radio" name="timeLine" value="long">长期留言
+            <input type="radio" name="timeLine" value="long" v-model="messageForm.timeLine">长期留言
           </div>
         </div>
         <div class="headInfo">
-          开始时间：<input type="date">
+          开始时间：<input type="date" v-model="messageForm.startTime">
         </div>
         <div class="headInfo">
-          结束时间：<input type="date">
+          结束时间：<input type="date" v-model="messageForm.endTime">
         </div>
       </div>
     </header>
     <article>
       <p>留言会在设定时间段内识别时出现</p>
-      <textarea autofocus placeholder="请输入留言内容"></textarea>
+      <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.messageContent"></textarea>
       <div class="foot">
-        <button class="btn">取消</button>
+        <button class="btn" @click="close">取消</button>
         <button class="btn">确定</button>
       </div>
     </article>
@@ -40,18 +40,29 @@
 </template>
 <!-- 查看用户信息组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 export default {
   name: 'history',
   data () {
     return {
-      isShow: false
+      isShow: false,
+      messageForm: {
+        timeLine: 'short',
+        startTime: new Date().getFullYear() + ',' + new Date().getMonth(),
+        endTime: null,
+        messageContent: null
+      },
+      personData: {
+        image: null,
+        name: null
+      }
     }
   },
-  props: ['viewWhich'],
+  props: ['viewWhich', 'toMessage'],
   methods: {
     close: function () {
-      $('#leaveMessage').css('display', 'none')
+      // $('#leaveMessage').css('display', 'none')
+      this.isShow = false
       this.$emit('popState', '0')
     },
     viewGif: function () {
@@ -61,10 +72,13 @@ export default {
       alert('viewScene')
     },
     searchHistory: function () {
-      alert('search history')
+      this.$emit('popState', 'history')
     },
     setMessage: function () {
       alert('set message')
+    },
+    stringifyDate: function (date) {
+      console.log(date)
     }
   },
   watch: {
@@ -72,6 +86,15 @@ export default {
       if (val === 'leaveMessage') {
         this.isShow = true
       }
+    },
+    toMessage: function (val, old) {
+      this.personData = val
+    },
+    messageForm: {
+      handler (val, old) {
+        console.log(val)
+      },
+      deep: true
     }
   }
 }

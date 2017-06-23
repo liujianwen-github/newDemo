@@ -10,7 +10,7 @@
     <div class="contentBtnList">
       <button class="contentBtn isActive" @click="viewContent(0)">今日到访</button>
       <button class="contentBtn" @click="viewContent(1)">陌生人</button>
-      <button class="contentBtn" @click="viewContent(2)">注册用户</button>
+      <button class="contentBtn" @click="viewContent(2)">到访用户</button>
       <!-- <router-link to="//model1" exact>1</router-link> -->
     </div>
     <div class="toUser">

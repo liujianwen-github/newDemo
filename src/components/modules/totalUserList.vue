@@ -6,12 +6,14 @@
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
-          <img :src="item.facetrackImage" alt="">
-          <div class="time">{{item.createTime}}</div>
-          <div class="name" v-html="item.personName">&nbsp;</div>
+          <img :src="item.headimage" alt="">
+          <div class="name" v-html="item.name"></div>
+          <div>
+            <button class="btn" @click="goEdit(item.headimage)">编辑</button>
+          </div>
         </div>
       </div>
-      <registerUser></registerUser>
+      <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState"></registerUser>
     </div>
   </div>
 </template>
@@ -25,6 +27,11 @@ export default {
   data () {
     return {
       list: null,
+      viewWhich: '0',
+      personData: {
+        name: 'bibi',
+        headimage: null
+      },
       getParams: {
         userkey: config.userkey,
         deviceId: 'aaa-a01-001',
@@ -34,13 +41,14 @@ export default {
       }
     }
   },
-  props: ['toUserList'],
+  props: ['toUserList', 'fromFa'],
   methods: {
     getAllUser: function () {
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getMatchedList', {params: this.getParams}).then(
+      Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then(
         (res) => {
           console.log(res)
           this.list = res.data.results.list
+          console.log(this.list)
         }, (err) => {
         console.log(err)
       })
@@ -49,11 +57,23 @@ export default {
       console.log('flip next')
       this.getParams.pageNo++
       this.getAllUser()
+    },
+    goEdit: function (data) {
+      this.viewWhich = 'editUser'
+      this.personData.headimage = data
+    },
+    changeState: function (msg) {
+      // console.log(msg)
+      this.viewWhich = msg
+      this.$emit('popState', '0')
     }
   },
   components: {registerUser},
   watch: {
-    //
+    fromFa: function (val) {
+      this.viewWhich = val
+      console.log(this.viewWhich)
+    }
   },
   created () {
     this.getAllUser()
@@ -93,8 +113,8 @@ export default {
     background-color: blue
   }
   .item .name{
-    position: absolute;
-    bottom: 10px;
+    /*position: absolute;
+    bottom: 10px;*/
     width: 100%;
     text-align: center;
   }

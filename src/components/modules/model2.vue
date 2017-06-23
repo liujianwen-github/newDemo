@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId,item.facetrackImage,item.createTime,item.sourceId,item.sourceImg)">
+      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId,item.facetrackImage,item.createTime,item.sourceDes,item.sourceImg)">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -35,7 +35,7 @@ export default {
         facetrackId: null,
         facetrackImage: null,
         createTime: null,
-        sourceId: null,
+        sourceDes: null,
         sourceImg: null
       }
     }
@@ -46,14 +46,14 @@ export default {
       console.log(msg)
       // TODO item点击触发事件，修改data中的参数，传值到intell组件中
     },
-    getIntell: function (facetrackId, facetrackImage, createTime, sourceId, sourceImg) {
-      console.log(facetrackId, facetrackImage, createTime, sourceId, sourceImg)
+    getIntell: function (facetrackId, facetrackImage, createTime, sourceDes, sourceImg) {
+      console.log(facetrackId, facetrackImage, createTime, sourceDes, sourceImg)
       this.viewWhich = 'intell'
       this.intellValue = {
         facetrackId: facetrackId,
         facetrackImage: facetrackImage,
         createTime: createTime,
-        sourceId: sourceId,
+        sourceDes: sourceDes,
         sourceImg: sourceImg
       }
       console.log(this.viewWhich)

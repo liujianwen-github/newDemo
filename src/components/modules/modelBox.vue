@@ -21,9 +21,9 @@ export default {
       modelOne: null,
       modelTwo: null,
       modelThree: null,
-      pagination1: 0,
-      pagination2: 0,
-      pagination3: 0,
+      pagination1: 1,
+      pagination2: 1,
+      pagination3: 1,
       getParams: {
         'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageNo': 1
       }
@@ -36,6 +36,7 @@ export default {
   methods: {
     getTotal: function () {
       // 今日到访
+      this.getParams.pageNo = this.pagination1
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
         console.log(res)
@@ -45,6 +46,7 @@ export default {
     },
     getStranger: function () {
       // 陌生人
+      this.getParams.pageNo = this.pagination2
       Axios.get(config.HOST + 'apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
         this.modelTwo = res.data.results.list
         console.log(res)
@@ -54,7 +56,8 @@ export default {
     },
     getUser: function () {
       // 注册用户
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getMatchedList', {params: this.getParams}).then((res) => {
+      this.getParams.pageNo = this.pagination3
+      Axios.get(config.HOST + 'apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
         this.modelThree = res.data.results.list
         console.log(res)
       }, (err) => {
@@ -62,7 +65,7 @@ export default {
       })
     },
     mimi: function (msg) {
-      this.getParams.pageNo++
+      this.pagination1++
       this.getTotal()
     }
   },

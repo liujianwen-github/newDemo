@@ -1,13 +1,14 @@
 <template>
-  <div class="popup" id="registerUser">
+  <div class="popup" id="registerUser" :class="{show:isShow}">
    <div>
     <header>
-      <h3>注册/编辑 用户</h3>
+      <h3><span v-text="title"></span>用户</h3>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead">      
         <div class="changePic">
-          <img src="../../assets/userHeader.png" alt="">
+          <img v-if="title=='新建'" src="../../assets/userHeader.png" alt="">
+          <img v-if="title=='编辑'" :src="personData.headimage" alt="">
         </div>
         <div class="changePic">
         <img src="../../assets/inputImg.png" alt="">
@@ -40,7 +41,7 @@
     </header>
     <article>
       <div class="content">
-        <button class="footBtn btn" @click="returnHistory">取消</button>
+        <button class="footBtn btn" @click="close">取消</button>
         <button class="footBtn btn" @click="pushFormat">确定</button>
       </div>
     </article>
@@ -66,9 +67,20 @@
 import $ from 'jquery'
 export default {
   name: 'registerUser',
+  data () {
+    return {
+      isShow: false,
+      title: null,
+      personData: {
+        headimage: null
+      }
+    }
+  },
+  props: ['viewWhich', 'toRegisterUser'],
   methods: {
     close: function () {
-      $('#registerUser').css('display', 'none')
+      this.$emit('popState', '0')
+      this.isShow = false
     },
     returnHistory: function () {
       alert('return')
@@ -87,7 +99,27 @@ export default {
       $('#registerUser>div>article').removeClass('vague')
     },
     mksureDelete: function () {
-      alert('push delete')
+      alert('push delete,return userManage')
+      $('.deleteUser').css('display', 'none')
+      $('#registerUser>div>header').removeClass('vague')
+      $('#registerUser>div>article').removeClass('vague')
+    }
+  },
+  watch: {
+    viewWhich: function (val, old) {
+      if (val === 'editUser') {
+        this.isShow = true
+        this.title = '编辑'
+      } else if (val === 'addNewUser') {
+        this.isShow = true
+        this.title = '新建'
+      }
+    },
+    toRegisterUser: {
+      handler (val, old) {
+        this.personData = val
+      },
+      deep: true
     }
   }
 }
@@ -98,10 +130,11 @@ export default {
 </style>
 
 <style scoped>
+.popup{
+  display: none
+}
 .popup>div{
   border:1px solid red;
-  /*display: none*/
-  /*background-color: green*/
 }
 header>div{
   margin-top: 10px

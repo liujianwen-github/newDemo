@@ -1,31 +1,40 @@
 <template>
   <div class="container">
   <!-- index -->
-    <userHead></userHead>
-    <totalUserList></totalUserList>
+    <userHead @popState="changeState"></userHead>
+    <totalUserList :fromFa="viewWhich" @popState="changeState"></totalUserList>
   </div>
     
 </template>
 
 <script>
-import config from '@/config'
-import Axios from 'axios'
+// import config from '@/config'
+// import Axios from 'axios'
 import userHead from '@/components/modules/userHead'
 import totalUserList from '@/components/modules/totalUserList'
 
 export default {
   name: 'userManage',
   components: {userHead, totalUserList},
+  data () {
+    return {
+      viewWhich: '0'
+    }
+  },
   methods: {
     getUser: function () {
       // 注册用户
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getMatchedList', {params: this.getParams}).then((res) => {
-        this.modelThree = res.data.results.list
-        // TODO获取数据传递给model3，或者干脆重新写一个组件
-        console.log(res)
-      }, (err) => {
-        console.log(err)
-      })
+      // Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then((res) => {
+      //   this.modelThree = res.data.results.list
+      //   // TODO获取数据传递给model3，或者干脆重新写一个组件
+      //   console.log(res)
+      // }, (err) => {
+      //   console.log(err)
+      // })
+    },
+    changeState: function (msg) {
+      this.viewWhich = msg
+      // alert(this.viewWhich)
     }
   }
 }

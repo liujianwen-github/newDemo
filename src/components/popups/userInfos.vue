@@ -1,15 +1,16 @@
 <template>
-  <div class="popup" id="userInfos">
-   <div>
+  <div class="popup" id="userInfos" :class="{show:isShow}">
+   <div v-if="viewWhich=='userInfos'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="personData.image" alt="">
+        <!-- {{personData}} -->
       </div>
       <div class="addUser">
-        <p class="headInfo">name</p>
-        <p class="headInfo">最后到访时间：time</p>
-        <p class="headInfo">采集地点: 采集地点</p>
+        <p class="headInfo" v-text="personData.name">name</p>
+        <p class="headInfo">最后到访时间：<span v-text="personData.latestMatchTime"></span></p>
+        <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p>
         <div class="btn" @click="setMessage">设置留言</div>
       </div>
     </header>
@@ -19,54 +20,22 @@
           <img src="../../assets/search.png"  alt="">
           <p>查找未成功识别记录</p>
         </div>
-        <div>
+        <div :class="{noScroll:scene.isShow}">
           <p>识别记录</p>
           <div class="itemList">
             <ul>
             <!-- TODO v-for -->
-              <li>
+              <li v-for="item in list">
                 <div>
                   <div class="left">
-                    <p>date</p>
-                    <p>time</p>
-                    <p>address</p>
-                    <button class="btn btn-info" @click="viewScene">场景图</button>
+                    <p v-text="item.createTime.split(' ')[0]">date</p>
+                    <p v-text="item.createTime.split(' ')[1]">time</p>
+                    <p v-text="item.sourceDes">address</p>
+                    <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
                   </div>
                   <div class="right" @click="viewGif">
                     <div>
-                      <img src="../../assets/search.png" alt="">
-                      <span class="gif">GIF</span>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <div class="left">
-                    <p>date</p>
-                    <p>time</p>
-                    <p>address</p>
-                    <button class="btn btn-info" @click="viewScene">场景图</button>
-                  </div>
-                  <div class="right" @click="viewGif">
-                    <div>
-                      <img src="../../assets/search.png" alt="">
-                      <span class="gif">GIF</span>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <div class="left">
-                    <p>date</p>
-                    <p>time</p>
-                    <p>address</p>
-                    <button class="btn btn-info" @click="viewScene">场景图</button>
-                  </div>
-                  <div class="right" @click="viewGif">
-                    <div>
-                      <img src="../../assets/search.png" alt="">
+                      <img :src="item.facetrackImage" alt="">
                       <span class="gif">GIF</span>
                     </div>
                   </div>
@@ -75,6 +44,9 @@
             </ul>
           </div>
         </div>
+        <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
+          <img :src="scene.img" alt="">
+        </div>
       </div>
     </article>
    </div>
@@ -82,24 +54,76 @@
 </template>
 <!-- 查看用户信息组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config'
+
 export default {
   name: 'userInfos',
+  props: ['toUserInfos', 'viewWhich'],
+  data () {
+    return {
+      isShow: false,
+      personData: null,
+      scene: {
+        isShow: false,
+        img: ''
+      },
+      list: null,
+      getParams: {
+        userkey: config.userkey,
+        personId: null,
+        deviceId: config.deviceId
+      }
+    }
+  },
   methods: {
     close: function () {
-      $('#userInfos').css('display', 'none')
+      this.$emit('popState', '0')
+      this.isShow = false
     },
     viewGif: function () {
       alert('viewgif')
     },
-    viewScene: function () {
-      alert('viewScene')
+    viewScene: function (msg) {
+      this.scene = {
+        isShow: true,
+        img: msg
+      }
+    },
+    closeScene: function () {
+      this.scene = {
+        isShow: false,
+        img: ' '
+      }
     },
     searchHistory: function () {
-      alert('search history')
+      this.$emit('popState', 'history')
     },
     setMessage: function () {
-      alert('set message')
+      this.$emit('popState', 'leaveMessage')
+    }
+  },
+  watch: {
+    toUserInfos: function (val, old) {
+      // alert(val)
+      this.personData = val
+      this.getParams.personId = this.personData.personId
+      alert(this.getParams.personId)
+      Axios.get(config.HOST + 'apiServer/personManage/getPersonMatchedList', {params: this.getParams}).then(
+        (res) => {
+          this.list = res.data.results.list
+          console.log(this.list)
+          // TODO 根据personId获取场景图 动图
+        }, (err) => {
+        console.log(err)
+      })
+    },
+    viewWhich: function (val, old) {
+      if (val === 'userInfos') {
+        this.isShow = true
+      }
+      alert(val)
     }
   }
 }
@@ -110,6 +134,12 @@ export default {
 </style>
 
 <style scoped>
+.show{
+  display: block
+}
+.noScroll{
+  overflow-y: hidden!important;
+}
 .popup{
   display: none
 }
@@ -155,7 +185,8 @@ export default {
   height: 260px
 }
 .popup article .content>div:first-child{
-  background-color: red;
+  /*background-color: red;*/
+  cursor: pointer;
   width: 40%;
   text-align: center;
 }
@@ -165,7 +196,8 @@ export default {
 .popup article .content>div:nth-child(2){
   /*background-color: blue;*/
   width: 60%;
-  overflow-y: auto
+  overflow-y: auto;
+  position: relative;
 }
 /*识别记录*/
 article .content .itemList ul{
@@ -202,6 +234,22 @@ article .content .itemList li>div>.right>div .gif{
   position: absolute;
   bottom: 0;
   right: 0
+}
+
+.sceneBox{
+  width: 60%;
+  height: 100%;
+  position: absolute!important;
+  right: 0;
+  top: 0;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 10;
+  display: none;
+
+}
+.sceneBox img{
+  max-height: 100%;
+  max-width: 100%;
 }
 
 </style>

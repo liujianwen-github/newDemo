@@ -13,6 +13,11 @@ export default {
   methods: {
     bibi: function (msg) {
       alert(msg)
+      var bibi = new Date() + 5
+      console.log(bibi)
+    },
+    stringifyDate: function (date) {
+      console.log(date)
     }
   }
 }

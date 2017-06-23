@@ -12,7 +12,7 @@
       <input type="text" name="">
     </div>
     <div class="contentBtnList">
-      <button class="btn">新建用户</button>
+      <button class="btn" @click="addNewUser">新建用户</button>
     </div>
     <div class="toUser">
       <router-link to="/">
@@ -30,7 +30,12 @@
 // import Store from '@/Store.js'
 // import $ from 'jquery'
 export default {
-  name: 'userHead'
+  name: 'userHead',
+  methods: {
+    addNewUser: function (argument) {
+      this.$emit('popState', 'addNewUser')
+    }
+  }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

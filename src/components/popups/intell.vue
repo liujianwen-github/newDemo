@@ -8,7 +8,7 @@
       </div>
       <div class="addUser">
         <p class="headInfo">来访时间: <span v-text="toIntell.createTime"></span></p>
-        <p class="headInfo">采集地点: <span v-text="toIntell.sourceId"></span></p>
+        <p class="headInfo">采集地点: <span v-text="toIntell.sourceDes"></span></p>
         <div class="btn" @click="createUser">新建用户</div>
         <div class="btn" @click="intellAnalyse">智能分析</div>
       </div>

@@ -5,27 +5,27 @@
       <div class="item" v-for="item in list">
         <div class="content">
           <div>
-            <img :src="item.facetrackImage" alt="">
+            <img :src="item.headimage" alt="" @click="viewUserInfos(item.personId,item.headimage,item.name,item.latestMatchTime,item.sourceDes)">
           </div>
           <div>
             <div class="name">
-              <p style="color:red">缺少personName</p>
+              <p style="color:red" v-text="item.name"></p>
             </div>
             <div class="name">
-              <p>最后到访时间：</p>
+              <p>最后到访时间：<span v-text="item.latestMatchTime"></span></p>
             </div>
             <div class="time">
               <p v-text="item.createTime"></p>
             </div>
             <div>
-              <button class="btn" @click="setMessage">设置留言</button>
+              <button class="btn" @click="setMessage(item.headimage, item.name)">设置留言</button>
             </div>
           </div>
         </div>
       </div>
-      <userInfos :viewWhich="viewWhich"></userInfos>
-      <history :viewWhich="viewWhich"></history>
-      <leaveMessage :viewWhich="viewWhich" @popState="changeState"></leaveMessage>
+      <userInfos :viewWhich="viewWhich" :toUserInfos="personData" @popState="changeState"></userInfos>
+      <history :viewWhich="viewWhich" :toHistory="personData" @popState="changeState"></history>
+      <leaveMessage :viewWhich="viewWhich" @popState="changeState" :toMessage="personData"></leaveMessage>
       <!-- <registerUser></registerUser> -->
     </div>
   </div>
@@ -42,13 +42,38 @@ export default {
   data () {
     return {
       list: null,
-      viewWhich: '0'
+      viewWhich: '0',
+      personData: {
+        image: null,
+        name: null,
+        personId: null,
+        latestMatchTime: null,
+        sourceDes: null
+      }
     }
   },
   props: ['toThird'],
   methods: {
-    setMessage: function () {
+    setMessage: function (image, name) {
       this.viewWhich = 'leaveMessage'
+      this.personData = {
+        image: image,
+        name: name
+      }
+    },
+    searchHistory: function (val, old) {
+      // this.viewWhich = 'history'
+    },
+    viewUserInfos: function (id, image, name, latestMatchTime, sourceDes) {
+      this.personData = {
+        personId: id,
+        image: image,
+        name: name,
+        latestMatchTime: latestMatchTime,
+        sourceDes: '11'
+      }
+      this.viewWhich = 'userInfos'
+      console.log(this.personData)
     },
     changeState: function (msg) {
       this.viewWhich = msg

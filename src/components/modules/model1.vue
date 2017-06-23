@@ -43,11 +43,6 @@ export default {
   }
 }
 </script>
-<!-- 
-  *书写格式要求：①变量声明冒号后边必须有一个空格
-   *           ②字符串单引号
-   *           
-   *             -->
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .container{
