@@ -36,7 +36,6 @@ export default {
     createUser: function () {
       console.log('intell->create')
       this.$emit('popState', 'createUser')
-      console.log(this)
     },
     intellAnalyse: function () {
       this.$emit('popState', 'intellAnalyse')
@@ -62,7 +61,6 @@ export default {
 <style scoped>
 #intell{
   display: none;
-  background-color: white;
 }
 .popup header{
   width: 100%;

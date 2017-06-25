@@ -32,7 +32,7 @@
       <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.messageContent"></textarea>
       <div class="foot">
         <button class="btn" @click="close">取消</button>
-        <button class="btn">确定</button>
+        <button class="btn" @click="setMessage">确定</button>
       </div>
     </article>
    </div>
@@ -41,14 +41,19 @@
 <!-- 查看用户信息组件 -->
 <script>
 // import $ from 'jquery'
+import config from '@/config'
+import Axios from 'axios'
 export default {
   name: 'history',
   data () {
     return {
       isShow: false,
       messageForm: {
+        userkey: config.userkey,
+        deviceId: config.deviceId,
         timeLine: 'short',
-        startTime: new Date().getFullYear() + ',' + new Date().getMonth(),
+        startTime: new Date().getFullYear() + '-' + config.addDate((Number(new Date().getMonth()) + 1)) + '-' +
+                   config.addDate(new Date().getDate()),
         endTime: null,
         messageContent: null
       },
@@ -75,7 +80,18 @@ export default {
       this.$emit('popState', 'history')
     },
     setMessage: function () {
-      alert('set message')
+      // alert(typeof new Date().getDate())
+      // console.log(this.messageForm.startTime)
+      // console.log(config.addDate((Number(new Date().getMonth()) + 1)) + '-')
+      Axios({
+        url: config.HOST + 'apiServer/personManage/uploadPersonInfo',
+        methods: 'POST',
+        data: this.messageForm
+      }).then((res) => {
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
     },
     stringifyDate: function (date) {
       console.log(date)

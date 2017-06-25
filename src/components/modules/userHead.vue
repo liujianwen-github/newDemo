@@ -9,7 +9,8 @@
     </div> -->
     <div class="contentBtnList">
       <span class="glyphicon glyphicon-user"></span>
-      <input type="text" name="">
+      <input type="text" value="" v-model="searchText">
+      <button @click="search">search</button>
     </div>
     <div class="contentBtnList">
       <button class="btn" @click="addNewUser">新建用户</button>
@@ -29,11 +30,35 @@
 <script>
 // import Store from '@/Store.js'
 // import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config'
 export default {
   name: 'userHead',
+  data () {
+    return {
+      searchText: null
+    }
+  },
   methods: {
     addNewUser: function (argument) {
       this.$emit('popState', 'addNewUser')
+    },
+    search: function () {
+      alert(this.searchText)
+      Axios({
+        methods: 'GET',
+        url: config.HOST + '/apiServer/personManage/searchPerson',
+        params: {
+          userkey: config.userkey,
+          deviceId: config.deviceId,
+          text: this.searchText
+        }
+      }).then((res) => {
+        console.log(res)
+        alert('返回结果，请输入要查询信息，接口文档没有规定输入文本关键字')
+      }, (err) => {
+        console.log(err)
+      })
     }
   }
 }

@@ -12,7 +12,7 @@
         </div>
       </div>
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
-      <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="intellValue.facetrackImage"></createUser>
+      <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
       <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
     </div>
   </div>
@@ -37,6 +37,10 @@ export default {
         createTime: null,
         sourceDes: null,
         sourceImg: null
+      },
+      createUserData: {
+        facetrackImage: null,
+        facetrackId: null
       }
     }
   },
@@ -55,6 +59,10 @@ export default {
         createTime: createTime,
         sourceDes: sourceDes,
         sourceImg: sourceImg
+      }
+      this.createUserData = {
+        facetrackImage: facetrackImage,
+        facetrackId: facetrackId
       }
       console.log(this.viewWhich)
     },

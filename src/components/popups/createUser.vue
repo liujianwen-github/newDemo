@@ -11,27 +11,27 @@
       <div class="addUser">
         <div class="addMessage long">
           <label>姓名</label>
-          <input type="text" name="">
+          <input type="text" name="" v-model="name">
         </div>
         <div class="addMessage">
           <label>性别</label>
-          <input type="radio" name="sex" value="man" checked="checked">男
-          <input type="radio" name="sex" value="woman">女
+          <input type="radio" name="sex" value="1" checked="checked" v-model="sex">男
+          <input type="radio" name="sex" value="0" v-model="sex">女
         </div>
         <div class="addMessage long">
           <label>卡号</label>
-          <input type="text" name="">
+          <input type="text" name="" v-model="cardId">
         </div>
         <div class="addMessage long">
           <label>生日</label>
-          <input type="date" name="">
+          <input type="date" name="" v-model="birthDay">
         </div>
       </div>
     </header>
     <article>
       <div class="content">
         <button class="footBtn btn" @click="returnHistory">取消</button>
-        <button class="footBtn btn">确定</button>
+        <button class="footBtn btn" @click="createUser">确定</button>
       </div>
     </article>
    </div>
@@ -40,11 +40,18 @@
 <!-- 新建用户组件 -->
 <script>
 import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config'
 export default {
   name: 'createUser',
   data () {
     return {
-      img: null
+      img: null,
+      name: null,
+      sex: '1',
+      cardId: null,
+      birthDay: null,
+      facetrackId: null
     }
   },
   props: ['viewWhich', 'toCreateUser'],
@@ -57,6 +64,24 @@ export default {
     },
     returnHistory: function () {
       this.$emit('popState', 'intell')
+    },
+    createUser: function () {
+      //
+      Axios.post(config.HOST + '/wxServer2/admin/createPersonByFacetrack', {
+        userkey: config.userkey,
+        deviceId: config.deviceId,
+        facetrackId: this.facetrackId,
+        sex: this.sex,
+        img: this.img,
+        name: this.name,
+        cardId: this.cardId,
+        birthDay: this.birthDay
+      }).then((res) => {
+        console.log(res)
+        this.close()
+      }, (err) => {
+        console.log(err)
+      })
     }
   },
   watch: {
@@ -69,7 +94,8 @@ export default {
       }
     },
     toCreateUser: function (val, old) {
-      this.img = val
+      this.img = val.facetrackImage
+      this.facetrackId = val.facetrackId
     }
   }
 }

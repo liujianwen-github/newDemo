@@ -33,7 +33,7 @@
                     <p v-text="item.sourceDes">address</p>
                     <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
                   </div>
-                  <div class="right" @click="viewGif">
+                  <div class="right" @click="viewGif(item.facetrackId)">
                     <div>
                       <img :src="item.facetrackImage" alt="">
                       <span class="gif">GIF</span>
@@ -83,9 +83,12 @@ export default {
       this.isShow = false
     },
     viewGif: function () {
-      alert('viewgif')
+      alert('查看动图')
+      // TODO 动图 场景图
+      console.log(this.personData.personId)
     },
     viewScene: function (msg) {
+      alert('查看场景图')
       this.scene = {
         isShow: true,
         img: msg

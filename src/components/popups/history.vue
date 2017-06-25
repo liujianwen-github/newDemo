@@ -12,11 +12,12 @@
           <span>智能分析查找</span>
         </p>
         <p class="headInfo">
-            <input type="checkbox" name="chooseTime" value="time1">半小时
-            <input type="checkbox" name="chooseTime" value="time2">4小时
-            <input type="checkbox" name="chooseTime" value="time3">12小时
-            <input type="checkbox" name="chooseTime" value="time4">24小时
-            <input type="checkbox" name="chooseTime" value="time5">自定义
+            <input type="radio" name="chooseTime" value="0.5" v-model="chooseTime" @click="resetPersonSetTime">半小时
+            <input type="radio" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime">4小时
+            <input type="radio" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime">12小时
+            <input type="radio" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime">24小时
+            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime">自定义
+            <input type="text" name="" value="" v-model="chooseTime" :class="{isShow:personSetTime=='personSet'}">
         </p>
         <div>
           <button class="btn" @click="searchNoMatchedList">查找</button>
@@ -26,25 +27,11 @@
     </header>
     <article>
      <div class="content">
-       <div class="item">
+       <div class="item" v-for="item in historyList">
          <img src="../../assets/search.png"  alt="">
          <p>date time</p>
          <p>
            <button class="btn" @click="pushImg">确定</button>
-         </p>
-       </div>
-       <div class="item">
-         <img src="../../assets/search.png"  alt="">
-         <p>date time</p>
-         <p>
-           <button class="btn">确定</button>
-         </p>
-       </div>
-       <div class="item">
-         <img src="../../assets/search.png"  alt="">
-         <p>date time</p>
-         <p>
-           <button class="btn">确定</button>
          </p>
        </div>
      </div>
@@ -55,13 +42,18 @@
 <!-- 查看用户信息组件 -->
 <script>
 // import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config'
 export default {
   name: 'history',
   data () {
     return {
       isShow: false,
+      personSetTime: '',
+      chooseTime: '0.5',
       personData: null,
-      searchImgList: null// 查找未成功识别记录数据
+      searchImgList: null, // 查找未成功识别记录数据
+      historyList: null
     }
   },
   props: ['viewWhich', 'toHistory'],
@@ -69,6 +61,7 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
+      // this.
     },
     viewGif: function () {
       alert('viewgif')
@@ -85,8 +78,31 @@ export default {
     pushImg: function (val, old) {
       alert('push img')
     },
+    resetPersonSetTime: function () {
+      this.personSetTime = ''
+    },
     searchNoMatchedList: function () {
       alert('查找未成功识别记录数据,post请求')
+      alert(this.chooseTime)
+      console.log(this.personData)
+      Axios({
+        methods: 'GET',
+        url: config.HOST + '/apiServer/personManage/getPersonUnMatchedList',
+        params: {
+          beginTime: new Date().getTime(),
+          endTime: new Date().getTime() + this.chooseTime * 3600000,
+          userkey: config.userkey,
+          deviceId: config.deviceId,
+          personId: this.personData.personId
+        }
+      }).then((res) => {
+        this.historyList = res.data.results.list
+        // TODO 加几条记录，添加合并效果查询
+        // URL:/apiServer/personManage/confirmFacetrackByPerson
+        // Params:facetrackId,personId,userkey
+      }, (err) => {
+        console.log(err)
+      })
     },
     returnUserInfos: function () {
       this.$emit('popState', 'userInfos')
@@ -114,6 +130,9 @@ export default {
 <style scoped>
 .popup{
   display: none
+}
+.isShow{
+  display: inline-block!important
 }
 .popup header{
   width: 100%;
@@ -161,6 +180,9 @@ article .content .item img{
 article .content .item p{
   text-align: center;
 }
-
+input[type="text"]{
+  width: 50px;
+  display: none
+}
 
 </style>

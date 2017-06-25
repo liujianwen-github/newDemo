@@ -14,7 +14,9 @@
     </header>
     <article>
       <div class="content">
-        <div class="item" v-for="item in dataList">
+        <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index)">
+          <input type="checkbox" name="chooseItem" :value="item.persontag" v-model="chooseItem">
+          <div class="bgc" :class="{showme:index==whichBgc}" style="color:white"></div>
           <img :src="item.headImage" alt="">
           <p v-text="item.name">name</p>
         </div>
@@ -22,7 +24,7 @@
       <div class="foot">
         <div>
           <button class="btn footBtn" @click="returnHistory">返回</button>
-          <button class="btn footBtn" @click="close">完成</button>
+          <button class="btn footBtn" @click="close">完成(不用close，需要选完发送)</button>
         </div>
       </div>
     </article>
@@ -40,6 +42,8 @@ export default {
     return {
       dataList: null,
       personData: null,
+      whichBgc: null,
+      chooseItem: [],
       intellParams: {
         userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
         facetrackId: null,
@@ -52,6 +56,18 @@ export default {
     close: function () {
       $('#intellAnalyse').css('display', 'none')
       this.$emit('popState', '0')
+    },
+    findItem: function (findme) {
+      if (this.chooseItem.length <= 0) return
+      for (let i = 0; i < this.chooseItem.length; i++) {
+        if (findme === this.chooseItem(i)) {
+          return true
+        }
+      }
+      return false
+    },
+    chooseMe: function (msg) {
+      this.whichBgc = msg
     },
     getDataList: function () {
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: this.intellParams}).then(
@@ -137,10 +153,23 @@ export default {
   padding-top: 20px
 }
 .popup article .content>.item{
-  border: 1px dashed red;
+  background-color: lightblue;
   width: 140px;
   height: 160px;
   text-align: center;
+  position: relative;
+}
+.popup article .content>.item .bgc{
+  background-color: rgba(0,0,0,0.7);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: none
+}
+.popup article .content>.item .bgc.showme{
+  display: block;
 }
 .popup article .content>.item>img{
   width: 120px;
@@ -162,5 +191,13 @@ export default {
 .popup article .foot>div button{
   background-color: #2B77D5;
   color: white
+}
+input[type="checkbox"]{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0
 }
 </style>

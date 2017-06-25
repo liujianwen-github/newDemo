@@ -3,5 +3,12 @@ export default{
   HOST: 'http://demo.deepdot.cn/',
   // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
-  deviceId: 'aaa-a01-001'
+  deviceId: 'aaa-a01-001',
+  addDate: function (date) {
+    if (Number(date) <= 10) {
+      return '0' + date
+    } else {
+      return date
+    }
+  }
 }

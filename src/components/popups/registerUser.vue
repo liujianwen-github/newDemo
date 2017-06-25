@@ -11,9 +11,12 @@
           <img v-if="title=='编辑'" :src="personData.headimage" alt="">
         </div>
         <div class="changePic">
-        <img src="../../assets/inputImg.png" alt="">
+          <input type="file" name="" @change="addImg">
+          <img src="../../assets/inputImg.png" alt="">
+          <!-- todo 创建一个存储图片数组，数组为零时显示头像图片 -->
         </div>
         <div class="changePic">
+          <input type="file" name="">
           <img src="../../assets/andMore.png" alt="">
         </div>
         <p>上传用户头像</p>
@@ -65,6 +68,8 @@
 <!-- TODO图片下添加input file -->
 <script>
 import $ from 'jquery'
+import Axios from 'axios'
+import config from '@/config'
 export default {
   name: 'registerUser',
   data () {
@@ -72,7 +77,14 @@ export default {
       isShow: false,
       title: null,
       personData: {
-        headimage: null
+        headimage: null,
+        imgList: [],
+        name: null,
+        sex: '0',
+        cardId: null,
+        birthday: null,
+        userkey: config.userkey,
+        deviceId: config.deviceId
       }
     }
   },
@@ -91,7 +103,18 @@ export default {
       $('#registerUser>div>article').addClass('vague')
     },
     pushFormat: function () {
-      alert('push')
+      Axios({
+        methods: 'POST',
+        url: config.HOST + 'wxServer2/admin/createPersonByImgs',
+        data: this.personData
+      }).then((res) => {
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    addImg: function (msg) {
+      console.log(msg)
     },
     dontDelete: function () {
       $('.deleteUser').css('display', 'none')
@@ -181,7 +204,8 @@ header .setHead>.changePic{
   color: white;
   /*float:left;*/
   display: inline-block;
-  margin-right: 20px
+  margin-right: 20px;
+  position: relative;
 }
 article{
   clear: both;
@@ -236,5 +260,13 @@ bottom: 0
 }
 .deleteUser>div>div p{
   letter-spacing: 1px
+}
+input[type="file"]{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: red
 }
 </style>
