@@ -6,7 +6,10 @@
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
         <img :src="img" alt="">
-        <div class="changePic">修改头像</div>
+        <div class="changePic">
+          <span>修改头像</span>
+          <input type="file" name="" accept="image/png,image/jpg,image/jpeg"  ref="inputer" @change="changePic">
+        </div>
       </div>
       <div class="addUser">
         <div class="addMessage long">
@@ -64,6 +67,10 @@ export default {
     },
     returnHistory: function () {
       this.$emit('popState', 'intell')
+    },
+    changePic: function (e) {
+      console.log(e)
+      console.log(this.$refs.inputer.files)
     },
     createUser: function () {
       //
@@ -158,5 +165,20 @@ article>div>button{
   background-color: #2B77D5;
   width: 100px;
   color: white
+}
+.changePic{
+  height: 30px
+}
+.changePic>span{
+  line-height: 30px
+}
+input[type="file"]{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 </style>
