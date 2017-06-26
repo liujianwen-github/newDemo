@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="leftHead">
+    <div class="leftHead" @click="reloadPage">
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
     </div>
@@ -30,8 +30,8 @@
 <script>
 // import Store from '@/Store.js'
 // import $ from 'jquery'
-import Axios from 'axios'
-import config from '@/config'
+// import Axios from 'axios'
+// import config from '@/config'
 export default {
   name: 'userHead',
   data () {
@@ -44,21 +44,25 @@ export default {
       this.$emit('popState', 'addNewUser')
     },
     search: function () {
-      alert(this.searchText)
-      Axios({
-        methods: 'GET',
-        url: config.HOST + '/apiServer/personManage/searchPerson',
-        params: {
-          userkey: config.userkey,
-          deviceId: config.deviceId,
-          text: this.searchText
-        }
-      }).then((res) => {
-        console.log(res)
-        alert('返回结果，请输入要查询信息，接口文档没有规定输入文本关键字')
-      }, (err) => {
-        console.log(err)
-      })
+      // alert(this.searchText)
+      this.$emit('searchPerson', this.searchText)
+      // Axios({
+      //   methods: 'GET',
+      //   url: config.HOST + '/apiServer/personManage/searchPerson',
+      //   params: {
+      //     userkey: config.userkey,
+      //     deviceId: config.deviceId,
+      //     name: this.searchText
+      //   }
+      // }).then((res) => {
+      //   console.log(res)
+      //   // alert('返回结果，请输入要查询信息，接口文档没有规定输入文本关键字')
+      // }, (err) => {
+      //   console.log(err)
+      // })
+    },
+    reloadPage: function () {
+      window.location.reload()
     }
   }
 }

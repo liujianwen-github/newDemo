@@ -5,40 +5,42 @@
       <h3><span v-text="title"></span>用户</h3>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
-      <div class="setHead">      
-        <div class="changePic">
-          <img v-if="title=='新建'" src="../../assets/userHeader.png" alt="">
-          <img v-if="title=='编辑'" :src="personData.headimage" alt="">
+      <div class="setHead" >      
+        <div :class="{goLong:personData.imgs.length>=3}">
+          <div class="changePic"  v-for="item in personData.imgs">
+            <!-- <img v-if="title=='新建'" src="../../assets/userHeader.png" alt=""> -->
+            <img :src="item" alt="">
+          </div>
+          <div class="changePic">
+            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
+            <img src="../../assets/inputImg.png" alt="">
+            <!-- todo 创建一个存储图片数组，数组为零时显示头像图片 -->
+          </div>
         </div>
-        <div class="changePic">
-          <input type="file" name="" @change="addImg">
-          <img src="../../assets/inputImg.png" alt="">
-          <!-- todo 创建一个存储图片数组，数组为零时显示头像图片 -->
-        </div>
-        <div class="changePic">
+        <!-- <div class="changePic">
           <input type="file" name="">
           <img src="../../assets/andMore.png" alt="">
-        </div>
-        <p>上传用户头像</p>
+        </div> -->     
       </div>
+      <p>上传用户头像</p>
       <!-- 编辑信息 -->
       <div class="addUser">
         <div class="addMessage long">
           <label>姓名</label>
-          <input type="text" name="">
+          <input type="text" name="" v-model="personData.name">
         </div>
         <div class="addMessage short">
           <label>性别</label>
-          <input type="radio" name="sex" value="man" checked="checked">男
-          <input type="radio" name="sex" value="woman">女
+          <input type="radio" name="sex" value="1"  v-model="personData.sex">男
+          <input type="radio" name="sex" value="0" v-model="personData.sex">女
         </div>
         <div class="addMessage long">
           <label>卡号</label>
-          <input type="text" name="">
+          <input type="text" name="" v-model="personData.cardId">
         </div>
         <div class="addMessage long">
           <label>生日</label>
-          <input type="date" name="">
+          <input type="date" name="" v-model="personData.birthday">
         </div>
       </div>
     </header>
@@ -77,14 +79,15 @@ export default {
       isShow: false,
       title: null,
       personData: {
-        headimage: null,
-        imgList: [],
+        imgUrl: null,
+        imgs: [],
         name: null,
-        sex: '0',
+        sex: '1',
         cardId: null,
         birthday: null,
         userkey: config.userkey,
-        deviceId: config.deviceId
+        deviceId: config.deviceId,
+        personId: null
       }
     }
   },
@@ -93,9 +96,26 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
+      this.personData.imgs.length = 0
     },
-    returnHistory: function () {
-      alert('return')
+    chooseImg: function (e) {
+      console.log(this.$refs.fileInputOne.files)
+      const files = this.$refs.fileInputOne.files
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = (e) => {
+          this.personData.imgs.push(e.target.result)
+          if (i === 0) {
+            this.personData.imgUrl = e.target.result
+          }
+          console.log(this.personData.imgs)
+          this.$forceUpdate()
+        }
+      }
+      console.log(this.personData)
     },
     godelete: function () {
       $('.deleteUser').css('display', 'block')
@@ -103,29 +123,59 @@ export default {
       $('#registerUser>div>article').addClass('vague')
     },
     pushFormat: function () {
-      Axios({
-        methods: 'POST',
-        url: config.HOST + 'wxServer2/admin/createPersonByImgs',
-        data: this.personData
-      }).then((res) => {
-        console.log(res)
-      }, (err) => {
-        console.log(err)
-      })
-    },
-    addImg: function (msg) {
-      console.log(msg)
+      console.log(this.title)
+      console.log(this.personData)
+      this.personData.imgs.shift()
+      let personData = new FormData()
+      personData.append('personId', this.personData.personId)
+      personData.append('imgUrl', this.personData.imgUrl)
+      personData.append('imgs', this.personData.imgs)
+      personData.append('name', this.personData.name)
+      personData.append('sex', this.personData.sex)
+      personData.append('birthday', this.personData.birthday)
+      personData.append('userkey', config.userkey)
+      personData.append('deviceId', config.deviceId)
+      if (this.title === '新建') {
+        console.log(personData)
+        Axios({
+          method: 'POST',
+          url: config.HOST + 'wxServer2/admin/createPersonByImgs',
+          data: personData,
+          headers: {
+            'Content-Type': ' application/x-www-form-urlencoded'
+          }
+        }).then((res) => {
+          console.log(res)
+          this.personData.imgs.length = 0
+        }, (err) => {
+          console.log(err)
+        })
+      } else if (this.title === '编辑') {
+        Axios({
+          method: 'POST',
+          url: config.HOST + 'wxServer2/admin/uploadPersonInfo',
+          data: personData,
+          headers: {
+            'Content-Type': ' application/x-www-form-urlencoded'
+          }
+        }).then((res) => {
+          console.log(res)
+          this.personData.imgs.length = 0
+        }, (err) => {
+          console.log(err)
+        })
+      }
     },
     dontDelete: function () {
       $('.deleteUser').css('display', 'none')
-      $('#registerUser>div>header').removeClass('vague')
-      $('#registerUser>div>article').removeClass('vague')
+      // $('#registerUser>div>header').removeClass('vague')
+      // $('#registerUser>div>article').removeClass('vague')
     },
     mksureDelete: function () {
       alert('push delete,return userManage')
       $('.deleteUser').css('display', 'none')
-      $('#registerUser>div>header').removeClass('vague')
-      $('#registerUser>div>article').removeClass('vague')
+      // $('#registerUser>div>header').removeClass('vague')
+      // $('#registerUser>div>article').removeClass('vague')
     }
   },
   watch: {
@@ -141,6 +191,11 @@ export default {
     toRegisterUser: {
       handler (val, old) {
         this.personData = val
+        console.log(val)
+        let arr = []
+        arr.push(val.headimage)
+        this.personData.imgs = arr
+        this.personData.imgUrl = val.headimage
       },
       deep: true
     }
@@ -167,7 +222,7 @@ h3{
 }
 header .addUser{
   padding-left: 10px;
-  margin-top:30px
+  margin-top:10px
 }
 header .addUser .addMessage{
   margin:0 0 10px 0;
@@ -184,17 +239,31 @@ header .addUser .addMessage{
 .addMessage.short>input{
   margin-left:20%
 }
-
 header .setHead{
   position: relative;
-  height: 144px;
+  height: 150px;
   width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /*display: flex*/
   /*background-color: white*/
 }
+header .setHead>div{
+  width: auto;
+  height: 100%;
+}
+.goLong{
+  width: 150%!important
+}
+/*header .setHead>p{
+  position: absolute;
+  bottom:-20px;
+  left: 0
+}*/
 header .setHead img{
   width: 100%;
 }
-header .setHead>.changePic{
+header .setHead .changePic{
   width: 144px;
   height: 100%;
   box-sizing: border-box;
@@ -206,6 +275,11 @@ header .setHead>.changePic{
   display: inline-block;
   margin-right: 20px;
   position: relative;
+  overflow:hidden; 
+}
+header .setHead .changePic img{
+  min-width: 100%;
+  min-height: 100%;
 }
 article{
   clear: both;
@@ -267,6 +341,7 @@ input[type="file"]{
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: red
+  background-color: red;
+  opacity: 0
 }
 </style>

@@ -18,7 +18,7 @@
               <p v-text="item.createTime"></p>
             </div>
             <div>
-              <button class="btn" @click="setMessage(item.headimage, item.name)">设置留言</button>
+              <button class="btn" @click="setMessage(item.headimage, item.name, item.personId)">设置留言</button>
             </div>
           </div>
         </div>
@@ -54,11 +54,12 @@ export default {
   },
   props: ['toThird'],
   methods: {
-    setMessage: function (image, name) {
+    setMessage: function (image, name, personId) {
       this.viewWhich = 'leaveMessage'
       this.personData = {
         image: image,
-        name: name
+        name: name,
+        personId: personId
       }
     },
     searchHistory: function (val, old) {
@@ -70,7 +71,7 @@ export default {
         image: image,
         name: name,
         latestMatchTime: latestMatchTime,
-        sourceDes: '11'
+        sourceDes: sourceDes
       }
       this.viewWhich = 'userInfos'
       console.log(this.personData)

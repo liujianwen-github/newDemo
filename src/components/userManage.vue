@@ -1,8 +1,8 @@
 <template>
   <div class="container">
   <!-- index -->
-    <userHead @popState="changeState"></userHead>
-    <totalUserList :fromFa="viewWhich" @popState="changeState"></totalUserList>
+    <userHead @popState="changeState" @searchPerson="searchPerson"></userHead>
+    <totalUserList :fromFa="viewWhich" :searchPerson="searchText" @popState="changeState"></totalUserList>
   </div>
     
 </template>
@@ -18,23 +18,16 @@ export default {
   components: {userHead, totalUserList},
   data () {
     return {
-      viewWhich: '0'
+      viewWhich: '0',
+      searchText: null
     }
   },
   methods: {
-    getUser: function () {
-      // 注册用户
-      // Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then((res) => {
-      //   this.modelThree = res.data.results.list
-      //   // TODO获取数据传递给model3，或者干脆重新写一个组件
-      //   console.log(res)
-      // }, (err) => {
-      //   console.log(err)
-      // })
+    searchPerson: function (msg) {
+      this.searchText = msg
     },
     changeState: function (msg) {
       this.viewWhich = msg
-      // alert(this.viewWhich)
     }
   }
 }

@@ -45,6 +45,7 @@
 import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+// import QsConfig from '@/axiosCon'
 export default {
   name: 'createUser',
   data () {
@@ -71,21 +72,47 @@ export default {
     changePic: function (e) {
       console.log(e)
       console.log(this.$refs.inputer.files)
+      const file = this.$refs.inputer.files[0]
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (e) => {
+        // console.log(e.target.result)
+        this.img = e.target.result
+      }
     },
     createUser: function () {
       //
-      Axios.post(config.HOST + '/wxServer2/admin/createPersonByFacetrack', {
-        userkey: config.userkey,
-        deviceId: config.deviceId,
-        facetrackId: this.facetrackId,
-        sex: this.sex,
-        img: this.img,
-        name: this.name,
-        cardId: this.cardId,
-        birthDay: this.birthDay
+      // let data = {
+      //   userkey: config.userkey,
+      //   deviceId: config.deviceId,
+      //   facetrackId: this.facetrackId,
+      //   sex: this.sex,
+      //   imgUrl: this.img,
+      //   name: this.name,
+      //   cardId: this.cardId,
+      //   birthDay: this.birthDay
+      // }
+      let dataList = new FormData()
+      dataList.append('userkey', config.userkey)
+      dataList.append('deviceId', config.deviceId)
+      dataList.append('facetrackId', this.facetrackId)
+      dataList.append('sex', this.sex)
+      dataList.append('imgUrl', this.img)
+      dataList.append('name', this.name)
+      dataList.append('cardId', this.cardId)
+      dataList.append('birthDay', this.birthDay)
+      // console.log(data)
+      Axios({
+        method: 'post',
+        url: config.HOST + '/wxServer2/admin/createPersonByFacetrack',
+        data: dataList,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+          // 'Content-Type': 'text/plain'
+        }
       }).then((res) => {
-        console.log(res)
-        this.close()
+        alert(res.data.msg)
+        this.$emit('popState', '0')
       }, (err) => {
         console.log(err)
       })

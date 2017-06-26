@@ -47,6 +47,9 @@
         <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
           <img :src="scene.img" alt="">
         </div>
+        <div class="gifBox" :class="{show:gif.isShow}" v-for="(item,index) in gif.gifList">
+          <img :src="gif.imgHead + item" :class="{show:gif.curr==index}" alt="" >
+        </div>
       </div>
     </article>
    </div>
@@ -69,6 +72,12 @@ export default {
         isShow: false,
         img: ''
       },
+      gif: {
+        imgHead: null,
+        gifList: [],
+        isShow: false,
+        curr: 0
+      },
       list: null,
       getParams: {
         userkey: config.userkey,
@@ -82,10 +91,42 @@ export default {
       this.$emit('popState', '0')
       this.isShow = false
     },
-    viewGif: function () {
-      alert('查看动图')
+    viewGif: function (msg) {
+      // alert(msg)
+      Axios({
+        method: 'get',
+        url: config.HOST + 'apiServer/facetrackManage/getFacetrackImgs',
+        params: {
+          userkey: config.userkey,
+          facetrackId: msg,
+          count: 0
+        }
+      }).then((res) => {
+        console.log(res.data.results)
+        this.gif.imgHead = res.data.results.imgHead
+        this.gif.gifList = res.data.results.imgs
+        this.gif.isShow = true
+        this.gifAnimation()
+      }, (err) => {
+        console.log(err)
+      })
       // TODO 动图 场景图
       console.log(this.personData.personId)
+    },
+    gifAnimation: function () {
+      console.log(this.gif)
+      console.log('动图没写完')
+      // setInterval(function () {
+      //   // if (typeof this.gif.curr === 'undefined') return
+      //   if (this.gif.curr === this.gif.gifList.length - 1) {
+      //     this.gif.curr = 0
+      //   } else {
+      //     this.gif.curr = this.gif.curr++
+      //   }
+      // }, 1000)
+    },
+    stopGif: function () {
+
     },
     viewScene: function (msg) {
       alert('查看场景图')
@@ -253,6 +294,12 @@ article .content .itemList li>div>.right>div .gif{
 .sceneBox img{
   max-height: 100%;
   max-width: 100%;
+}
+.gifBox img{
+  position: absolute;
+  left: 0;
+  border:1px solid red;
+  display: none
 }
 
 </style>

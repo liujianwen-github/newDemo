@@ -1,3 +1,4 @@
+import Qs from 'qs'
 export default {
   // “URL”是用于请求的服务器URL
   url: '/user',

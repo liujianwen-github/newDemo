@@ -20,16 +20,16 @@
           </div>
         </div>
         <div class="headInfo">
-          开始时间：<input type="date" v-model="messageForm.startTime">
+          开始时间：<input type="date" value="" v-model="messageForm.startTime">
         </div>
         <div class="headInfo">
-          结束时间：<input type="date" v-model="messageForm.endTime">
+          结束时间：<input type="date" value="" v-model="messageForm.endTime">
         </div>
       </div>
     </header>
     <article>
       <p>留言会在设定时间段内识别时出现</p>
-      <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.messageContent"></textarea>
+      <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.message"></textarea>
       <div class="foot">
         <button class="btn" @click="close">取消</button>
         <button class="btn" @click="setMessage">确定</button>
@@ -49,17 +49,17 @@ export default {
     return {
       isShow: false,
       messageForm: {
-        userkey: config.userkey,
-        deviceId: config.deviceId,
         timeLine: 'short',
         startTime: new Date().getFullYear() + '-' + config.addDate((Number(new Date().getMonth()) + 1)) + '-' +
                    config.addDate(new Date().getDate()),
+        // startTime: null,
         endTime: null,
-        messageContent: null
+        message: null
       },
       personData: {
         image: null,
-        name: null
+        name: null,
+        personId: null
       }
     }
   },
@@ -83,12 +83,34 @@ export default {
       // alert(typeof new Date().getDate())
       // console.log(this.messageForm.startTime)
       // console.log(config.addDate((Number(new Date().getMonth()) + 1)) + '-')
+      // let data = {
+      //   userkey: config.userkey,
+      //   deviceId: config.deviceId,
+      //   msgBeginTime: this.messageForm.msgBeginTime,
+      //   msgEndTime: this.messageForm.msgEndTime,
+      //   message: this.messageForm.message
+      // }
+      //
+      let messageList = new FormData()
+      config.changeDateType(this.messageForm.startTime)
+      messageList.append('userkey', config.userkey)
+      messageList.append('deviceId', config.deviceId)
+      messageList.append('personId', this.personData.personId)
+      // alert(this.messageForm.startTime)
+      messageList.append('msgBeginTime', config.changeDateType(this.messageForm.startTime))
+      messageList.append('msgEndTime', config.changeDateType(this.messageForm.endTime))
+      messageList.append('message', this.messageForm.message)
+      console.log(messageList)
       Axios({
         url: config.HOST + 'apiServer/personManage/uploadPersonInfo',
-        methods: 'POST',
-        data: this.messageForm
+        method: 'POST',
+        data: messageList,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       }).then((res) => {
-        console.log(res)
+        alert(res.data.msg)
+        this.$emit('popState', '0')
       }, (err) => {
         console.log(err)
       })
@@ -103,12 +125,16 @@ export default {
         this.isShow = true
       }
     },
-    toMessage: function (val, old) {
-      this.personData = val
-    },
     messageForm: {
       handler (val, old) {
-        console.log(val)
+        // console.log(val)
+      },
+      deep: true
+    },
+    toMessage: {
+      handler (val, old) {
+        this.personData = val
+        console.log(this.personData)
       },
       deep: true
     }

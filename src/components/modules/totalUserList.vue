@@ -9,7 +9,7 @@
           <img :src="item.headimage" alt="">
           <div class="name" v-html="item.name"></div>
           <div>
-            <button class="btn" @click="goEdit(item.headimage)">编辑</button>
+            <button class="btn" @click="goEdit(item)">编辑</button>
           </div>
         </div>
       </div>
@@ -28,10 +28,7 @@ export default {
     return {
       list: null,
       viewWhich: '0',
-      personData: {
-        name: 'bibi',
-        headimage: null
-      },
+      personData: null,
       getParams: {
         userkey: config.userkey,
         deviceId: 'aaa-a01-001',
@@ -41,7 +38,7 @@ export default {
       }
     }
   },
-  props: ['toUserList', 'fromFa'],
+  props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
     getAllUser: function () {
       Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then(
@@ -60,7 +57,7 @@ export default {
     },
     goEdit: function (data) {
       this.viewWhich = 'editUser'
-      this.personData.headimage = data
+      this.personData = data
     },
     changeState: function (msg) {
       // console.log(msg)
@@ -73,6 +70,24 @@ export default {
     fromFa: function (val) {
       this.viewWhich = val
       console.log(this.viewWhich)
+    },
+    searchPerson: function (val, old) {
+      console.log(val)
+      if (val === '') return
+      Axios({
+        method: 'get',
+        url: config.HOST + '/apiServer/personManage/searchPerson',
+        params: {
+          userkey: config.userkey,
+          deviceId: config.deviceId,
+          name: val
+        }
+      }).then((res) => {
+        console.log(res)
+        this.list = res.data.results.list
+      }, (err) => {
+        console.log(err)
+      })
     }
   },
   created () {

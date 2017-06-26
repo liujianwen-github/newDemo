@@ -8,7 +8,7 @@
       </div>
       <div class="addUser">
         <p class="headInfo">
-          <span>name</span>
+          <span v-text="personData.name"></span>
           <span>智能分析查找</span>
         </p>
         <p class="headInfo">
@@ -16,8 +16,8 @@
             <input type="radio" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime">4小时
             <input type="radio" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime">12小时
             <input type="radio" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime">24小时
-            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime">自定义
-            <input type="text" name="" value="" v-model="chooseTime" :class="{isShow:personSetTime=='personSet'}">
+            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime" @click="toZero">自定义
+            <input type="text" name="" value="" v-model="chooseTime" autofocus :class="{isShow:personSetTime=='personSet'}">
         </p>
         <div>
           <button class="btn" @click="searchNoMatchedList">查找</button>
@@ -27,11 +27,12 @@
     </header>
     <article>
      <div class="content">
-       <div class="item" v-for="item in historyList">
-         <img src="../../assets/search.png"  alt="">
-         <p>date time</p>
+       <div class="item" v-for="(item,index) in historyList">
+         <img :src="item.facetrackImage"  alt="">
+         <p><span v-text="item.createTime.split(' ')[0]"></span> <span v-text="item.createTime.split(' ')[1]"></span></p>
+         <p>{{index}}</p>
          <p>
-           <button class="btn" @click="pushImg">确定</button>
+           <button class="btn" @click="confirmFacetrack(item.facetrackId)">确定</button>
          </p>
        </div>
      </div>
@@ -63,23 +64,42 @@ export default {
       this.isShow = false
       // this.
     },
-    viewGif: function () {
-      alert('viewgif')
-    },
-    viewScene: function () {
-      alert('viewScene')
-    },
     searchHistory: function () {
       alert('search history')
     },
     setMessage: function () {
       alert('set message')
     },
-    pushImg: function (val, old) {
-      alert('push img')
+    toZero: function () {
+      this.chooseTime = ''
+    },
+    confirmFacetrack: function (facetrackId, index) {
+      // alert('push img')
+      // console.log(this.personData)
+      let dataList = new FormData()
+      dataList.append('facetrackId', facetrackId)
+      dataList.append('personId', this.personData.personId)
+      dataList.append('userkey', config.userkey)
+      console.log(dataList)
+      Axios({
+        method: 'post',
+        url: config.HOST + '/apiServer/personManage/confirmFacetrackByPerson',
+        data: dataList,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log(res)
+        if (res.data.msg === 'SUCC') {
+          alert('succ')
+          // console.log(typeof this.historyList)
+        }
+      }, (err) => {
+        console.log(err)
+      })
     },
     resetPersonSetTime: function () {
-      this.personSetTime = ''
+      this.personSetTime = ' '
     },
     searchNoMatchedList: function () {
       alert('查找未成功识别记录数据,post请求')
@@ -89,17 +109,15 @@ export default {
         methods: 'GET',
         url: config.HOST + '/apiServer/personManage/getPersonUnMatchedList',
         params: {
-          beginTime: new Date().getTime(),
-          endTime: new Date().getTime() + this.chooseTime * 3600000,
+          beginTime: new Date().getTime() - this.chooseTime * 3600000,
+          endTime: new Date().getTime(),
           userkey: config.userkey,
           deviceId: config.deviceId,
           personId: this.personData.personId
         }
       }).then((res) => {
         this.historyList = res.data.results.list
-        // TODO 加几条记录，添加合并效果查询
-        // URL:/apiServer/personManage/confirmFacetrackByPerson
-        // Params:facetrackId,personId,userkey
+        console.log(this.historyList)
       }, (err) => {
         console.log(err)
       })
@@ -169,6 +187,7 @@ export default {
 }
 article .content{
   display: flex;
+  overflow-x: auto
 }
 article .content .item{
   padding: 10px;
