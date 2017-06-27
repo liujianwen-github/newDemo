@@ -1,7 +1,7 @@
 <template>
   <div>
   	<div>father</div>
-  	<son @fromson="bibi"></son>
+  	<son @fromson="bibi" :page="mimi"></son>
     <div @click="mimi">111</div>
     <!-- {"registTime":"2017-04-27 18:26:57",
     "headimage":"http://101.201.106.53/personImage/default_user_image.jpg",
@@ -25,6 +25,7 @@ export default {
   name: 'test',
   dara () {
     return {
+      mimi: 'data',
       bibi: [1, 2, 3, 4, 4, 5, 6, 7]
     }
   },
@@ -40,7 +41,9 @@ export default {
       console.log(bibi)
     },
     mimi: function () {
-      console.log(this.bibi)
+      // alert('mimi')
+      this.mimi = 'change'
+      alert(this.mimi)
     },
     stringifyDate: function (date) {
       console.log(date)

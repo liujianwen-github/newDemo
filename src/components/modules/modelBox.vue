@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <model1 v-show="notice==0" :to-first="modelOne" @fromfa="mimi" :pageInfo="pageInfo1"></model1>
-    <model2 v-show="notice==1" :to-second="modelTwo" :pageInfo="pageInfo2"></model2>
-    <model3 v-show="notice==2" :to-third="modelThree" :pageInfo="pageInfo3"></model3>
+    <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" :page-one="pageInfo1"></model1>
+    <model2 v-show="notice==1" :to-second="modelTwo" :page-info="pageInfo2"></model2>
+    <model3 v-show="notice==2" :to-third="modelThree" :page-info="pageInfo3"></model3>
   </div>
 </template>
 
@@ -39,11 +39,10 @@ export default {
       // this.getParams.pageNo = this.pagination1
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
-        const pageInfo = res.data.results.pageInfo
-        this.pagaInfo = {
-          curr: pageInfo.pageNo
-        }
+        // const pageInfo = res.data.results.pageInfo
+        this.pageInfo1 = res.data.results.pageInfo
         console.log(res)
+        // console.log(this.pageInfo1)
       }, (err) => {
         console.log(err)
       })
@@ -68,9 +67,9 @@ export default {
         console.log(err)
       })
     },
-    mimi: function (msg) {
-      this.pagination1++
-      this.getTotal()
+    model_Change: function (msg, which) {
+      console.log(which)
+      // which 选择调用哪个接口
     }
   },
   watch: {

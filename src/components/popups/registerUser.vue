@@ -11,9 +11,6 @@
             <!-- <img :src="personData.imgUrl" alt="1"> -->
             <img :src="personData.imgUrl" alt="1">
           </div>
-          <!-- <div class="changePic"  v-if="title=='新建'">
-            <img :src="'data:image/png;base64,'+personData.imgUrl" alt="1">
-          </div> -->
           <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
             <!-- <img v-if="title=='新建'" src="../../assets/userHeader.png" alt=""> -->
             <img :src="'data:image/png;base64,'+item" alt="">
@@ -23,11 +20,7 @@
             <img src="../../assets/inputImg.png" alt="">
             <!-- todo 创建一个存储图片数组，数组为零时显示头像图片 -->
           </div>
-        </div>
-        <!-- <div class="changePic">
-          <input type="file" name="">
-          <img src="../../assets/andMore.png" alt="">
-        </div> -->     
+        </div>    
       </div>
       <p>上传用户头像</p>
       <!-- 编辑信息 -->

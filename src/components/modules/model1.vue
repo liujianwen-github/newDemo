@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p> 	 -->
     <div class="itemList">
-      <div class="item" v-for="item in list" @click="flipNext">
+      <!-- <div class="item" v-for="item in list">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
@@ -10,9 +10,12 @@
           <div class="time">{{item.createTime}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
-      </div>
+      </div> -->
+      {{pageInfo.totalRecord}}11
+      <!-- {{list}} -->
     </div>
-    <Page :total="total" :current="curr" :page-size="pageSize" @on-change="changePage" show-total></Page>
+    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+    <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
   </div>
 </template>
 
@@ -27,17 +30,18 @@ export default {
       list: null,
       total: 100,
       pageSize: 5,
-      curr: 1
+      // 先给pageInfo里的内容赋值，防止空值报错
+      pageInfo: {
+        totalRecord: 0,
+        pageNo: 1,
+        limit: 20
+      }
     }
   },
-  props: ['toFirst', 'pageInfo'],
+  props: ['toFirst', 'pageOne'],
   methods: {
-    flipNext: function () {
-      // alert('1')
-      this.$emit('fromfa', 1)
-    },
     changePage: function (msg) {
-      alert(msg)
+      this.$emit('pageOne', msg, '1')
     }
   },
   watch: {
@@ -46,10 +50,11 @@ export default {
         return
       }
       this.list = val
-      // Fill.pushItem(val)
+      // console.log(val)
     },
-    curr: function (val, old) {
-      alert(val)
+    pageOne: function (val, old) {
+      // console.log(val)
+      this.pageInfo = val
     }
   }
 }
