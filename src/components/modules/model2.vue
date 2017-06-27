@@ -44,7 +44,7 @@ export default {
       }
     }
   },
-  props: ['toSecond', 'popState'],
+  props: ['toSecond', 'pageInfo'],
   methods: {
     setIntell: function (msg) {
       console.log(msg)

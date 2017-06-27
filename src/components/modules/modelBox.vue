@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <model1 v-show="notice==0" :to-first="modelOne" @fromfa="mimi"></model1>
-    <model2 v-show="notice==1" :to-second="modelTwo"></model2>
-    <model3 v-show="notice==2" :to-third="modelThree"></model3>
+    <model1 v-show="notice==0" :to-first="modelOne" @fromfa="mimi" :pageInfo="pageInfo1"></model1>
+    <model2 v-show="notice==1" :to-second="modelTwo" :pageInfo="pageInfo2"></model2>
+    <model3 v-show="notice==2" :to-third="modelThree" :pageInfo="pageInfo3"></model3>
   </div>
 </template>
 
@@ -21,9 +21,9 @@ export default {
       modelOne: null,
       modelTwo: null,
       modelThree: null,
-      pagination1: 1,
-      pagination2: 1,
-      pagination3: 1,
+      pageInfo1: null,
+      pageInfo2: null,
+      pageInfo3: null,
       getParams: {
         'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageNo': 1
       }
@@ -36,9 +36,13 @@ export default {
   methods: {
     getTotal: function () {
       // 今日到访
-      this.getParams.pageNo = this.pagination1
+      // this.getParams.pageNo = this.pagination1
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
+        const pageInfo = res.data.results.pageInfo
+        this.pagaInfo = {
+          curr: pageInfo.pageNo
+        }
         console.log(res)
       }, (err) => {
         console.log(err)
@@ -46,7 +50,7 @@ export default {
     },
     getStranger: function () {
       // 陌生人
-      this.getParams.pageNo = this.pagination2
+      // this.getParams.pageNo = this.pagination2
       Axios.get(config.HOST + 'apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
         this.modelTwo = res.data.results.list
         console.log(res)
@@ -56,7 +60,7 @@ export default {
     },
     getUser: function () {
       // 注册用户
-      this.getParams.pageNo = this.pagination3
+      // this.getParams.pageNo = this.pagination3
       Axios.get(config.HOST + 'apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
         this.modelThree = res.data.results.list
         console.log(res)

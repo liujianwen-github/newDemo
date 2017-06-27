@@ -52,7 +52,7 @@ export default {
       }
     }
   },
-  props: ['toThird'],
+  props: ['toThird', 'pageInfo'],
   methods: {
     setMessage: function (image, name, personId) {
       this.viewWhich = 'leaveMessage'

@@ -12,24 +12,32 @@
         </div>
       </div>
     </div>
+    <Page :total="total" :current="curr" :page-size="pageSize" @on-change="changePage" show-total></Page>
   </div>
 </template>
 
 <script>
 // import config from '@/config'
 // import Fill from '@/fill'
+// import pagenation from '@/components/modules/pagenation'
 export default {
   name: 'model1',
   data () {
     return {
-      list: null
+      list: null,
+      total: 100,
+      pageSize: 5,
+      curr: 1
     }
   },
-  props: ['toFirst'],
+  props: ['toFirst', 'pageInfo'],
   methods: {
     flipNext: function () {
       // alert('1')
       this.$emit('fromfa', 1)
+    },
+    changePage: function (msg) {
+      alert(msg)
     }
   },
   watch: {
@@ -39,6 +47,9 @@ export default {
       }
       this.list = val
       // Fill.pushItem(val)
+    },
+    curr: function (val, old) {
+      alert(val)
     }
   }
 }

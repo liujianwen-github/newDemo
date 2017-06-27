@@ -6,10 +6,17 @@
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead" >      
-        <div :class="{goLong:personData.imgs.length>=3}">
-          <div class="changePic"  v-for="item in personData.imgs">
+        <div>
+          <div class="changePic"  v-if="title=='编辑'">
+            <!-- <img :src="personData.imgUrl" alt="1"> -->
+            <img :src="personData.imgUrl" alt="1">
+          </div>
+          <!-- <div class="changePic"  v-if="title=='新建'">
+            <img :src="'data:image/png;base64,'+personData.imgUrl" alt="1">
+          </div> -->
+          <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
             <!-- <img v-if="title=='新建'" src="../../assets/userHeader.png" alt=""> -->
-            <img :src="item" alt="">
+            <img :src="'data:image/png;base64,'+item" alt="">
           </div>
           <div class="changePic">
             <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
@@ -40,7 +47,7 @@
         </div>
         <div class="addMessage long">
           <label>生日</label>
-          <input type="date" name="" v-model="personData.birthday">
+          <input type="date" name="" v-model="personData.birthDay">
         </div>
       </div>
     </header>
@@ -84,7 +91,7 @@ export default {
         name: null,
         sex: '1',
         cardId: null,
-        birthday: null,
+        birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: null
@@ -96,10 +103,22 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
-      this.personData.imgs.length = 0
+      this.personData = {
+        imgUrl: null,
+        imgs: [],
+        name: null,
+        sex: '1',
+        cardId: null,
+        birthDay: null,
+        userkey: config.userkey,
+        deviceId: config.deviceId,
+        personId: null
+      }
+      this.$forceUpdate()
     },
     chooseImg: function (e) {
-      console.log(this.$refs.fileInputOne.files)
+      this.personData.imgs = this.personData.imgs || []
+      // console.log(this.$refs.fileInputOne.files)
       const files = this.$refs.fileInputOne.files
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
@@ -107,9 +126,12 @@ export default {
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
-          this.personData.imgs.push(e.target.result)
-          if (i === 0) {
-            this.personData.imgUrl = e.target.result
+          // console.log(e.target.result.split(';')[1])
+          // this.$set(0, e.target.result)
+          this.personData.imgs.push(e.target.result.split(',')[1])
+          if (i === 0 && this.title === '新建') {
+            this.personData.imgUrl = e.target.result.split(',')[1]
+            // 新建用户的情况下，imgs序列中选择第一张图片作为头像
           }
           console.log(this.personData.imgs)
           this.$forceUpdate()
@@ -125,18 +147,30 @@ export default {
     pushFormat: function () {
       console.log(this.title)
       console.log(this.personData)
-      this.personData.imgs.shift()
+      if (this.title === '新建' && this.personData.imgs.length > 0) {
+        if (this.personData.imgs.length < config.minImageCount) {
+          alert('照片太少，不能上传')
+          return
+        }
+        this.personData.imgs.shift()
+      }
+      // this.personData.imgs.shift()
+      console.log(this.personData.imgs)
+      if (typeof this.personData.imgs === 'undefined') {
+        this.personData.imgs = []
+      }
       let personData = new FormData()
       personData.append('personId', this.personData.personId)
       personData.append('imgUrl', this.personData.imgUrl)
       personData.append('imgs', this.personData.imgs)
       personData.append('name', this.personData.name)
       personData.append('sex', this.personData.sex)
-      personData.append('birthday', this.personData.birthday)
+      personData.append('cardId', this.personData.cardId)
+      personData.append('birthDay', this.personData.birthDay)
       personData.append('userkey', config.userkey)
       personData.append('deviceId', config.deviceId)
+      console.log(personData)
       if (this.title === '新建') {
-        console.log(personData)
         Axios({
           method: 'POST',
           url: config.HOST + 'wxServer2/admin/createPersonByImgs',
@@ -146,7 +180,13 @@ export default {
           }
         }).then((res) => {
           console.log(res)
-          this.personData.imgs.length = 0
+          // alert(res.data.msg)
+          if (res.data.msg === 'SUCC') {
+            // alert('succ')
+            this.close()
+          }
+          // if (res.msg)
+          // this.personData.imgs.length = 0
         }, (err) => {
           console.log(err)
         })
@@ -160,7 +200,11 @@ export default {
           }
         }).then((res) => {
           console.log(res)
-          this.personData.imgs.length = 0
+          if (res.data.msg === 'SUCC') {
+            // this.$emit('popState', '0')
+            this.close()
+          }
+          // this.personData.imgs.length = 0
         }, (err) => {
           console.log(err)
         })
@@ -168,14 +212,32 @@ export default {
     },
     dontDelete: function () {
       $('.deleteUser').css('display', 'none')
-      // $('#registerUser>div>header').removeClass('vague')
-      // $('#registerUser>div>article').removeClass('vague')
+      $('#registerUser>div>header').removeClass('vague')
+      $('#registerUser>div>article').removeClass('vague')
     },
     mksureDelete: function () {
-      alert('push delete,return userManage')
-      $('.deleteUser').css('display', 'none')
-      // $('#registerUser>div>header').removeClass('vague')
-      // $('#registerUser>div>article').removeClass('vague')
+      // alert('push delete,return userManage')
+      let dataForm = new FormData()
+      dataForm.append('userkey', config.userkey)
+      dataForm.append('deviceId', config.deviceId)
+      dataForm.append('personId', this.personData.personId)
+      Axios({
+        method: 'POST',
+        url: config.HOST + '/apiServer/personManage/deletePerson',
+        data: dataForm,
+        headers: {
+          'Content-Type': ' application/x-www-form-urlencoded'
+        }
+      }).then((res) => {
+        console.log(res)
+        $('.deleteUser').css('display', 'none')
+        $('#registerUser>div>header').removeClass('vague')
+        $('#registerUser>div>article').removeClass('vague')
+        this.$emit('deleteItem', this.personData.index)
+        this.close()
+      }, (err) => {
+        alert(err)
+      })
     }
   },
   watch: {
@@ -192,9 +254,6 @@ export default {
       handler (val, old) {
         this.personData = val
         console.log(val)
-        let arr = []
-        arr.push(val.headimage)
-        this.personData.imgs = arr
         this.personData.imgUrl = val.headimage
       },
       deep: true
@@ -243,14 +302,13 @@ header .setHead{
   position: relative;
   height: 150px;
   width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  /*display: flex*/
-  /*background-color: white*/
 }
 header .setHead>div{
-  width: auto;
+  /*width: 200%;*/
   height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space:nowrap;
 }
 .goLong{
   width: 150%!important
@@ -261,7 +319,7 @@ header .setHead>div{
   left: 0
 }*/
 header .setHead img{
-  width: 100%;
+  /*width: 100%;*/
 }
 header .setHead .changePic{
   width: 144px;
@@ -278,6 +336,9 @@ header .setHead .changePic{
   overflow:hidden; 
 }
 header .setHead .changePic img{
+  /*width: 100%;*/
+  box-sizing: border-box;
+  height: 100%;
   min-width: 100%;
   min-height: 100%;
 }
