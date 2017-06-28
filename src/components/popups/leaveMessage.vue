@@ -109,7 +109,7 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }).then((res) => {
-        alert(res.data.msg)
+        // alert(res.data.msg)
         this.$emit('popState', '0')
       }, (err) => {
         console.log(err)

@@ -19,3 +19,13 @@ npm run build --report
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+今日到访跳转陌生人、用户
+上传照片进度条
+
+glyphicons-halflings-regular.e49d52e.ttf
+
+glyphicons-halflings-regular.e49d52e.ttf 
+
+glyphicons-halflings-regular.68ed1da.woff

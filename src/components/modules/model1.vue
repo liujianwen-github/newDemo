@@ -2,19 +2,19 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p> 	 -->
     <div class="itemList">
-      <!-- <div class="item" v-for="item in list">
+      <div class="item" v-for="item in list">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
           <img :src="item.facetrackImage" alt="">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">{{item.createTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
-      </div> -->
-      {{pageInfo.totalRecord}}11
-      <!-- {{list}} -->
+      </div>
     </div>
-    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+    <div class="pageBox">
+      <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+    </div>
     <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
   </div>
 </template>
@@ -41,7 +41,7 @@ export default {
   props: ['toFirst', 'pageOne'],
   methods: {
     changePage: function (msg) {
-      this.$emit('pageOne', msg, '1')
+      this.$emit('pageOne', msg, 1)
     }
   },
   watch: {
@@ -62,8 +62,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .container{
-  	box-sizing: border-box;
-  	border: 1px solid red;
+/*  	box-sizing: border-box;*/
+  	/*border: 1px solid red;*/
     background-color: white;
     min-height: 500px
   }
@@ -71,7 +71,7 @@ export default {
     text-align: left
   }
   .item{
-    border: 1px solid blue;
+    border: 1px solid lightgrey;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;

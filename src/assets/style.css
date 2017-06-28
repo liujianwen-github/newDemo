@@ -1,3 +1,6 @@
+*{
+  font-size: 14px
+}
 .popup{
   width: 680px;
   height: 500px;
@@ -40,4 +43,20 @@
   -ms-filter: blur(3px);
   filter: blur(3px);
   pointer-events: none;
+}
+.pageBox{
+  text-align: center;
+}
+.ivu-page{
+  display: inline-block;
+}
+button{
+  outline: none!important
+}
+input{
+  outline: none
+}
+p{
+  margin-bottom: 10px;
+  font-size: 14px
 }

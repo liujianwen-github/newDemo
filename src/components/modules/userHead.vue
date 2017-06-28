@@ -8,9 +8,11 @@
       <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt="">
     </div> -->
     <div class="contentBtnList">
-      <span class="glyphicon glyphicon-user"></span>
-      <input type="text" value="" v-model="searchText">
-      <button @click="search">search</button>
+      <div class="inputGroup">
+        <span class="glyphicon glyphicon-user"></span>
+        <input type="text" value="" v-model="searchText"> 
+      </div>
+      <button class="btn" @click="search">search</button>
     </div>
     <div class="contentBtnList">
       <button class="btn" @click="addNewUser">新建用户</button>
@@ -68,6 +70,9 @@ export default {
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+@import  '../../assets/style.css'
+</style>
 <style scoped>
   .container{
     width: 100%;
@@ -94,17 +99,35 @@ export default {
   }
   .container .contentBtnList{
     display: inline-block;
+    height: 35px
+  }
+  .container .inputGroup{
+    /*border*/
+    /*background-color: red;*/
+    border:1px solid grey;
+    border-radius: 2em;
+    padding-left: 10px;
+    padding-right: 20px;
+    display: inline-block;
+    /*overflow: hi*/
+  }
+  .container .inputGroup>input{
+    width: 150px;
+    height: 35px;
+    border: 0;
+    box-sizing: border-box;
+    /*background-color: red;*/
+    display: inline-block;
+    outline: none;
+    text-indent: 0.5em
   }
   .container .contentBtnList button{
     width: 100px;
-    height: 35px;
-    border-radius: 2.5em;
+    height: 34px;
+    border-radius: 5%;
+    box-sizing: border-box;
     background-color: #005BAB;
-    /*background-color: #005BAB;*/
-    /*color: white;*/
-    color:white;
-    font-size: 14px;
-    border: 0
+    color: white;
   }
   .container .toUser{
     position: absolute;

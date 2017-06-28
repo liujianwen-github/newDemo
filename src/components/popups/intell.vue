@@ -62,6 +62,9 @@ export default {
 #intell{
   display: none;
 }
+.show{
+  display: block;
+}
 .popup header{
   width: 100%;
   height: 200px;

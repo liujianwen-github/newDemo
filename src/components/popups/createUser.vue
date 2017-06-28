@@ -92,6 +92,7 @@ export default {
       //   cardId: this.cardId,
       //   birthDay: this.birthDay
       // }
+      if (this.img.match(/base64/g)) this.img = this.img.split(',')[1]
       let dataList = new FormData()
       dataList.append('userkey', config.userkey)
       dataList.append('deviceId', config.deviceId)

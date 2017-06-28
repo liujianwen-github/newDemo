@@ -8,7 +8,7 @@
         <div class="content">
           <img :src="item.headimage" alt="">
           <div class="name" v-html="item.name"></div>
-          <div>
+          <div class="foot">
             <button class="btn" @click="goEdit(item,index)">编辑</button>
           </div>
         </div>
@@ -78,7 +78,10 @@ export default {
     },
     searchPerson: function (val, old) {
       console.log(val)
-      if (val === '') return
+      if (val === '') {
+        this.getAllUser()
+        return
+      }
       Axios({
         method: 'get',
         url: config.HOST + '/apiServer/personManage/searchPerson',
@@ -89,6 +92,10 @@ export default {
         }
       }).then((res) => {
         console.log(res)
+        if (res.data.results.list.length < 1) {
+          alert('查询结果为空')
+          return
+        }
         this.list = res.data.results.list
       }, (err) => {
         console.log(err)
@@ -104,23 +111,27 @@ export default {
 <style scoped>
 .container{
     box-sizing: border-box;
-    border: 1px solid red;
+    border: 1px solid #005BAB;
+    border-radius: 5px;
+    padding: 10px 15px;
     min-height: 500px;
-    background-color: white
+    background-color: white;
+    margin-top: 10px
   }
   .itemList{
     text-align: left
   }
   .item{
-    border: 1px solid blue;
+    border: 1px solid lightgrey;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
-    width: 180px;
-    height: 200px;
+    width: 15%;
+    margin: 0 2.5% 1% 2.5%;
+    /*height: 200px;*/
     display: inline-block;
-    margin:0 20px 5px 20px
+    /*margin:0 20px 5px 20px*/
   }
   .item>div{
     text-align: center;
@@ -138,4 +149,25 @@ export default {
     width: 100%;
     text-align: center;
   }
+  .item .btn{
+    background-color: #005BAB;
+    color: white;
+    margin-bottom: 5px
+    /*border: 1px solid #005BAB;*/
+  }
+  .content{
+    height: 205px
+  }
+  .content .foot{
+    width: 100%;
+    height: 30px;
+    position: absolute;
+    bottom: 2px;
+  }
+  .content .foot button{
+    width: 60px;
+    height: 30px;
+    text-align: center;
+  }
+
 </style>

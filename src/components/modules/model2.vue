@@ -7,9 +7,12 @@
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
           <img :src="item.facetrackImage" alt="">
-          <div class="time">{{item.createTime}}</div>
+          <div class="time">{{item.createTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
+      </div>
+      <div class="pageBox">
+        <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
       </div>
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
       <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
@@ -31,6 +34,11 @@ export default {
     return {
       list: null,
       viewWhich: '0',
+      pageInfo: {
+        totalRecord: 0,
+        pageNo: 1,
+        limit: 20
+      },
       intellValue: {
         facetrackId: null,
         facetrackImage: null,
@@ -44,7 +52,7 @@ export default {
       }
     }
   },
-  props: ['toSecond', 'pageInfo'],
+  props: ['toSecond', 'pageTwo'],
   methods: {
     setIntell: function (msg) {
       console.log(msg)
@@ -70,6 +78,9 @@ export default {
       // console.log(msg)
       this.viewWhich = msg
       console.log(this.viewWhich)
+    },
+    changePage: function (msg) {
+      this.$emit('pageTwo', msg, 2)
     }
   },
   components: {Intell, createUser, intellAnalyse},
@@ -80,6 +91,10 @@ export default {
         return
       }
       this.list = val
+    },
+    pageTwo: function (val, old) {
+      // console.log(val)
+      this.pageInfo = val
     }
   }
 }
@@ -93,7 +108,6 @@ export default {
 <style scoped>
 .container{
     box-sizing: border-box;
-    border: 1px solid red;
     min-height: 500px;
     background-color: white;
     position: relative;
@@ -102,7 +116,7 @@ export default {
     text-align: left
   }
   .item{
-    border: 1px solid blue;
+    border: 1px solid lightgrey;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;

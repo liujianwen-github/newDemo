@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container" id="modulesBox">
     <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" :page-one="pageInfo1"></model1>
-    <model2 v-show="notice==1" :to-second="modelTwo" :page-info="pageInfo2"></model2>
-    <model3 v-show="notice==2" :to-third="modelThree" :page-info="pageInfo3"></model3>
+    <model2 v-show="notice==1" :to-second="modelTwo" @pageTwo="model_Change" :page-two="pageInfo2"></model2>
+    <model3 v-show="notice==2" :to-third="modelThree" @pageThree="model_Change" :page-three="pageInfo3"></model3>
   </div>
 </template>
 
@@ -37,21 +37,21 @@ export default {
     getTotal: function () {
       // 今日到访
       // this.getParams.pageNo = this.pagination1
+      if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
-        // const pageInfo = res.data.results.pageInfo
         this.pageInfo1 = res.data.results.pageInfo
         console.log(res)
-        // console.log(this.pageInfo1)
       }, (err) => {
         console.log(err)
       })
     },
     getStranger: function () {
       // 陌生人
-      // this.getParams.pageNo = this.pagination2
+      if (this.pageInfo2 !== null) this.getParams.pageNo = this.pageInfo2.pageNo
       Axios.get(config.HOST + 'apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
         this.modelTwo = res.data.results.list
+        this.pageInfo2 = res.data.results.pageInfo
         console.log(res)
       }, (err) => {
         console.log(err)
@@ -59,16 +59,33 @@ export default {
     },
     getUser: function () {
       // 注册用户
-      // this.getParams.pageNo = this.pagination3
+      if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
       Axios.get(config.HOST + 'apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
         this.modelThree = res.data.results.list
+        this.pageInfo3 = res.data.results.pageInfo
         console.log(res)
+        // console.log(this.pageInfo3)
       }, (err) => {
         console.log(err)
       })
     },
     model_Change: function (msg, which) {
-      console.log(which)
+      console.log(typeof which)
+      switch (which) {
+        case 1:
+          this.pageInfo1.pageNo = msg
+          this.getTotal()
+          break
+        case 2:
+          this.pageInfo2.pageNo = msg
+          this.getStranger()
+          break
+        case 3:
+          this.pageInfo3.pageNo = msg
+          this.getUser()
+          break
+      }
+      // this.$forceUpdate()
       // which 选择调用哪个接口
     }
   },
@@ -102,5 +119,10 @@ export default {
   margin-top: 10px;
   width: 100%;
 }
+#modulesBox{
+  border: 1px solid #005BAB;
+  border-radius: 5px
+}
+
   
 </style>

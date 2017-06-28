@@ -14,17 +14,18 @@
     </header>
     <article>
       <div class="content">
-        <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index)">
+        <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.persontag)">
           <input type="checkbox" name="chooseItem" :value="item.persontag" v-model="chooseItem">
           <div class="bgc" :class="{showme:index==whichBgc}" style="color:white"></div>
           <img :src="item.headImage" alt="">
           <p v-text="item.name">name</p>
         </div>
+        <!-- <div class=""></div> -->
       </div>
       <div class="foot">
         <div>
           <button class="btn footBtn" @click="returnHistory">返回</button>
-          <button class="btn footBtn" @click="close">完成(不用close，需要选完发送)</button>
+          <button class="btn footBtn" @click="addFacetrackToPerson">完成</button>
         </div>
       </div>
     </article>
@@ -40,10 +41,10 @@ export default {
   name: 'intellAnalyse',
   data () {
     return {
-      dataList: null,
+      dataList: [],
       personData: null,
       whichBgc: null,
-      chooseItem: [],
+      chooseItem: null,
       intellParams: {
         userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
         facetrackId: null,
@@ -55,6 +56,9 @@ export default {
   methods: {
     close: function () {
       $('#intellAnalyse').css('display', 'none')
+      this.whichBgc = null
+      this.dataList = null
+      // console.log(this.dataList)
       this.$emit('popState', '0')
     },
     findItem: function (findme) {
@@ -66,25 +70,53 @@ export default {
       }
       return false
     },
-    chooseMe: function (msg) {
+    chooseMe: function (msg, item) {
       this.whichBgc = msg
+      this.chooseItem = item
     },
     getDataList: function () {
       Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: this.intellParams}).then(
         (res) => {
-          this.dataList = res.data.results.matchs
+          this.dataList = res.data.results.matchs || []
           console.log(this.dataList)
         }, (err) => {
         console.log(err)
       })
     },
     returnHistory: function () {
+      this.dataList = null
       this.$emit('popState', 'intell')
+    },
+    addFacetrackToPerson: function () {
+      console.log(this.chooseItem)
+      console.log(this.intellParams.facetrackId)
+      if (this.chooseItem === null) {
+        console.warn('选择图片为空值，返回上一界面')
+        this.$emit('popState', 'intell')
+        return
+      }
+      let dataForm = new FormData()
+      dataForm.append('userkey', config.userkey)
+      dataForm.append('deviceId', config.deviceId)
+      dataForm.append('persontag', this.chooseItem)
+      dataForm.append('facetrackId', this.intellParams.facetrackId)
+      Axios({
+        method: 'POST',
+        url: config.HOST + 'apiServer/facetrackManage/addFacetrackToPerson',
+        data: dataForm
+      }).then((res) => {
+        console.log(res)
+        if (res.data.msg === 'SUCC') alert('添加成功')
+        this.close()
+      }, (err) => {
+        // alert(err)
+        console.log(err)
+      })
     }
   },
   watch: {
     viewWhich: function (val, old) {
-      alert(val)
+      // alert(val)
       if (val === 'intellAnalyse') {
         $('#intellAnalyse').css('display', 'block')
         this.getDataList()

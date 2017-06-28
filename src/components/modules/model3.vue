@@ -9,13 +9,15 @@
           </div>
           <div>
             <div class="name">
-              <p style="color:red" v-text="item.name"></p>
+              <p v-text="item.name"></p>
             </div>
             <div class="name">
-              <p>最后到访时间：<span v-text="item.latestMatchTime"></span></p>
+              <p>最后到访时间：</p>
             </div>
             <div class="time">
-              <p v-text="item.createTime"></p>
+              <p v-text="item.latestMatchTime">
+                <!-- <span v-text="item.latestMatchTime"></span> -->
+              </p>
             </div>
             <div>
               <button class="btn" @click="setMessage(item.headimage, item.name, item.personId)">设置留言</button>
@@ -27,6 +29,9 @@
       <history :viewWhich="viewWhich" :toHistory="personData" @popState="changeState"></history>
       <leaveMessage :viewWhich="viewWhich" @popState="changeState" :toMessage="personData"></leaveMessage>
       <!-- <registerUser></registerUser> -->
+      <div class="pageBox">
+        <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>   
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +48,11 @@ export default {
     return {
       list: null,
       viewWhich: '0',
+      pageInfo: {
+        totalRecord: 0,
+        pageNo: 1,
+        limit: 20
+      },
       personData: {
         image: null,
         name: null,
@@ -52,7 +62,7 @@ export default {
       }
     }
   },
-  props: ['toThird', 'pageInfo'],
+  props: ['toThird', 'pageThree'],
   methods: {
     setMessage: function (image, name, personId) {
       this.viewWhich = 'leaveMessage'
@@ -78,6 +88,9 @@ export default {
     },
     changeState: function (msg) {
       this.viewWhich = msg
+    },
+    changePage: function (msg) {
+      this.$emit('pageThree', msg, 3)
     }
   },
   components: {userInfos, history, leaveMessage},
@@ -88,6 +101,10 @@ export default {
       }
       console.log(val)
       this.list = val
+    },
+    pageThree: function (val, old) {
+      // console.log(val)
+      this.pageInfo = val
     }
   }
 }
@@ -96,7 +113,7 @@ export default {
 <style scoped>
 .container{
     box-sizing: border-box;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
     min-height: 500px;
     background-color: white
   }
@@ -105,13 +122,13 @@ export default {
     /*display: flex;*/
   }
   .item{
-    border: 1px solid blue;
+    border: 1px solid lightgrey;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
     width: 30%;
-    height: 200px;
+    height: 180px;
     display: inline-block;
     margin:5px 1.5% 5px 1.5%;
     position: relative;
@@ -121,6 +138,12 @@ export default {
   }*/
   .item>.content{
     display: flex;
+    height: 100%
+    /*height: 200px*/
+  }
+  p{
+    /*color: red;*/
+    margin-bottom:10px;
   }
   .item>.content img{
     /*margin-top: 20px;*/
@@ -132,11 +155,12 @@ export default {
   }
   .item>.content>div{
     /*display: inline-block;*/
-    padding: 5%;
+    padding: 4%;
     width: 49%;
     clear: both;
     position: relative;
-    height: 80%;
+    /*height: 80%;*/
+    /*overflow:hidden;*/
     /*text-align: left;*/
   }
   .item>.content>div>.name,.item>.content>div>.time{

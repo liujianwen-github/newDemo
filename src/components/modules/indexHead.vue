@@ -4,9 +4,8 @@
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
     </div>
-    <div class="userMessage">
-      <!-- <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt=""> -->
-    </div>
+    <!-- <div class="userMessage">
+    </div> -->
     <div class="contentBtnList">
       <button class="contentBtn isActive" @click="viewContent(0)">今日到访</button>
       <button class="contentBtn" @click="viewContent(1)">陌生人</button>
@@ -54,7 +53,8 @@ export default {
 <style scoped>
   .container{
     width: 100%;
-    height: 35px
+    height: 35px;
+    position: relative;
   }
   .container .leftHead{
     display: inline-block;
@@ -67,7 +67,7 @@ export default {
   .container .leftHead img{
     height: 100%;
     position: absolute;
-    left: 0
+    left: 15px
   }
   .container .leftHead span{
     position: absolute;
@@ -82,13 +82,14 @@ export default {
     background-color: transparent;
     /*background-color: #005BAB;*/
     /*color: white;*/
+    border:1px solid #005BAB;
     color:#005BAB;
     font-size: 14px;
-    border: 0
+    /*border: 0*/
   }
   .container .toUser{
     position: absolute;
-    right: 0;
+    right: 15px;
     height: 30px;
     top:0;
     /*background-color: lightblue*/
