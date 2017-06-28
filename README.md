@@ -23,9 +23,4 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 今日到访跳转陌生人、用户
 上传照片进度条
-
-glyphicons-halflings-regular.e49d52e.ttf
-
-glyphicons-halflings-regular.e49d52e.ttf 
-
-glyphicons-halflings-regular.68ed1da.woff
+[项目记录](http://www.cnblogs.com/insight0912/p/7018122.html)
