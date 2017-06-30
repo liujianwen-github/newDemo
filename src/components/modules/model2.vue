@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="item in list" @click="getIntell(item.facetrackId,item.facetrackImage,item.createTime,item.sourceDes,item.sourceImg)">
+      <div class="item" v-for="item in list" @click="getIntell(item)">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -58,33 +58,30 @@ export default {
       console.log(msg)
       // TODO item点击触发事件，修改data中的参数，传值到intell组件中
     },
-    getIntell: function (facetrackId, facetrackImage, createTime, sourceDes, sourceImg) {
-      console.log(facetrackId, facetrackImage, createTime, sourceDes, sourceImg)
+    // 去往intell窗口
+    getIntell: function (data) {
       this.viewWhich = 'intell'
-      this.intellValue = {
-        facetrackId: facetrackId,
-        facetrackImage: facetrackImage,
-        createTime: createTime,
-        sourceDes: sourceDes,
-        sourceImg: sourceImg
-      }
+      this.intellValue = data
       this.createUserData = {
-        facetrackImage: facetrackImage,
-        facetrackId: facetrackId
+        facetrackImage: data.facetrackImage,
+        facetrackId: data.facetrackId
       }
       console.log(this.viewWhich)
     },
+    // 切换状态
     changeState: function (msg) {
       // console.log(msg)
       this.viewWhich = msg
       console.log(this.viewWhich)
     },
+    // 翻页
     changePage: function (msg) {
       this.$emit('pageTwo', msg, 2)
     }
   },
   components: {Intell, createUser, intellAnalyse},
   watch: {
+    // 从modulebox接收到的数据、分页信息
     toSecond: function (val, old) {
       console.log(val)
       if (this.list === val) {

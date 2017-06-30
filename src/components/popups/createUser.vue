@@ -1,5 +1,5 @@
 <template>
-  <div class="popup" id="createUser" >
+  <div class="popup" id="createUser" :class="{notshow:intellNotShow}">
    <div v-if="viewWhich=='createUser'">
     <header>
       <h3>新建用户</h3>
@@ -42,7 +42,7 @@
 </template>
 <!-- 新建用户组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
 // import QsConfig from '@/axiosCon'
@@ -50,6 +50,7 @@ export default {
   name: 'createUser',
   data () {
     return {
+      intellNotShow: true,
       img: null,
       name: null,
       sex: '1',
@@ -61,7 +62,9 @@ export default {
   props: ['viewWhich', 'toCreateUser'],
   methods: {
     close: function () {
-      $('#createUser').css('display', 'none')
+      // $('#createUser').css('display', 'none')
+      this.intellNotShow = true
+      this.$emit('popState', '0')
     },
     gogo: function (msg) {
       alert(msg)
@@ -121,16 +124,19 @@ export default {
   },
   watch: {
     viewWhich: function (val, old) {
-      console.log('createUser->viewwhich:' + val)
+      console.log('createUser->viewWhich:' + val)
       if (val === 'createUser') {
-        $('#createUser').css('display', 'block')
+        // $('#createUser').css('display', 'block')
+        this.intellNotShow = false
       } else {
-        $('#createUser').css('display', 'none')
+        // $('#createUser').css('display', 'none')
+        this.intellNotShow = true
       }
     },
     toCreateUser: function (val, old) {
       this.img = val.facetrackImage
-      this.facetrackId = val.facetrackId
+      // this.facetrackId = val.facetrackId
+      this.intellNotShow = false
     }
   }
 }
@@ -142,7 +148,10 @@ export default {
 
 <style scoped>
 #createUser{
-  display: none
+  /*display: none*/
+}
+.notshow{
+  display: none;
 }
 .popup>div{
   border:1px solid red;

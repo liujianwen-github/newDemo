@@ -1,5 +1,5 @@
 <template>
-  <div class="popup" id="intell" >
+  <div class="popup" id="intell" :class="{notshow:intellNotShow}">
    <div v-if="viewWhich=='intell'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
@@ -23,13 +23,18 @@
 </template>
 <!-- 陌生人操作组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 export default {
   name: 'intell',
+  data () {
+    return {
+      intellNotShow: true
+    }
+  },
   props: ['toIntell', 'viewWhich'],
   methods: {
     close: function () {
-      $('#intell').css('display', 'none')
+      // $('#intell').css('display', 'none')
       this.$emit('popState', '0')
       console.log(this.toIntell)
     },
@@ -43,11 +48,14 @@ export default {
   },
   watch: {
     viewWhich: function (val, old) {
-      console.log('intel->viewwhich:' + val)
+      console.log('intel->viewWhich:' + val)
       if (val === 'intell') {
-        $('#intell').css('display', 'block')
+        // $('#intell').css('display', 'block')
+        this.intellNotShow = false
+        console.log(this.intellNotShow)
+        console.log(this.toIntell)
       } else {
-        $('#intell').css('display', 'none')
+        this.intellNotShow = true
       }
     }
   }
@@ -59,11 +67,11 @@ export default {
 </style>
 
 <style scoped>
-#intell{
+/*#intell{
   display: none;
-}
-.show{
-  display: block;
+}*/
+.notshow{
+  display: none;
 }
 .popup header{
   width: 100%;

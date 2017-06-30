@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p> 	 -->
     <div class="itemList">
-      <div class="item" v-for="item in list">
+      <div class="item" v-for="item in list"  @click="viewItem(item)">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
@@ -11,11 +11,20 @@
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
-    </div>
-    <div class="pageBox">
+      <div class="pageBox">
       <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
-    </div>
-    <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
+      </div>
+      <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
+      <!-- stranger -->
+      <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
+      <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
+      <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
+      <!-- user -->
+      <userInfos :viewWhich="viewWhich" :toUserInfos="personData" @popState="changeState"></userInfos>
+      <history :viewWhich="viewWhich" :toHistory="personData" @popState="changeState"></history>
+      <leaveMessage :viewWhich="viewWhich" @popState="changeState" :toMessage="personData"></leaveMessage>
+
+    </div> 
   </div>
 </template>
 
@@ -23,6 +32,13 @@
 // import config from '@/config'
 // import Fill from '@/fill'
 // import pagenation from '@/components/modules/pagenation'
+import Intell from '@/components/popups/intell'
+import createUser from '@/components/popups/createUser'
+import intellAnalyse from '@/components/popups/intellAnalyse'
+import userInfos from '@/components/popups/userInfos'
+import history from '@/components/popups/history'
+import leaveMessage from '@/components/popups/leaveMessage'
+
 export default {
   name: 'model1',
   data () {
@@ -30,18 +46,69 @@ export default {
       list: null,
       total: 100,
       pageSize: 5,
+      viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错
       pageInfo: {
         totalRecord: 0,
         pageNo: 1,
         limit: 20
+      },
+      // stranger相关所需要的数据
+      intellValue: {
+        facetrackId: null,
+        facetrackImage: null,
+        createTime: null,
+        sourceDes: null,
+        sourceImg: null
+      },
+      createUserData: {
+        facetrackImage: null,
+        facetrackId: null
+      },
+      // user相关所需要的数据
+      personData: {
+        image: null,
+        name: null,
+        personId: null,
+        latestMatchTime: null,
+        sourceDes: null,
+        headimage: null
       }
     }
   },
   props: ['toFirst', 'pageOne'],
+  components: {
+    Intell, createUser, intellAnalyse, userInfos, history, leaveMessage
+  },
   methods: {
+    viewItem: function (data) {
+      console.log(data)
+      switch (data.matchStatus) {
+        case 0:
+          console.log('stranger')
+          this.viewWhich = 'intell'
+          this.intellValue = data
+          this.createUserData = {
+            facetrackImage: data.facetrackImage,
+            facetrackId: data.facetrackId
+          }
+          break
+        case 1:
+          console.log('user')
+          this.viewWhich = 'userInfos'
+          this.personData = data
+          this.personData.headimage = data.personImage
+          console.log(this.personData)
+          break
+      }
+      console.log(this.viewWhich)
+    },
     changePage: function (msg) {
       this.$emit('pageOne', msg, 1)
+    },
+    changeState: function (msg) {
+      this.viewWhich = msg
+      console.log(msg)
     }
   },
   watch: {

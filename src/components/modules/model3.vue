@@ -5,7 +5,7 @@
       <div class="item" v-for="item in list">
         <div class="content">
           <div>
-            <img :src="item.headimage" alt="" @click="viewUserInfos(item.personId,item.headimage,item.name,item.latestMatchTime,item.sourceDes)">
+            <img :src="item.headimage" alt="" @click="viewUserInfos(item)">
           </div>
           <div>
             <div class="name">
@@ -20,7 +20,7 @@
               </p>
             </div>
             <div>
-              <button class="btn" @click="setMessage(item.headimage, item.name, item.personId)">设置留言</button>
+              <button class="btn" @click="setMessage(item)">设置留言</button>
             </div>
           </div>
         </div>
@@ -64,25 +64,15 @@ export default {
   },
   props: ['toThird', 'pageThree'],
   methods: {
-    setMessage: function (image, name, personId) {
+    setMessage: function (data) {
       this.viewWhich = 'leaveMessage'
-      this.personData = {
-        image: image,
-        name: name,
-        personId: personId
-      }
+      this.personData = data
     },
     searchHistory: function (val, old) {
       // this.viewWhich = 'history'
     },
-    viewUserInfos: function (id, image, name, latestMatchTime, sourceDes) {
-      this.personData = {
-        personId: id,
-        image: image,
-        name: name,
-        latestMatchTime: latestMatchTime,
-        sourceDes: sourceDes
-      }
+    viewUserInfos: function (data) {
+      this.personData = data
       this.viewWhich = 'userInfos'
       console.log(this.personData)
     },

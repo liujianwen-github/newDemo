@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.image" alt="">
+        <img :src="personData.headimage" alt="">
         <!-- {{personData}} -->
       </div>
       <div class="addUser">
@@ -151,9 +151,11 @@ export default {
   watch: {
     toUserInfos: function (val, old) {
       // alert(val)
+      console.log(val)
       this.personData = val
+      console.log(this.personData)
       this.getParams.personId = this.personData.personId
-      alert(this.getParams.personId)
+      // alert(this.getParams.personId)
       Axios.get(config.HOST + 'apiServer/personManage/getPersonMatchedList', {params: this.getParams}).then(
         (res) => {
           this.list = res.data.results.list
@@ -167,7 +169,7 @@ export default {
       if (val === 'userInfos') {
         this.isShow = true
       }
-      alert(val)
+      // alert(val)
     }
   }
 }

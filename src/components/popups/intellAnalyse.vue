@@ -1,5 +1,5 @@
 <template>
-  <div class="popup" id="intellAnalyse">
+  <div class="popup" id="intellAnalyse" :class="{notshow:intellNotShow}">
    <div v-if="viewWhich=='intellAnalyse'">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
@@ -34,13 +34,14 @@
 </template>
 <!-- 智能分析组件 -->
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config.js'
 export default {
   name: 'intellAnalyse',
   data () {
     return {
+      intellNotShow: true,
       dataList: [],
       personData: null,
       whichBgc: null,
@@ -55,7 +56,8 @@ export default {
   props: ['viewWhich', 'toIntellAnalyse'],
   methods: {
     close: function () {
-      $('#intellAnalyse').css('display', 'none')
+      // $('#intellAnalyse').css('display', 'none')
+      this.intellNotShow = true
       this.whichBgc = null
       this.dataList = null
       // console.log(this.dataList)
@@ -118,10 +120,12 @@ export default {
     viewWhich: function (val, old) {
       // alert(val)
       if (val === 'intellAnalyse') {
-        $('#intellAnalyse').css('display', 'block')
+        // $('#intellAnalyse').css('display', 'block')
+        this.intellNotShow = false
         this.getDataList()
       } else {
-        $('#intellAnalyse').css('display', 'none')
+        // $('#intellAnalyse').css('display', 'none')
+        this.intellNotShow = true
       }
     },
     toIntellAnalyse: function (val, old) {
@@ -138,7 +142,10 @@ export default {
 
 <style scoped>
 #intellAnalyse{
-  display: none
+  /*display: none*/
+}
+.notshow{
+  display: none;
 }
 .popup header{
   width: 100%;

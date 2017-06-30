@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.image" alt="">
+        <img :src="personData.headimage" alt="">
       </div>
       <div class="addUser">
         <p class="headInfo">
