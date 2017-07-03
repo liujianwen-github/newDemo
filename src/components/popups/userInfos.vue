@@ -252,7 +252,7 @@ article .content .itemList ul{
 }
 article .content .itemList li{
   list-style-type: none;
-  background: url('../../assets/listSide.png') no-repeat;
+  /*background: url('../../assets/listSide.png') no-repeat;*/
   display: block;
   height: 130px;
 }

@@ -1,3 +1,4 @@
+import axios from 'axios'
 export default{
   // HOST: 'http://192.168.1.15:8080/',
   HOST: 'http://demo.deepdot.cn/',
@@ -18,5 +19,18 @@ export default{
   changeDateType: function (msg) {
     let date = new Date(msg).getTime()
     return date
+  },
+  axiosCon: function () {
+    axios.defaults.baseURL = this.HOST
+    axios.defaults.timeout = 5000
+    axios.defaults.responseType = 'json'
+    axios.defaults.xsrfCookieName = '111'
+    axios.defaults.xsrfHeaderName = 'demo'
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+    // axios.defaults.auth = {
+    //   username: 'liujianwen',
+    //   password: 's00pers3cret'
+    // }
+    // axios.defaults.
   }
 }

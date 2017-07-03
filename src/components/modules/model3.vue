@@ -86,14 +86,16 @@ export default {
   components: {userInfos, history, leaveMessage},
   watch: {
     toThird: function (val, old) {
-      if (this.list === val) {
+      if (typeof val === 'undefined') {
         return
       }
       console.log(val)
       this.list = val
     },
     pageThree: function (val, old) {
-      // console.log(val)
+      if (typeof val === 'undefined') {
+        return
+      }
       this.pageInfo = val
     }
   }

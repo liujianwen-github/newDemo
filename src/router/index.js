@@ -4,14 +4,18 @@ import Index from '@/components/index'
 import userManage from '@/components/userManage'
 import test from '@/components/test'
 import page from '@/components/modules/pagenation'
-
+// import config from '@/config'
+// import Axios from 'axios'
+// import axiosCon from '@/axiosCon'
+// Axios.defaults = axiosCon
+// Axios.defaults.baseURL = config.HOST
+// Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // import test from '@/components/test'
 // import Vuex from 'vuex'
 // import models from '@/components/modules'
 // import model1 from '@/components/modules/model1'
 // import model2 from '@/components/modules/model2'
 // import model3 from '@/components/modules/model3'
-
 Vue.use(Router)
 // Vue.use(Vuex)
 export default new Router({

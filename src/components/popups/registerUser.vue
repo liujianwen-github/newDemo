@@ -60,6 +60,7 @@
         <p>是否删除用户?</p>
         <button class="btn" @click="dontDelete">取消</button>
         <button class="btn" @click="mksureDelete">确认</button>
+        <button class="btn" @click="test">test</button>
       </div>   
       </div>
     </div>
@@ -72,6 +73,9 @@
 import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+// import Qs from 'qs'
+// Axios.defaults.baseURL = config.HOST
+// Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 export default {
   name: 'registerUser',
   data () {
@@ -82,7 +86,7 @@ export default {
         imgUrl: null,
         imgs: [],
         name: null,
-        sex: '1',
+        sex: 1,
         cardId: null,
         birthDay: null,
         userkey: config.userkey,
@@ -100,7 +104,7 @@ export default {
         imgUrl: null,
         imgs: [],
         name: null,
-        sex: '1',
+        sex: 1,
         cardId: null,
         birthDay: null,
         userkey: config.userkey,
@@ -108,6 +112,11 @@ export default {
         personId: null
       }
       this.$forceUpdate()
+    },
+    test: function () {
+      Axios.post('11').then((res) => {
+        console.log(res)
+      })
     },
     chooseImg: function (e) {
       this.personData.imgs = this.personData.imgs || []
@@ -138,6 +147,7 @@ export default {
       $('#registerUser>div>article').addClass('vague')
     },
     pushFormat: function () {
+      console.log(Axios.defaults)
       console.log(this.title)
       console.log(this.personData)
       if (this.title === '新建' && this.personData.imgs.length > 0) {
@@ -147,7 +157,6 @@ export default {
         }
         this.personData.imgs.shift()
       }
-      // this.personData.imgs.shift()
       console.log(this.personData.imgs)
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
@@ -162,15 +171,14 @@ export default {
       personData.append('birthDay', this.personData.birthDay)
       personData.append('userkey', config.userkey)
       personData.append('deviceId', config.deviceId)
+      // w
+      // let personData = Qs.stringify(this.personData)
       console.log(personData)
       if (this.title === '新建') {
         Axios({
           method: 'POST',
           url: config.HOST + 'wxServer2/admin/createPersonByImgs',
-          data: personData,
-          headers: {
-            'Content-Type': ' application/x-www-form-urlencoded'
-          }
+          data: personData
         }).then((res) => {
           console.log(res)
           // alert(res.data.msg)
@@ -187,14 +195,12 @@ export default {
         Axios({
           method: 'POST',
           url: config.HOST + 'wxServer2/admin/uploadPersonInfo',
-          data: personData,
-          headers: {
-            'Content-Type': ' application/x-www-form-urlencoded'
-          }
+          data: personData
         }).then((res) => {
           console.log(res)
           if (res.data.msg === 'SUCC') {
             // this.$emit('popState', '0')
+            alert('创建成功')
             this.close()
           }
           // this.personData.imgs.length = 0

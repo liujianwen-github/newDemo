@@ -15,6 +15,7 @@
       </div>
       <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState" @deleteItem="deleteItem"></registerUser>
     </div>
+    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
   </div>
 </template>
 
@@ -22,6 +23,7 @@
 import registerUser from '@/components/popups/registerUser'
 import config from '@/config'
 import Axios from 'axios'
+// Axios.defaults.baseURL = config.HOST
 export default {
   name: 'totalUserList',
   data () {
@@ -29,9 +31,14 @@ export default {
       list: null,
       viewWhich: '0',
       personData: null,
+      pageInfo: {
+        totalRecord: 0,
+        pageNo: 1,
+        limit: 20
+      },
       getParams: {
         userkey: config.userkey,
-        deviceId: 'aaa-a01-001',
+        deviceId: config.deviceId,
         beginTime: 0,
         endTime: new Date().getTime(),
         pageNo: 1
@@ -41,10 +48,11 @@ export default {
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
     getAllUser: function () {
-      Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then(
+      Axios.get('apiServer/personManage/getPersonList', {params: this.getParams}).then(
         (res) => {
           console.log(res)
           this.list = res.data.results.list
+          this.pageInfo = res.data.results.pageInfo
           console.log(this.list)
         }, (err) => {
         console.log(err)
@@ -68,6 +76,10 @@ export default {
     deleteItem: function (msg) {
       alert('delete NO' + msg)
       this.list.splice(msg, 1)
+    },
+    changePage: function (msg) {
+      this.getParams.pageNo = msg
+      this.getAllUser()
     }
   },
   components: {registerUser},
@@ -84,7 +96,7 @@ export default {
       }
       Axios({
         method: 'get',
-        url: config.HOST + '/apiServer/personManage/searchPerson',
+        url: '/apiServer/personManage/searchPerson',
         params: {
           userkey: config.userkey,
           deviceId: config.deviceId,

@@ -4,13 +4,11 @@
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
     </div>
-<!--     <div class="userMessage">
-      <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt="">
-    </div> -->
     <div class="contentBtnList">
       <div class="inputGroup">
         <span class="glyphicon glyphicon-user"></span>
-        <input type="text" value="" v-model="searchText"> 
+        <input type="text" value="" v-model="searchText" autofocus="autofocus">
+        <span class="glyphicon glyphicon-remove"  @click="reSearch"></span>
       </div>
       <button class="btn" @click="search">search</button>
     </div>
@@ -48,23 +46,17 @@ export default {
     search: function () {
       // alert(this.searchText)
       this.$emit('searchPerson', this.searchText)
-      // Axios({
-      //   methods: 'GET',
-      //   url: config.HOST + '/apiServer/personManage/searchPerson',
-      //   params: {
-      //     userkey: config.userkey,
-      //     deviceId: config.deviceId,
-      //     name: this.searchText
-      //   }
-      // }).then((res) => {
-      //   console.log(res)
-      //   // alert('返回结果，请输入要查询信息，接口文档没有规定输入文本关键字')
-      // }, (err) => {
-      //   console.log(err)
-      // })
     },
     reloadPage: function () {
       window.location.reload()
+    },
+    reSearch: function () {
+      // alert('111')
+      if (this.searchText !== '') {
+        this.searchText = ''
+      } else {
+        this.reloadPage()
+      }
     }
   }
 }
@@ -104,8 +96,9 @@ export default {
   .container .inputGroup{
     /*border*/
     /*background-color: red;*/
+    position: relative;
     border:1px solid grey;
-    border-radius: 2em;
+    border-radius: 1.5em;
     padding-left: 10px;
     padding-right: 20px;
     display: inline-block;
@@ -136,7 +129,14 @@ export default {
     top:0;
     /*background-color: lightblue*/
   }
-
+  .glyphicon-remove{
+    position: absolute;
+    right: 5px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 20px;
+    cursor: pointer;
+  }
 
 
 
