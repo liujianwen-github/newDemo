@@ -3,14 +3,12 @@ import Router from 'vue-router'
 import Index from '@/components/index'
 import userManage from '@/components/userManage'
 import test from '@/components/test'
-
 // import test from '@/components/test'
 // import Vuex from 'vuex'
 // import models from '@/components/modules'
 // import model1 from '@/components/modules/model1'
 // import model2 from '@/components/modules/model2'
 // import model3 from '@/components/modules/model3'
-
 Vue.use(Router)
 // Vue.use(Vuex)
 export default new Router({

@@ -23,6 +23,7 @@
 import registerUser from '@/components/popups/registerUser'
 import config from '@/config'
 import Axios from 'axios'
+// Axios.defaults.baseURL = config.HOST
 export default {
   name: 'totalUserList',
   data () {
@@ -47,7 +48,7 @@ export default {
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
     getAllUser: function () {
-      Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then(
+      Axios.get('apiServer/personManage/getPersonList', {params: this.getParams}).then(
         (res) => {
           console.log(res)
           this.list = res.data.results.list

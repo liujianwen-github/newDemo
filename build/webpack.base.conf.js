@@ -30,7 +30,14 @@ module.exports = {
      new webpack.ProvidePlugin({
         $: "jquery",
         jQuery: "jquery"
-     })
+     }),
+     new webpack.optimize.UglifyJsPlugin({
+       compress:{
+         warnings: false,
+         drop_debugger: true,
+         drop_console: true
+      }
+    })
   ],
   module: {
     rules: [
@@ -58,7 +65,7 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]')
+          name: utils.assetsPath('imgs/[name].[hash:7].[ext]')
         }
       },
       {
@@ -66,6 +73,7 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 80000,
+          publicPath: '../../',
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }

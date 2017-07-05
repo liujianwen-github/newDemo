@@ -113,14 +113,16 @@ export default {
   },
   watch: {
     toFirst: function (val, old) {
-      if (this.list === val) {
+      if (typeof val === 'undefined') {
         return
       }
       this.list = val
-      // console.log(val)
     },
     pageOne: function (val, old) {
-      // console.log(val)
+      console.log(val)
+      if (typeof val === 'undefined') {
+        return
+      }
       this.pageInfo = val
     }
   }

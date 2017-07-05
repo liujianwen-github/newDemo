@@ -4,9 +4,6 @@
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
     </div>
-<!--     <div class="userMessage">
-      <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="48" width="48" alt="">
-    </div> -->
     <div class="contentBtnList">
       <div class="inputGroup">
         <span class="glyphicon glyphicon-user"></span>
@@ -97,8 +94,15 @@ export default {
     height: 35px
   }
   .container .inputGroup{
+<<<<<<< HEAD
     border:1px solid grey;
     position: relative;
+=======
+    /*border*/
+    /*background-color: red;*/
+    position: relative;
+    border:1px solid grey;
+>>>>>>> 2abe1324ee49e8810d81b35ffe18810b775ab13e
     border-radius: 1.5em;
     padding-left: 10px;
     padding-right: 20px;
@@ -137,7 +141,14 @@ export default {
     top:0;
     /*background-color: lightblue*/
   }
-
+  .glyphicon-remove{
+    position: absolute;
+    right: 5px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 20px;
+    cursor: pointer;
+  }
 
 
 

@@ -93,7 +93,6 @@ export default {
       this.list = val
     },
     pageThree: function (val, old) {
-      // console.log(val)
       if (typeof val === 'undefined') {
         return
       }
