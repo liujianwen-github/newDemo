@@ -25,7 +25,7 @@
           <div class="itemList">
             <ul>
             <!-- TODO v-for -->
-              <li v-for="item in list">
+              <li v-for="item in list" :style="liBgc">
                 <div>
                   <div class="left">
                     <p v-text="item.createTime.split(' ')[0]">date</p>
@@ -60,12 +60,14 @@
 // import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+import listSide from '@/assets/listSide.png'
 
 export default {
   name: 'userInfos',
   props: ['toUserInfos', 'viewWhich'],
   data () {
     return {
+      liBgc: 'background: url(' + listSide + ') no-repeat',
       isShow: false,
       personData: null,
       scene: {
@@ -252,7 +254,6 @@ article .content .itemList ul{
 }
 article .content .itemList li{
   list-style-type: none;
-  background: url('../../assets/listSide.png') no-repeat;
   display: block;
   height: 130px;
 }

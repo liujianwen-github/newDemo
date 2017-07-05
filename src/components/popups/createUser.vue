@@ -115,7 +115,7 @@ export default {
           // 'Content-Type': 'text/plain'
         }
       }).then((res) => {
-        alert(res.data.msg)
+        console.log(res.data.msg)
         this.$emit('popState', '0')
       }, (err) => {
         console.log(err)
@@ -135,6 +135,7 @@ export default {
     },
     toCreateUser: function (val, old) {
       this.img = val.facetrackImage
+      this.facetrackId = val.facetrackId
       // this.facetrackId = val.facetrackId
       this.intellNotShow = false
     }

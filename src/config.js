@@ -1,3 +1,4 @@
+import axios from 'axios'
 export default{
   // HOST: 'http://192.168.1.15:8080/',
   HOST: 'http://demo.deepdot.cn/',
@@ -7,6 +8,14 @@ export default{
   minImageCount: 3,
   maxImageCount: 5,
   pageShow: 5,
+  axiosConf: function () {
+    axios.defaults.baseURL = this.HOST
+    axios.defaults.timeout = 5000
+    axios.defaults.responseType = 'json'
+    axios.defaults.xsrfCookieName = '111'
+    axios.defaults.xsrfHeaderName = 'demo'
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+  },
   addDate: function (date) {
     if (Number(date) <= 10) {
       return '0' + date

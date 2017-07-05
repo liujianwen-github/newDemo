@@ -62,6 +62,7 @@ export default {
     getIntell: function (data) {
       this.viewWhich = 'intell'
       this.intellValue = data
+      console.log(this.intellValue)
       this.createUserData = {
         facetrackImage: data.facetrackImage,
         facetrackId: data.facetrackId
@@ -84,13 +85,16 @@ export default {
     // 从modulebox接收到的数据、分页信息
     toSecond: function (val, old) {
       console.log(val)
-      if (this.list === val) {
+      if (typeof val === 'undefined') {
         return
       }
       this.list = val
     },
     pageTwo: function (val, old) {
       // console.log(val)
+      if (typeof val === 'undefined') {
+        return
+      }
       this.pageInfo = val
     }
   }

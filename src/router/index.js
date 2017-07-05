@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Index from '@/components/index'
 import userManage from '@/components/userManage'
 import test from '@/components/test'
-import page from '@/components/modules/pagenation'
 
 // import test from '@/components/test'
 // import Vuex from 'vuex'
@@ -33,10 +32,6 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: test
-    }, {
-      path: '/page',
-      name: 'page',
-      component: page
     }
   ],
   computed: {

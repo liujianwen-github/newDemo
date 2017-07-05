@@ -82,7 +82,7 @@ export default {
         imgUrl: null,
         imgs: [],
         name: null,
-        sex: '1',
+        sex: 1,
         cardId: null,
         birthDay: null,
         userkey: config.userkey,
@@ -195,6 +195,7 @@ export default {
           console.log(res)
           if (res.data.msg === 'SUCC') {
             // this.$emit('popState', '0')
+            alert('创建成功')
             this.close()
           }
           // this.personData.imgs.length = 0

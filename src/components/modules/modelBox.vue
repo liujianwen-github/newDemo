@@ -38,7 +38,7 @@ export default {
       // 今日到访
       // this.getParams.pageNo = this.pagination1
       if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
+      Axios.get('apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
         this.pageInfo1 = res.data.results.pageInfo
         console.log(res)
@@ -49,7 +49,7 @@ export default {
     getStranger: function () {
       // 陌生人
       if (this.pageInfo2 !== null) this.getParams.pageNo = this.pageInfo2.pageNo
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
+      Axios.get('apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
         this.modelTwo = res.data.results.list
         this.pageInfo2 = res.data.results.pageInfo
         console.log(res)
@@ -60,7 +60,7 @@ export default {
     getUser: function () {
       // 注册用户
       if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
-      Axios.get(config.HOST + 'apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
+      Axios.get('apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
         this.modelThree = res.data.results.list
         this.pageInfo3 = res.data.results.pageInfo
         console.log(res)

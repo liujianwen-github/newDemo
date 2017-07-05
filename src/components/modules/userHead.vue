@@ -10,7 +10,8 @@
     <div class="contentBtnList">
       <div class="inputGroup">
         <span class="glyphicon glyphicon-user"></span>
-        <input type="text" value="" v-model="searchText"> 
+        <input type="text" value="" v-model="searchText" @keyup="keySearch" autofocus="autofocus">
+        <span class="glyphicon glyphicon-remove"  @click="reSearch"></span>
       </div>
       <button class="btn" @click="search">search</button>
     </div>
@@ -30,10 +31,6 @@
 </template>
 
 <script>
-// import Store from '@/Store.js'
-// import $ from 'jquery'
-// import Axios from 'axios'
-// import config from '@/config'
 export default {
   name: 'userHead',
   data () {
@@ -45,26 +42,24 @@ export default {
     addNewUser: function (argument) {
       this.$emit('popState', 'addNewUser')
     },
+    keySearch: function (e) {
+      if (e.keyCode === 13) {
+        this.search()
+      }
+    },
     search: function () {
-      // alert(this.searchText)
       this.$emit('searchPerson', this.searchText)
-      // Axios({
-      //   methods: 'GET',
-      //   url: config.HOST + '/apiServer/personManage/searchPerson',
-      //   params: {
-      //     userkey: config.userkey,
-      //     deviceId: config.deviceId,
-      //     name: this.searchText
-      //   }
-      // }).then((res) => {
-      //   console.log(res)
-      //   // alert('返回结果，请输入要查询信息，接口文档没有规定输入文本关键字')
-      // }, (err) => {
-      //   console.log(err)
-      // })
     },
     reloadPage: function () {
       window.location.reload()
+    },
+    reSearch: function () {
+      // alert('111')
+      if (this.searchText !== '') {
+        this.searchText = ''
+      } else {
+        this.reloadPage()
+      }
     }
   }
 }
@@ -102,14 +97,20 @@ export default {
     height: 35px
   }
   .container .inputGroup{
-    /*border*/
-    /*background-color: red;*/
     border:1px solid grey;
-    border-radius: 2em;
+    position: relative;
+    border-radius: 1.5em;
     padding-left: 10px;
     padding-right: 20px;
     display: inline-block;
-    /*overflow: hi*/
+  }
+  .glyphicon-remove{
+    position: absolute;
+    right: 5px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 20px;
+    cursor: pointer;
   }
   .container .inputGroup>input{
     width: 150px;

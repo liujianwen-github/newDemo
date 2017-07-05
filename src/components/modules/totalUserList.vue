@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
     <div class="itemList">
-      <div class="item" v-for="(item,index) in list" @click="addadd">
+      <div class="item" v-for="(item,index) in list">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -15,6 +15,7 @@
       </div>
       <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState" @deleteItem="deleteItem"></registerUser>
     </div>
+    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
   </div>
 </template>
 
@@ -29,9 +30,14 @@ export default {
       list: null,
       viewWhich: '0',
       personData: null,
+      pageInfo: {
+        totalRecord: 0,
+        pageNo: 1,
+        limit: 20
+      },
       getParams: {
         userkey: config.userkey,
-        deviceId: 'aaa-a01-001',
+        deviceId: config.deviceId,
         beginTime: 0,
         endTime: new Date().getTime(),
         pageNo: 1
@@ -45,15 +51,11 @@ export default {
         (res) => {
           console.log(res)
           this.list = res.data.results.list
+          this.pageInfo = res.data.results.pageInfo
           console.log(this.list)
         }, (err) => {
         console.log(err)
       })
-    },
-    addadd: function (argument) {
-      console.log('flip next')
-      this.getParams.pageNo++
-      this.getAllUser()
     },
     goEdit: function (data, index) {
       this.viewWhich = 'editUser'
@@ -68,6 +70,10 @@ export default {
     deleteItem: function (msg) {
       alert('delete NO' + msg)
       this.list.splice(msg, 1)
+    },
+    changePage: function (msg) {
+      this.getParams.pageNo = msg
+      this.getAllUser()
     }
   },
   components: {registerUser},
@@ -84,7 +90,7 @@ export default {
       }
       Axios({
         method: 'get',
-        url: config.HOST + '/apiServer/personManage/searchPerson',
+        url: '/apiServer/personManage/searchPerson',
         params: {
           userkey: config.userkey,
           deviceId: config.deviceId,
@@ -97,6 +103,7 @@ export default {
           return
         }
         this.list = res.data.results.list
+        this.pageInfo = res.data.results.pageInfo
       }, (err) => {
         console.log(err)
       })
