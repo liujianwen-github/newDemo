@@ -117,7 +117,10 @@ export default {
   watch: {
     toFirst: function (val, old) {
       if (typeof val === 'undefined') {
+<<<<<<< HEAD
         this.emptyPage.isShow = true
+=======
+>>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
         return
       }
       this.emptyPage.isShow = false

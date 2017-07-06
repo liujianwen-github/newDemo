@@ -171,17 +171,27 @@ export default {
       personData.append('birthDay', this.personData.birthDay)
       personData.append('userkey', config.userkey)
       personData.append('deviceId', config.deviceId)
+<<<<<<< HEAD
       let _this = this
+=======
+      // w
+      // let personData = Qs.stringify(this.personData)
+>>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
       console.log(personData)
       if (this.title === '新建') {
         Axios({
           method: 'POST',
+<<<<<<< HEAD
           url: INTERFACE.USER_ADDNEW,
           data: personData,
           onUploadProgress: function (e) {
             // 这里的this指向xhr对象
             _this.percent = Math.round((e.loaded * 100) / e.total)
           }
+=======
+          url: config.HOST + 'wxServer2/admin/createPersonByImgs',
+          data: personData
+>>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
         }).then((res) => {
           if (res.data.msg === 'SUCC') {
             // 1
@@ -196,7 +206,11 @@ export default {
       } else if (this.title === '编辑') {
         Axios({
           method: 'POST',
+<<<<<<< HEAD
           url: INTERFACE.USER_EDIT,
+=======
+          url: config.HOST + 'wxServer2/admin/uploadPersonInfo',
+>>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
           data: personData
         }).then((res) => {
           console.log(res)
