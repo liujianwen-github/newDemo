@@ -26,12 +26,8 @@
 import registerUser from '@/components/popups/registerUser'
 import config from '@/config'
 import Axios from 'axios'
-<<<<<<< HEAD
 import INTERFACE from '@/interface'
 import empty from '@/components/popups/empty'
-=======
-// Axios.defaults.baseURL = config.HOST
->>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
 export default {
   name: 'totalUserList',
   data () {
@@ -60,11 +56,7 @@ export default {
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
     getAllUser: function () {
-<<<<<<< HEAD
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
-=======
-      Axios.get('apiServer/personManage/getPersonList', {params: this.getParams}).then(
->>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
         (res) => {
           console.log(res)
           this.list = res.data.results.list

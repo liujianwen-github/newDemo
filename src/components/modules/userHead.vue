@@ -4,13 +4,8 @@
     <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" @click="reloadPage">
       <img src="../../assets/logo.png">
       <span>未来门禁演示系统 1.0</span>
-<<<<<<< HEAD
     </Col>
     <Col class="contentBtnList" span="5">
-=======
-    </div>
-    <div class="contentBtnList">
->>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
       <div class="inputGroup">
         <span class="glyphicon glyphicon-user"></span>
         <input type="text" value="" v-model="searchText" @keyup="keySearch" autofocus="autofocus">
@@ -149,16 +144,9 @@ export default {
     height: 100%
   }
   .container .inputGroup{
-<<<<<<< HEAD
     border:1px solid grey;
     height: 100%;
     position: relative;
-=======
-    /*border*/
-    /*background-color: red;*/
-    position: relative;
-    border:1px solid grey;
->>>>>>> 2abe1324ee49e8810d81b35ffe18810b775ab13e
     border-radius: 1.5em;
     box-sizing: border-box;
     padding-left: 10px;
@@ -223,18 +211,6 @@ export default {
   .listItem{
     text-align: center;
   }
-<<<<<<< HEAD
-=======
-  .glyphicon-remove{
-    position: absolute;
-    right: 5px;
-    height: 35px;
-    line-height: 35px;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
->>>>>>> 37e86a6c4a59d8dd5b334c20668fac78c28bb8aa
 
 
 
