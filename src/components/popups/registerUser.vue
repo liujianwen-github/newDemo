@@ -208,7 +208,7 @@ export default {
           this.$Message.error(res.data.msg)
           this.percent = 0
         }, (err) => {
-          console.log(err)
+          this.$Message.error(err.data.msg)
         })
       }
     },
