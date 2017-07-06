@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
+    <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
       <div class="item" v-for="item in list">
         <div class="content">
@@ -41,6 +42,7 @@
 import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
+import empty from '@/components/popups/empty'
 // import registerUser from '@/components/popups/registerUser'
 export default {
   name: 'model3',
@@ -59,6 +61,10 @@ export default {
         personId: null,
         latestMatchTime: null,
         sourceDes: null
+      },
+      emptyPage: {
+        size: 'large',
+        show: false
       }
     }
   },
@@ -83,17 +89,18 @@ export default {
       this.$emit('pageThree', msg, 3)
     }
   },
-  components: {userInfos, history, leaveMessage},
+  components: {userInfos, history, leaveMessage, empty},
   watch: {
     toThird: function (val, old) {
       if (typeof val === 'undefined') {
+        this.emptyPage.isShow = true
         return
       }
+      this.emptyPage.isShow = false
       console.log(val)
       this.list = val
     },
     pageThree: function (val, old) {
-      // console.log(val)
       if (typeof val === 'undefined') {
         return
       }
@@ -108,7 +115,11 @@ export default {
     box-sizing: border-box;
     /*border: 1px solid red;*/
     min-height: 500px;
-    background-color: white
+    background-color: white;
+    width: 100%
+  }
+  .show{
+    display: block
   }
   .itemList{
     text-align: left;
@@ -120,10 +131,10 @@ export default {
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
-    width: 30%;
+    width: 31%;
     height: 180px;
     display: inline-block;
-    margin:5px 1.5% 5px 1.5%;
+    margin:5px 1% 5px 1%;
     position: relative;
   }
   /*.item>div{
@@ -167,5 +178,16 @@ export default {
   .item .content button{
     background-color: #005BAB;
     color: white
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .item{
+      width: 48%;
+    }
+  }
+  @media only screen and (max-width: 768px){
+    *{
+      font-size: 12px
+    }
   }
 </style>

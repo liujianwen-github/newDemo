@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
   <!-- index -->
     <indexHead @currentContent="go"></indexHead>
     <modelBox :notice="type"></modelBox>
@@ -56,8 +56,9 @@ a {
   color: #42b983;
 }
 .container {
-  width: 1200px;
-  /*max-width: 1200px;*/
+  /*background-color: red;*/
+  max-width: 1200px;
+  width: 100%;
   position: relative;
 }
 </style>

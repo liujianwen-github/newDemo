@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <!-- <p @click="getTotal">1</p> 	 -->
+    <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
       <div class="item" v-for="item in list"  @click="viewItem(item)">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
@@ -23,7 +23,6 @@
       <userInfos :viewWhich="viewWhich" :toUserInfos="personData" @popState="changeState"></userInfos>
       <history :viewWhich="viewWhich" :toHistory="personData" @popState="changeState"></history>
       <leaveMessage :viewWhich="viewWhich" @popState="changeState" :toMessage="personData"></leaveMessage>
-
     </div> 
   </div>
 </template>
@@ -38,7 +37,7 @@ import intellAnalyse from '@/components/popups/intellAnalyse'
 import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
-
+import empty from '@/components/popups/empty'
 export default {
   name: 'model1',
   data () {
@@ -46,6 +45,10 @@ export default {
       list: null,
       total: 100,
       pageSize: 5,
+      emptyPage: {
+        size: 'large',
+        isShow: false
+      },
       viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错
       pageInfo: {
@@ -78,7 +81,7 @@ export default {
   },
   props: ['toFirst', 'pageOne'],
   components: {
-    Intell, createUser, intellAnalyse, userInfos, history, leaveMessage
+    Intell, createUser, intellAnalyse, userInfos, history, leaveMessage, empty
   },
   methods: {
     viewItem: function (data) {
@@ -113,14 +116,18 @@ export default {
   },
   watch: {
     toFirst: function (val, old) {
-      if (this.list === val) {
+      if (typeof val === 'undefined') {
+        this.emptyPage.isShow = true
         return
       }
+      this.emptyPage.isShow = false
       this.list = val
-      // console.log(val)
     },
     pageOne: function (val, old) {
-      // console.log(val)
+      console.log(val)
+      if (typeof val === 'undefined') {
+        return
+      }
       this.pageInfo = val
     }
   }
@@ -132,10 +139,14 @@ export default {
 /*  	box-sizing: border-box;*/
   	/*border: 1px solid red;*/
     background-color: white;
-    min-height: 500px
+    min-height: 500px;
+    width: 100%
   }
   .itemList{
     text-align: left
+  }
+  .show{
+    display: block
   }
   .item{
     border: 1px solid lightgrey;
@@ -143,10 +154,10 @@ export default {
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
-    width: 180px;
+    width: 18%;
     height: 200px;
     display: inline-block;
-    margin:0 20px 5px 20px
+    margin:0 1% 5px 1%
   }
   /*显示person标志的图片*/
   .item>img{
@@ -170,5 +181,16 @@ export default {
     bottom: 10px;
     width: 100%;
     text-align: center;
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .item{
+      width: 23%;
+    }
+  }
+  @media only screen and (max-width: 768px){
+    .item{
+      width: 31%;
+    }
   }
 </style>

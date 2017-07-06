@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
+    <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
       <div class="item" v-for="item in list" @click="getIntell(item)">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
@@ -26,6 +27,7 @@
 import Intell from '@/components/popups/intell'
 import createUser from '@/components/popups/createUser'
 import intellAnalyse from '@/components/popups/intellAnalyse'
+import empty from '@/components/popups/empty'
 // import config from '@/config'
 // import Axios from 'axios'
 export default {
@@ -49,6 +51,10 @@ export default {
       createUserData: {
         facetrackImage: null,
         facetrackId: null
+      },
+      emptyPage: {
+        size: 'large',
+        isShow: false
       }
     }
   },
@@ -80,14 +86,16 @@ export default {
       this.$emit('pageTwo', msg, 2)
     }
   },
-  components: {Intell, createUser, intellAnalyse},
+  components: {Intell, createUser, intellAnalyse, empty},
   watch: {
     // 从modulebox接收到的数据、分页信息
     toSecond: function (val, old) {
       console.log(val)
       if (typeof val === 'undefined') {
+        this.emptyPage.isShow = true
         return
       }
+      this.emptyPage.isShow = false
       this.list = val
     },
     pageTwo: function (val, old) {
@@ -110,8 +118,12 @@ export default {
 .container{
     box-sizing: border-box;
     min-height: 500px;
+    width: 100%;
     background-color: white;
     position: relative;
+  }
+  .show{
+    display: block
   }
   .itemList{
     text-align: left
@@ -122,10 +134,10 @@ export default {
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
-    width: 180px;
+    width: 18%;
     height: 200px;
     display: inline-block;
-    margin:0 20px 5px 20px
+    margin:0 1% 5px 1%
   }
   /*显示person标志的图片*/
   .item>img{
@@ -149,5 +161,16 @@ export default {
     bottom: 10px;
     width: 100%;
     text-align: center;
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .item{
+      width: 23%;
+    }
+  }
+  @media only screen and (max-width: 768px){
+    .item{
+      width: 31%;
+    }
   }
 </style>

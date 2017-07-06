@@ -141,9 +141,6 @@ export default {
 </style>
 
 <style scoped>
-#intellAnalyse{
-  /*display: none*/
-}
 .notshow{
   display: none;
 }

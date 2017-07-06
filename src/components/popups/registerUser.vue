@@ -3,6 +3,7 @@
    <div>
     <header>
       <h3><span v-text="title"></span>用户</h3>
+      <p v-if="title=='新建'">新建用户上传的头像，第一张将作为头像，上传图片不得少于4张</p>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead" >      
@@ -44,6 +45,7 @@
         </div>
       </div>
     </header>
+    <Progress :percent="percent"></Progress>
     <article>
       <div class="content">
         <button class="footBtn btn" @click="close">取消</button>
@@ -60,6 +62,7 @@
         <p>是否删除用户?</p>
         <button class="btn" @click="dontDelete">取消</button>
         <button class="btn" @click="mksureDelete">确认</button>
+        <button class="btn" @click="test">test</button>
       </div>   
       </div>
     </div>
@@ -72,10 +75,12 @@
 import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+import INTERFACE from '@/interface'
 export default {
   name: 'registerUser',
   data () {
     return {
+      percent: 0,
       isShow: false,
       title: null,
       personData: {
@@ -100,7 +105,7 @@ export default {
         imgUrl: null,
         imgs: [],
         name: null,
-        sex: '1',
+        sex: 1,
         cardId: null,
         birthDay: null,
         userkey: config.userkey,
@@ -109,13 +114,17 @@ export default {
       }
       this.$forceUpdate()
     },
+    test: function () {
+      Axios.post('11').then((res) => {
+        console.log(res)
+      })
+    },
     chooseImg: function (e) {
       this.personData.imgs = this.personData.imgs || []
       // console.log(this.$refs.fileInputOne.files)
       const files = this.$refs.fileInputOne.files
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
@@ -138,6 +147,7 @@ export default {
       $('#registerUser>div>article').addClass('vague')
     },
     pushFormat: function () {
+      console.log(Axios.defaults)
       console.log(this.title)
       console.log(this.personData)
       if (this.title === '新建' && this.personData.imgs.length > 0) {
@@ -147,7 +157,6 @@ export default {
         }
         this.personData.imgs.shift()
       }
-      // this.personData.imgs.shift()
       console.log(this.personData.imgs)
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
@@ -162,43 +171,42 @@ export default {
       personData.append('birthDay', this.personData.birthDay)
       personData.append('userkey', config.userkey)
       personData.append('deviceId', config.deviceId)
+      let _this = this
       console.log(personData)
       if (this.title === '新建') {
         Axios({
           method: 'POST',
-          url: config.HOST + 'wxServer2/admin/createPersonByImgs',
+          url: INTERFACE.USER_ADDNEW,
           data: personData,
-          headers: {
-            'Content-Type': ' application/x-www-form-urlencoded'
+          onUploadProgress: function (e) {
+            // 这里的this指向xhr对象
+            _this.percent = Math.round((e.loaded * 100) / e.total)
           }
         }).then((res) => {
-          console.log(res)
-          // alert(res.data.msg)
           if (res.data.msg === 'SUCC') {
-            // alert('succ')
+            // 1
+            this.$Message.success('创建成功')
             this.close()
           }
-          // if (res.msg)
-          // this.personData.imgs.length = 0
+          this.$Message.error(res.data.msg)
+          this.percent = 0
         }, (err) => {
-          console.log(err)
+          this.$Message.error(err.data.msg)
         })
       } else if (this.title === '编辑') {
         Axios({
           method: 'POST',
-          url: config.HOST + 'wxServer2/admin/uploadPersonInfo',
-          data: personData,
-          headers: {
-            'Content-Type': ' application/x-www-form-urlencoded'
-          }
+          url: INTERFACE.USER_EDIT,
+          data: personData
         }).then((res) => {
           console.log(res)
           if (res.data.msg === 'SUCC') {
             // this.$emit('popState', '0')
-            alert('创建成功')
+            this.$Message.success('编辑成功')
             this.close()
           }
-          // this.personData.imgs.length = 0
+          this.$Message.error(res.data.msg)
+          this.percent = 0
         }, (err) => {
           console.log(err)
         })
@@ -217,7 +225,7 @@ export default {
       dataForm.append('personId', this.personData.personId)
       Axios({
         method: 'POST',
-        url: config.HOST + '/apiServer/personManage/deletePerson',
+        url: INTERFACE.USER_DELETE,
         data: dataForm,
         headers: {
           'Content-Type': ' application/x-www-form-urlencoded'
@@ -272,6 +280,10 @@ header>div{
 }
 h3{
   margin:0;
+  font-size: 24px
+}
+h3>span{
+  font-size: 24px
 }
 header .addUser{
   padding-left: 10px;
@@ -279,15 +291,20 @@ header .addUser{
 }
 header .addUser .addMessage{
   margin:0 0 10px 0;
-  width: 50%;
+  width: 100%;
+  max-width: 300px;
  /* display: flex;
   justify-content: left;*/
 }
-
+.addMessage label{
+  width:20%;
+}
 .addMessage.long>input{
-  width: 160px;
+  /*background-color: red;*/
+  width: 65%;
+  max-width: 160px;
   height: 30px;
-  margin-left: 20%
+  margin-left: 10%
 }
 .addMessage.short>input{
   margin-left:20%
@@ -341,18 +358,24 @@ article{
   text-align: center;
   letter-spacing: 60px;
   width: 100%;
-  position: absolute;
-  bottom:40px
+  position: relative;
+}
+article>div{
+  display: flex;
+  justify-content: space-around;
 }
 article>div>button{
   background-color: #2B77D5;
-  width: 100px;
+  max-width: 100px;
+  margin: 0;
+  width: 40%;
   color: white
 }
 .goDelete{
-position: absolute;
-right: 0;
-bottom: 0
+  /*position: absolute;*/
+  /*right: 0;*/
+  /*bottom: 0*/
+  text-align: right
 }
 
 /*确认删除弹窗*/
@@ -381,7 +404,7 @@ bottom: 0
   background-color: white;
   /*box-sizing: content-box;*/
   /*background-color: red;*/
-  border:1px solid red;
+  /*border:1px solid red;*/
   letter-spacing: 50px;
   /*display: table-cell;*/
   text-align: center;
@@ -396,7 +419,7 @@ input[type="file"]{
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: red;
+  /*background-color: red;*/
   opacity: 0
 }
 </style>

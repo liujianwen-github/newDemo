@@ -1,27 +1,48 @@
 <template>
-  <div class="container">
-    <div class="leftHead">
-      <img src="../../assets/logo.png">
-      <span>未来门禁演示系统 1.0</span>
-    </div>
+  <!-- <div class="container"> -->
+  <Row class="container" type="flex" justify="center" align="middle">
+    <Col :sm="10" :md="10" :lg="10" :xs="18" class="leftHead">
+      <!-- <div > -->
+        <img src="../../assets/logo.png">
+        <span>未来门禁演示系统 1.0</span>
+      <!-- </div> -->
+    </Col>
     <!-- <div class="userMessage">
     </div> -->
-    <div class="contentBtnList">
-      <button class="contentBtn isActive" @click="viewContent(0)">今日到访</button>
-      <button class="contentBtn" @click="viewContent(1)">陌生人</button>
-      <button class="contentBtn" @click="viewContent(2)">到访用户</button>
-      <!-- <router-link to="//model1" exact>1</router-link> -->
-    </div>
-    <div class="toUser">
-      <router-link to="/userManage" exact>
-        <div>
-          <!-- <img src="../../assets/Admin_48px_582776_easyicon.net.png" height="30" width="30" alt=""> -->
-          <span class="glyphicon glyphicon-user"></span>
-        </div>
-        <p>用户管理</p>
-      </router-link>     
-    </div>
-  </div>
+    <Col span="8" class="contentBtnList">
+      <!-- <div > -->
+        <button class="contentBtn isActive" @click="viewContent('0')">今日到访</button>
+        <button class="contentBtn" @click="viewContent('1')">陌生人</button>
+        <button class="contentBtn" @click="viewContent('2')">到访用户</button>
+        <!-- <router-link to="//model1" exact>1</router-link> -->
+      <!-- </div> -->
+    </Col>
+    <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
+      <Dropdown trigger="click"  @on-click="dowhat">
+        <a href="javascript:void(0)">
+            <Icon type="drag" size="30"></Icon>
+        </a>
+        <Dropdown-menu slot="list">
+            <Dropdown-item class="listItem" name="0" >今日到访</Dropdown-item>
+            <Dropdown-item class="listItem" name="1" >陌生人</Dropdown-item>
+            <Dropdown-item class="listItem" name="2" >到访用户</Dropdown-item>
+            <Dropdown-item class="listItem" name="toUser" >用户管理</Dropdown-item>
+        </Dropdown-menu>
+      </Dropdown>
+      
+    </Col>
+    <Col span="6" class="toUser">
+      <!-- <div > -->
+        <router-link to="/userManage" exact>
+          <div>
+            <span class="glyphicon glyphicon-user"></span>
+            <p>用户管理</p>
+          </div>    
+        </router-link>     
+      <!-- </div> -->
+    </Col>   
+  </Row>  
+  <!-- </div> -->
 </template>
 
 <script>
@@ -45,6 +66,13 @@ export default {
       $('.contentBtnList>button').eq(arg).siblings().removeClass('isActive')
       // 向index中传递当前选择的类别
       this.$emit('currentContent', arg)
+    },
+    dowhat: function (msg) {
+      if (msg === 'toUser') {
+        this.$router.push('/usermanage')
+      } else {
+        this.viewContent(msg)
+      }
     }
   }
 }
@@ -52,31 +80,39 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .container{
-    width: 100%;
-    height: 35px;
+    /*width: 100%;*/
+    height: 40px;
     position: relative;
+    /*margin: 0 auto*/
+    /*text-align: left;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
   }
   .container .leftHead{
     display: inline-block;
-    width: 400px;
+    text-align: left;
+    /*width: 400px;*/
     height: 35px;
     color: #005BAB;
-    position: absolute;
-    left: 0
   }
   .container .leftHead img{
-    height: 100%;
-    position: absolute;
-    left: 15px
+    /*height: 100%;*/
+    max-width: 50%;
+    /*position: absolute;*/
+    /*left: 15px*/
   }
   .container .leftHead span{
-    position: absolute;
-    top: 0;
-    /*left: 0;*/
-    line-height: 35px
+    line-height: 35px;
+    /*display: inline-block;*/
+    /*white-space:nowrap; */
+  }
+  .container .contentBtnList{
+    display: inline-block;
+    text-align: left
   }
   .container .contentBtnList button{
-    width: 100px;
+    max-width: 100px;
+    width: 30%;
     height: 35px;
     border-radius: 2.5em;
     background-color: transparent;
@@ -87,15 +123,27 @@ export default {
     font-size: 14px;
     /*border: 0*/
   }
-  .container .toUser{
-    position: absolute;
-    right: 15px;
-    height: 30px;
-    top:0;
-    /*background-color: lightblue*/
+  .container .toUser div{
+    height: 40px;
+    float: right;
+    display: inline-block;
+    text-align: center
   }
-
-
+  .smallDevice{
+    display: none;
+    text-align: right
+  }
+  @media only screen and (max-width: 768px){
+    *{
+      font-size: 12px
+    }
+    .smallDevice{
+      display: block
+    }
+    .contentBtnList,.toUser{
+      display: none!important
+    }
+  }
 
 
 

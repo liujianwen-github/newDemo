@@ -6,9 +6,7 @@ import router from './router'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
-import Axios from 'axios'
 import config from '@/config'
-Axios.defaults.baseURL = config.HOST
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)
@@ -23,5 +21,8 @@ new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  created: function (argument) {
+    config.axiosCon()
+  }
 })

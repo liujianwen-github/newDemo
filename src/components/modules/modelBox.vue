@@ -1,5 +1,5 @@
 <template>
-  <div class="container" id="modulesBox">
+  <div id="modulesBox">
     <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" :page-one="pageInfo1"></model1>
     <model2 v-show="notice==1" :to-second="modelTwo" @pageTwo="model_Change" :page-two="pageInfo2"></model2>
     <model3 v-show="notice==2" :to-third="modelThree" @pageThree="model_Change" :page-three="pageInfo3"></model3>
@@ -13,6 +13,7 @@ import model2 from '@/components/modules/model2.vue'
 import model3 from '@/components/modules/model3.vue'
 import Axios from 'axios'
 import config from '@/config'
+// import INTERFACE from '@/interface'
 export default {
   name: 'modelBox',
   data () {
@@ -92,11 +93,11 @@ export default {
   watch: {
     notice: function (val, old) {
       console.log(this.notice)
-      if (this.notice === 0) {
+      if (this.notice === '0') {
         this.getTotal()
-      } else if (this.notice === 1) {
+      } else if (this.notice === '1') {
         this.getStranger()
-      } else if (this.notice === 2) {
+      } else if (this.notice === '2') {
         this.getUser()
       } else {
         'moduleBox wcnm'
@@ -115,13 +116,11 @@ export default {
 *{
   margin: 0 auto
 }
-.container{
-  margin-top: 10px;
-  width: 100%;
-}
 #modulesBox{
   border: 1px solid #005BAB;
-  border-radius: 5px
+  border-radius: 5px;
+  width: 100%;
+  max-width: 1200px
 }
 
   

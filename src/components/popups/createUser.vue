@@ -45,6 +45,7 @@
 // import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+import INTERFACE from '@/interface'
 // import QsConfig from '@/axiosCon'
 export default {
   name: 'createUser',
@@ -107,16 +108,21 @@ export default {
       dataList.append('birthDay', this.birthDay)
       // console.log(data)
       Axios({
-        method: 'post',
-        url: config.HOST + '/wxServer2/admin/createPersonByFacetrack',
+        method: 'POST',
+        url: INTERFACE.STRANGER_CREATEUSER,
         data: dataList,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
           // 'Content-Type': 'text/plain'
         }
       }).then((res) => {
-        console.log(res.data.msg)
-        this.$emit('popState', '0')
+        console.log()
+        if (res.data.msg === 'SUCC') {
+          this.$Message.success('创建成功')
+          this.close()
+          return
+        }
+        this.$Message.error(res.data.msg)
       }, (err) => {
         console.log(err)
       })
@@ -126,10 +132,8 @@ export default {
     viewWhich: function (val, old) {
       console.log('createUser->viewWhich:' + val)
       if (val === 'createUser') {
-        // $('#createUser').css('display', 'block')
         this.intellNotShow = false
       } else {
-        // $('#createUser').css('display', 'none')
         this.intellNotShow = true
       }
     },

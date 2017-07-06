@@ -1,12 +1,15 @@
 <template>
   <div class="container">
     <!-- <p @click="getTotal">1</p>    -->
+    <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
       <div class="item" v-for="(item,index) in list">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
-          <img :src="item.headimage" alt="">
+          <div>
+            <img :src="item.headimage" alt="">
+          </div>
           <div class="name" v-html="item.name"></div>
           <div class="foot">
             <button class="btn" @click="goEdit(item,index)">编辑</button>
@@ -23,6 +26,8 @@
 import registerUser from '@/components/popups/registerUser'
 import config from '@/config'
 import Axios from 'axios'
+import INTERFACE from '@/interface'
+import empty from '@/components/popups/empty'
 export default {
   name: 'totalUserList',
   data () {
@@ -34,6 +39,10 @@ export default {
         totalRecord: 0,
         pageNo: 1,
         limit: 20
+      },
+      emptyPage: {
+        size: 'large',
+        isShow: false
       },
       getParams: {
         userkey: config.userkey,
@@ -47,7 +56,7 @@ export default {
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
     getAllUser: function () {
-      Axios.get(config.HOST + 'apiServer/personManage/getPersonList', {params: this.getParams}).then(
+      Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
           console.log(res)
           this.list = res.data.results.list
@@ -76,7 +85,7 @@ export default {
       this.getAllUser()
     }
   },
-  components: {registerUser},
+  components: {registerUser, empty},
   watch: {
     fromFa: function (val) {
       this.viewWhich = val
@@ -100,8 +109,10 @@ export default {
         console.log(res)
         if (res.data.results.list.length < 1) {
           alert('查询结果为空')
-          return
+          this.emptyPage.isShow = true
+          // return
         }
+        this.emptyPage.isShow = false
         this.list = res.data.results.list
         this.pageInfo = res.data.results.pageInfo
       }, (err) => {
@@ -123,7 +134,11 @@ export default {
     padding: 10px 15px;
     min-height: 500px;
     background-color: white;
-    margin-top: 10px
+    margin-top: 10px;
+    position: relative;
+  }
+  .show{
+    display: block
   }
   .itemList{
     text-align: left
@@ -134,20 +149,25 @@ export default {
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
-    width: 15%;
-    margin: 0 2.5% 1% 2.5%;
+    width: 23%;
+    margin: 5px 1%;
     /*height: 200px;*/
     display: inline-block;
     /*margin:0 20px 5px 20px*/
   }
   .item>div{
     text-align: center;
+    padding:1em;
   }
-  .item>div>img{
-    margin-top: 20px;
+  .item>div>div:first-child{
+    /*background-color: red*/
+    height: 140px;
+    overflow: hidden;
+  }
+  .item>div img{
+    /*margin-top: 20px;*/
     margin-bottom: 10px;
-    width:120px;
-    height: 120px;
+    width: 60%;
     background-color: blue
   }
   .item .name{
@@ -163,18 +183,31 @@ export default {
     /*border: 1px solid #005BAB;*/
   }
   .content{
-    height: 205px
+    /*height: 205px*/
   }
   .content .foot{
     width: 100%;
+    position: relative;
     height: 30px;
-    position: absolute;
-    bottom: 2px;
   }
   .content .foot button{
     width: 60px;
     height: 30px;
     text-align: center;
+  }
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .item{
+      width: 31%;
+    }
+  }
+  @media only screen and (max-width: 768px){
+    .item{
+      width: 31%;
+    }
+    .item>div>div:first-child{
+      /*background-color: red*/
+      height: 14vw;
+    }
   }
 
 </style>

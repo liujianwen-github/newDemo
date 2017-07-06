@@ -47,8 +47,8 @@
         <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
           <img :src="scene.img" alt="">
         </div>
-        <div class="gifBox" :class="{show:gif.isShow}" v-for="(item,index) in gif.gifList">
-          <img :src="gif.imgHead + item" :class="{show:gif.curr==index}" alt="" >
+        <div class="gifBox" :class="{show:gif.isShow}">
+          <img :src="gif.imgHead + gif.imgURL" :class="{show:gif.isShow}"  alt="" >
         </div>
       </div>
     </article>
@@ -61,6 +61,7 @@
 import Axios from 'axios'
 import config from '@/config'
 import listSide from '@/assets/listSide.png'
+import INTERFACE from '@/interface'
 
 export default {
   name: 'userInfos',
@@ -74,10 +75,12 @@ export default {
         isShow: false,
         img: ''
       },
+      gifChange: null,
       gif: {
         imgHead: null,
+        imgURL: null,
         gifList: [],
-        isShow: false,
+        isShow: true,
         curr: 0
       },
       list: null,
@@ -92,12 +95,14 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
+      this.stopGif()
+      this.closeScene()
     },
     viewGif: function (msg) {
       // alert(msg)
       Axios({
         method: 'get',
-        url: config.HOST + 'apiServer/facetrackManage/getFacetrackImgs',
+        url: INTERFACE.USER_FACETRACK_GIF,
         params: {
           userkey: config.userkey,
           facetrackId: msg,
@@ -105,9 +110,13 @@ export default {
         }
       }).then((res) => {
         console.log(res.data.results)
-        this.gif.imgHead = res.data.results.imgHead
-        this.gif.gifList = res.data.results.imgs
-        this.gif.isShow = true
+        this.gif = {
+          imgHead: res.data.results.imgHead,
+          imgURL: res.data.results.imgs[0],
+          gifList: res.data.results.imgs,
+          isShow: true,
+          curr: 0
+        }
         this.gifAnimation()
       }, (err) => {
         console.log(err)
@@ -116,19 +125,30 @@ export default {
       console.log(this.personData.personId)
     },
     gifAnimation: function () {
-      console.log(this.gif)
-      console.log('动图没写完')
-      // setInterval(function () {
-      //   // if (typeof this.gif.curr === 'undefined') return
-      //   if (this.gif.curr === this.gif.gifList.length - 1) {
-      //     this.gif.curr = 0
-      //   } else {
-      //     this.gif.curr = this.gif.curr++
-      //   }
-      // }, 1000)
+      // var i = 0
+      const _this = this
+      if (_this.gif.gifList.legnt <= 1) {
+        return
+      }
+      _this.gifChange = setInterval(function () {
+        // console.log(_this)
+        let i = _this.gif.curr
+        _this.gif.imgURL = _this.gif.gifList[i]
+        console.log(_this.gif.imgURL)
+        // 播放到最后一张时下标退回到0
+        _this.gif.curr = _this.gif.curr === _this.gif.gifList.length - 1 ? 0 : _this.gif.curr + 1
+      }, 500)
     },
     stopGif: function () {
-
+      // 清除动图
+      clearInterval(this.gifChange)
+      this.gif = {
+        imgHead: null,
+        imgURL: null,
+        gifList: [],
+        isShow: false,
+        curr: 0
+      }
     },
     viewScene: function (msg) {
       alert('查看场景图')
@@ -158,7 +178,7 @@ export default {
       console.log(this.personData)
       this.getParams.personId = this.personData.personId
       // alert(this.getParams.personId)
-      Axios.get(config.HOST + 'apiServer/personManage/getPersonMatchedList', {params: this.getParams}).then(
+      Axios.get(INTERFACE.USER_GETINFOS, {params: this.getParams}).then(
         (res) => {
           this.list = res.data.results.list
           console.log(this.list)
@@ -298,11 +318,6 @@ article .content .itemList li>div>.right>div .gif{
   max-height: 100%;
   max-width: 100%;
 }
-.gifBox img{
-  position: absolute;
-  left: 0;
-  border:1px solid red;
-  display: none
-}
+
 
 </style>
