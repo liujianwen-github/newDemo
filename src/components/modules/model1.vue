@@ -2,7 +2,7 @@
   <div class="container">
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
-      <div class="item" v-for="item in list"  @click="viewItem(item)">
+      <div class="item" v-for="item in list"  @click="viewItem(item)" :class="{vague: vagueModel}">
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
@@ -11,6 +11,10 @@
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
+      <!-- <div v-for="(key,index) in list">
+        <p>{{key}}</p>
+        <p>{{index}}</p>
+      </div> -->
       <div class="pageBox">
       <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
       </div>
@@ -38,12 +42,14 @@ import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
+// import store from '@/store/store'
 export default {
   name: 'model1',
   data () {
     return {
       list: null,
       total: 100,
+      vagueModel: false,
       pageSize: 5,
       emptyPage: {
         size: 'large',
@@ -88,6 +94,7 @@ export default {
       console.log(data)
       switch (data.matchStatus) {
         case 0:
+          // console.log(store)
           console.log('stranger')
           this.viewWhich = 'intell'
           this.intellValue = data
@@ -110,8 +117,11 @@ export default {
       this.$emit('pageOne', msg, 1)
     },
     changeState: function (msg) {
+      alert(msg)
       this.viewWhich = msg
-      console.log(msg)
+      if (this.viewwhich === 0) {
+        alert('1')
+      }
     }
   },
   watch: {
@@ -122,6 +132,7 @@ export default {
       }
       this.emptyPage.isShow = false
       this.list = val
+      console.log(this.list)
     },
     pageOne: function (val, old) {
       console.log(val)
@@ -129,11 +140,21 @@ export default {
         return
       }
       this.pageInfo = val
+    },
+    viewWhich: function (val, old) {
+      if (val !== '0') {
+        this.vagueModel = true
+      } else {
+        this.vagueModel = false
+      }
     }
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+@import '../../assets/style.css'
+</style>
 <style scoped>
   .container{
 /*  	box-sizing: border-box;*/

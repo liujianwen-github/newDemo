@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import config from '@/config'
+import store from './store/store'
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)
@@ -14,12 +15,14 @@ import config from '@/config'
 // import ''
 Vue.use(router)
 Vue.use(iView)
+// Vue.use(Vuex)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
   created: function (argument) {

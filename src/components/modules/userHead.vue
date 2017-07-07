@@ -1,8 +1,8 @@
 <template>
   <div class="container">
   <Row>
-    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" @click="reloadPage">
-      <img src="../../assets/logo.png">
+    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" >
+      <img src="../../assets/logo.png" @click="reloadPage">
       <span>未来门禁演示系统 1.0</span>
     </Col>
     <Col class="contentBtnList" span="5">
@@ -46,7 +46,9 @@
   </Row>
   <Modal
         v-model="modal1"
-        title="搜索用户">
+        title="搜索用户"
+        @on-ok="search"
+        >
         <div class="inputGroup">
           <span class="glyphicon glyphicon-user"></span>
           <input type="text" value="" v-model="searchText" @keyup="keySearch" autofocus="autofocus">
@@ -78,6 +80,7 @@ export default {
       this.$emit('searchPerson', this.searchText)
     },
     reloadPage: function () {
+      alert('111')
       window.location.reload()
     },
     reSearch: function () {

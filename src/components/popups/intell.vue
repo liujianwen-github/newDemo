@@ -39,7 +39,8 @@ export default {
       console.log(this.toIntell)
     },
     createUser: function () {
-      console.log('intell->create')
+      // console.log('intell->create')
+      console.log()
       this.$emit('popState', 'createUser')
     },
     intellAnalyse: function () {
@@ -50,7 +51,6 @@ export default {
     viewWhich: function (val, old) {
       console.log('intel->viewWhich:' + val)
       if (val === 'intell') {
-        // $('#intell').css('display', 'block')
         this.intellNotShow = false
         console.log(this.intellNotShow)
         console.log(this.toIntell)
@@ -75,16 +75,20 @@ export default {
 }
 .popup header{
   width: 100%;
-  height: 200px;
+  /*height: 200px;*/
   /*background-color: #2B77D5;*/
   padding: 20px;
   border-bottom:1px solid black;
 }
 .popup header>div{
-  /*display: inline-block;*/
-  float:left;
-  height: 160px;
+  display: inline-block;
+  /*float:left;*/
+  /*height: 160px;*/
   /*background-color: green*/
+}
+.popup header:after{
+  content:'';
+  clear: both
 }
 .popup header .setHead{
   width: 160px;
@@ -107,10 +111,14 @@ export default {
   clear: both;
   width: 100%;
   height: 300px;
+  overflow-y: auto
   /*background-color: lightblue*/
 }
 .popup article .content{
   text-align: center;
   padding-top: 10px
 }
+@media only screen and (max-width: 768px){
+    
+  }
 </style>

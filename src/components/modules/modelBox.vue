@@ -41,6 +41,11 @@ export default {
       if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
       Axios.get('apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
+        // this.modelOne = {
+        //   '0': 121,
+        //   '1': 2323,
+        //   '3': 2323
+        // }
         this.pageInfo1 = res.data.results.pageInfo
         console.log(res)
       }, (err) => {

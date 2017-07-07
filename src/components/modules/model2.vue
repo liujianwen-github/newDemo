@@ -3,7 +3,7 @@
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
-      <div class="item" v-for="item in list" @click="getIntell(item)">
+      <div class="item" v-for="item in list" @click="getIntell(item)" :class="{vague: vagueModel}">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -34,6 +34,7 @@ export default {
   name: 'model2',
   data () {
     return {
+      vagueModel: false,
       list: null,
       viewWhich: '0',
       pageInfo: {
@@ -104,6 +105,13 @@ export default {
         return
       }
       this.pageInfo = val
+    },
+    viewWhich: function (val, old) {
+      if (val !== '0') {
+        this.vagueModel = true
+      } else {
+        this.vagueModel = false
+      }
     }
   }
 }
@@ -113,6 +121,9 @@ export default {
    *           ②字符串单引号
    *           
    *             -->
+<style>
+  @import '../../assets/style.css'
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container{

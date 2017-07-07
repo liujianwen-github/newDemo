@@ -45,10 +45,14 @@
           </div>
         </div>
         <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
-          <img :src="scene.img" alt="">
+         <!-- <div> -->
+            <img :src="scene.img" alt="">
+         <!-- </div> -->
         </div>
-        <div class="gifBox" :class="{show:gif.isShow}">
-          <img :src="gif.imgHead + gif.imgURL" :class="{show:gif.isShow}"  alt="" >
+        <div class="gifBox" :class="{show:gif.isShow}" @click="stopGif">
+          <!-- <div> -->
+            <img :src="gif.imgHead + gif.imgURL"  alt="" >
+          <!-- </div> -->
         </div>
       </div>
     </article>
@@ -80,7 +84,7 @@ export default {
         imgHead: null,
         imgURL: null,
         gifList: [],
-        isShow: true,
+        isShow: false,
         curr: 0
       },
       list: null,
@@ -137,7 +141,7 @@ export default {
         console.log(_this.gif.imgURL)
         // 播放到最后一张时下标退回到0
         _this.gif.curr = _this.gif.curr === _this.gif.gifList.length - 1 ? 0 : _this.gif.curr + 1
-      }, 500)
+      }, 200)
     },
     stopGif: function () {
       // 清除动图
@@ -151,7 +155,6 @@ export default {
       }
     },
     viewScene: function (msg) {
-      alert('查看场景图')
       this.scene = {
         isShow: true,
         img: msg
@@ -303,20 +306,37 @@ article .content .itemList li>div>.right>div .gif{
   right: 0
 }
 
-.sceneBox{
+.sceneBox,.gifBox{
   width: 60%;
   height: 100%;
   position: absolute!important;
+  display: table-cell;
+  vertical-align: middle;
   right: 0;
   top: 0;
   background-color: rgba(0,0,0,0.7);
   z-index: 10;
   display: none;
+  text-align: center
 
 }
+/*.sceneBox>div{
+  display: table-cell;
+  vertical-align: middle
+}*/
 .sceneBox img{
+  width: 100%;
+  position: relative;
+  /*left: -50%;*/
+  /*top:-50%;*/
   max-height: 100%;
   max-width: 100%;
+}
+.gifBox  img{
+  /*width: 100%;*/
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%
 }
 
 

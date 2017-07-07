@@ -2,8 +2,10 @@
   font-size: 14px
 }
 .popup{
-  width: 680px;
-  height: 500px;
+  max-width: 680px;
+  max-height: 500px;
+  width: 80%;
+  height: 80%;
   position: fixed;
   top:50%;
   left: 50%;
@@ -14,12 +16,11 @@
 .popup>div{
   width: 100%;
   height: 100%;
-  /*max-height: 500px;*/
   position: relative;
   top:-50%;
   left: -50%;
   border-radius: 1%;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   overflow: hidden;
   border: 1px solid red;
   padding:20px;
@@ -54,6 +55,17 @@
 button{
   outline: none!important
 }
+.inputGroup>input{
+    width: 100%;
+    /*max-width: 150px;*/
+    height: 38px;
+    border: 0;
+    box-sizing: border-box;
+    /*background-color: red;*/
+    display: inline-block;
+    outline: none;
+    text-indent: 0.5em
+  }
 input{
   outline: none
 }
