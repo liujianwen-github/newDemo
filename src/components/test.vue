@@ -3,6 +3,7 @@
   	<div>father</div>
   	<son @fromson="bibi" :page="mimi"></son>
     <div @click="mimi">111</div>
+    <!-- <input type="text" v-model="lili" name=""> -->
   </div>
 </template>
 <script>
@@ -12,7 +13,8 @@ export default {
   dara () {
     return {
       mimi: 'data',
-      bibi: [1, 2, 3, 4, 4, 5, 6, 7]
+      bibi: [1, 2, 3, 4, 4, 5, 6, 7],
+      lili: null
     }
   },
   components: {son},
@@ -33,6 +35,11 @@ export default {
     },
     stringifyDate: function (date) {
       console.log(date)
+    }
+  },
+  watch: {
+    lili: function (val, old) {
+      console.log(val)
     }
   }
 }

@@ -6,7 +6,7 @@
       <div class="setHead">
         <img v-bind:src="toIntell.facetrackImage" alt="">
       </div>
-      <div class="addUser">
+      <div class="addUser whiteText">
         <p class="headInfo">来访时间: <span v-text="toIntell.createTime"></span></p>
         <p class="headInfo">采集地点: <span v-text="toIntell.sourceDes"></span></p>
         <div class="btn" @click="createUser">新建用户</div>
@@ -73,36 +73,29 @@ export default {
 .notshow{
   display: none;
 }
-.popup header{
-  width: 100%;
-  /*height: 200px;*/
-  /*background-color: #2B77D5;*/
-  padding: 20px;
-  border-bottom:1px solid black;
-}
 .popup header>div{
   display: inline-block;
-  /*float:left;*/
-  /*height: 160px;*/
-  /*background-color: green*/
+  vertical-align: top
 }
 .popup header:after{
   content:'';
   clear: both
 }
 .popup header .setHead{
-  width: 160px;
+  /*width: 160px;*/
   height: 160px;
   background-color: white
 }
 .popup header .setHead img{
-  width: 100%;  
+  /*width: 100%;  */
+  height: 100%
 }
 .popup header .addUser{
-  padding-left:10px
+  padding-left:10px;
+  height: 160px
 }
 .popup header .btn{
-  border:1px solid black;
+  border:1px solid white;
   /*color: white;*/
   font-weight: 800;
   margin-top: 20px

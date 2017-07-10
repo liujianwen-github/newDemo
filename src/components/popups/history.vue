@@ -27,6 +27,7 @@
     </header>
     <article>
      <div class="content">
+     <div v-if="historyList.length==0">empty</div>
        <div class="item" v-for="(item,index) in historyList">
          <img :src="item.facetrackImage"  alt="">
          <p><span v-text="item.createTime.split(' ')[0]"></span> <span v-text="item.createTime.split(' ')[1]"></span></p>
@@ -54,7 +55,7 @@ export default {
       chooseTime: '0.5',
       personData: null,
       searchImgList: null, // 查找未成功识别记录数据
-      historyList: null
+      historyList: []
     }
   },
   props: ['viewWhich', 'toHistory'],
@@ -178,7 +179,7 @@ export default {
 .popup .btn{
   /*border:1px solid white;*/
   /*color: white;*/
-  background-color: #2B77D5;
+  background-color: #6AA0E2;
   width: 120px;
   height: 30px;
   color: white;

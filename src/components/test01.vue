@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<button @click="talkfa">{{bibi}}</button>
+    <input type="text" v-model="lili" name="" @change="biubiu">
 	</div>
 </template>
 <script>
@@ -11,7 +12,8 @@ export default {
   name: 'test01',
   data () {
     return {
-      bibi: 'son'
+      bibi: 'son',
+      lili: ' '
     }
   },
   props: ['page'],
@@ -26,11 +28,18 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    biubiu: function (msg) {
+      console.log(msg)
+      // console.log(this.bibi)
     }
   },
   watch: {
     page: function (val, old) {
       this.bibi = val
+    },
+    lili: function (val, old) {
+      // console.log(val)
     }
   }
 }

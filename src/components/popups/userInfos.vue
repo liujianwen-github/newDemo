@@ -7,7 +7,7 @@
         <img :src="personData.headimage" alt="">
         <!-- {{personData}} -->
       </div>
-      <div class="addUser">
+      <div class="addUser whiteText">
         <p class="headInfo" v-text="personData.name">name</p>
         <p class="headInfo">最后到访时间：<span v-text="personData.latestMatchTime"></span></p>
         <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p>
@@ -16,44 +16,51 @@
     </header>
     <article>
       <div class="content">
-        <div @click="searchHistory">
+        <div @click="searchHistory" class="searchHistory">
           <img src="../../assets/search.png"  alt="">
           <p>查找未成功识别记录</p>
         </div>
-        <div :class="{noScroll:scene.isShow}">
-          <p>识别记录</p>
+        <div class="message">
+           <p>识别记录</p>
+           <span class="prompt">搜索的识别记录最多为当前时间以前的20条</span>
+        </div>
+        <div :class="{noScroll:scene.isShow}" class="discern"> 
           <div class="itemList">
-            <ul>
-            <!-- TODO v-for -->
-              <li v-for="item in list" :style="liBgc">
-                <div>
-                  <div class="left">
-                    <p v-text="item.createTime.split(' ')[0]">date</p>
-                    <p v-text="item.createTime.split(' ')[1]">time</p>
-                    <p v-text="item.sourceDes">address</p>
-                    <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
-                  </div>
-                  <div class="right" @click="viewGif(item.facetrackId)">
-                    <div>
-                      <img :src="item.facetrackImage" alt="">
-                      <span class="gif">GIF</span>
+            <div>
+              <ul>
+              <!-- TODO v-for -->
+                <li v-for="item in list" :style="liBgc">
+                  <div>
+                    <div class="left">
+                      <p v-text="item.createTime.split(' ')[0]">date</p>
+                      <p v-text="item.createTime.split(' ')[1]">time</p>
+                      <p v-text="item.sourceDes">address</p>
+                      <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
+                    </div>
+                    <div class="right" @click="viewGif(item.facetrackId)">
+                      <div>
+                        <img :src="item.facetrackImage" alt="">
+                        <span class="gif">GIF</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+          </div>
+            
+          </div>
+          <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
+           <!-- <div> -->
+              <img :src="scene.img" alt="">
+           <!-- </div> -->
+          </div>
+          <div class="gifBox" :class="{show:gif.isShow}" @click="stopGif">
+            <!-- <div> -->
+              <img :src="gif.imgHead + gif.imgURL"  alt="" >
+            <!-- </div> -->
           </div>
         </div>
-        <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
-         <!-- <div> -->
-            <img :src="scene.img" alt="">
-         <!-- </div> -->
-        </div>
-        <div class="gifBox" :class="{show:gif.isShow}" @click="stopGif">
-          <!-- <div> -->
-            <img :src="gif.imgHead + gif.imgURL"  alt="" >
-          <!-- </div> -->
-        </div>
+        
       </div>
     </article>
    </div>
@@ -212,13 +219,15 @@ export default {
   overflow-y: hidden!important;
 }
 .popup{
-  display: none
+  display: none;
+}
+.popup>div{
+  background-color: white!important;
 }
 .popup header{
   width: 100%;
   height: 200px;
   padding: 20px;
-  border-bottom: 1px solid black
 }
 .popup header>div{
   /*display: inline-block;*/
@@ -240,12 +249,13 @@ export default {
 .popup header .btn{
   /*border:1px solid white;*/
   /*color: white;*/
-  background-color: #2B77D5;
+  background-color: #6AA0E2;
   color: white;
   font-weight: 800;
   margin-top: 20px
 }
 .popup article{
+  color: rgb(10,10,10);
   clear: both;
   width: 100%;
   height: 280px;
@@ -253,27 +263,59 @@ export default {
 .popup article .content{
   display: flex;
   position: relative;
-  height: 260px
+  height: 260px;
 }
 .popup article .content>div:first-child{
-  /*background-color: red;*/
   cursor: pointer;
   width: 40%;
   text-align: center;
+  /*border-right: 1px solid red*/
 }
 .popup article .content>div:first-child>img{
   margin-top: 40px
 }
-.popup article .content>div:nth-child(2){
-  /*background-color: blue;*/
-  width: 60%;
+.popup article .content>discern>.itemList{
+  /*width: 60%;*/
   overflow-y: auto;
   position: relative;
 }
+article .searchHistory{
+  color: black
+}
+article .content>p{
+  /*color: red*/
+  display: inline-block;
+  height: 20px
+}
+article .content>span{
+  display: inline-block;
+  height: 20px
+}
+article .discern{
+  margin-top: 40px;
+  position: relative;
+  border: 1px solid grey;
+  border-radius: 5px;
+  /*background-color: red;*/
+  width: 50%;
+  height: 220px
+  /*border-bottom: 1px solid grey;
+  border-bottom-left-radius: 5px*/
+}
+article span.prompt{
+  color: rgb(100,100,100);
+  font-size: 12px
+}
+article .content .message{
+  position: absolute;
+  left: 40%
+}
+article .content .message p{
+  margin: 0
+}
 /*识别记录*/
 article .content .itemList ul{
-  padding: 0;
-  /*overflow-y: auto*/
+  padding: 5px 0 0 0;
 }
 article .content .itemList li{
   list-style-type: none;
@@ -295,7 +337,6 @@ article .content .itemList li>div>.right>div{
 }
 article .content .itemList li>div>.right img{
   width: 100%;
-  border: 1px solid red
 }
 article .content .itemList li>div>.right>div .gif{
   background-color: rgba(0,0,0,0.6);
@@ -307,11 +348,11 @@ article .content .itemList li>div>.right>div .gif{
 }
 
 .sceneBox,.gifBox{
-  width: 60%;
+  width: 100%;
   height: 100%;
   position: absolute!important;
-  display: table-cell;
-  vertical-align: middle;
+  /*display: table-cell;*/
+  vertical-align: bottom;
   right: 0;
   top: 0;
   background-color: rgba(0,0,0,0.7);

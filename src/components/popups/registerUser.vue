@@ -3,7 +3,7 @@
    <div>
     <header>
       <h3><span v-text="title"></span>用户</h3>
-      <p v-if="title=='新建'">新建用户上传的头像，第一张将作为头像，上传图片不得少于4张</p>
+      <p v-if="title=='新建'">新建用户上传的图片，第一张将作为头像，上传图片不得少于4张</p>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead" >      
@@ -24,35 +24,43 @@
         </div>    
       </div>
       <p>上传用户头像</p>
-      <!-- 编辑信息 -->
-      <div class="addUser">
-        <div class="addMessage long">
-          <label>姓名</label>
-          <input type="text" name="" v-model="personData.name">
-        </div>
-        <div class="addMessage short">
-          <label>性别</label>
-          <input type="radio" name="sex" value="1"  v-model="personData.sex">男
-          <input type="radio" name="sex" value="0" v-model="personData.sex">女
-        </div>
-        <div class="addMessage long">
-          <label>卡号</label>
-          <input type="text" name="" v-model="personData.cardId">
-        </div>
-        <div class="addMessage long">
-          <label>生日</label>
-          <input type="date" name="" v-model="personData.birthDay">
-        </div>
-      </div>
     </header>
-    <Progress :percent="percent"></Progress>
     <article>
       <div class="content">
-        <button class="footBtn btn" @click="close">取消</button>
-        <button class="footBtn btn" @click="pushFormat">确定</button>
+      <!-- 编辑信息 -->
+      <div class="addUser">
+        <br>
+        <Row>
+          <Col span="12" class="addMessage long">
+              <label>姓名</label>
+              <input type="text" name="" v-model="personData.name">
+          </Col>
+          <Col span="12" class="addMessage short">
+            <label>性别</label>
+            <input type="radio" name="sex" value="1"  v-model="personData.sex">男
+            <input type="radio" name="sex" value="0" v-model="personData.sex">女
+          </Col>
+        </Row> 
+        <br>
+        <Row> 
+          <Col span="12" class="addMessage long">
+            <label>卡号</label>
+            <input type="text" name="" v-model="personData.cardId">
+          </Col>
+          <Col span="12" class="addMessage long">
+            <label>生日</label>
+            <!-- <input type="date" name="" v-model="personData.birthDay"> -->
+            <Date-picker v-model="personData.birthDay" class="input"></Date-picker>
+          </Col>
+        </Row> 
+        </div>
+        <div class="foot">
+          <button class="btn" @click="close">取消</button>
+          <button class="btn" @click="pushFormat">确定</button>
+        </div>
       </div>
     </article>
-    <div class="goDelete">
+    <div class="goDelete" v-if="title=='编辑'">
       <span class="btn" @click="godelete">删除用户</span>
     </div>
     <!-- 删除用户弹窗 -->
@@ -62,7 +70,6 @@
         <p>是否删除用户?</p>
         <button class="btn" @click="dontDelete">取消</button>
         <button class="btn" @click="mksureDelete">确认</button>
-        <button class="btn" @click="test">test</button>
       </div>   
       </div>
     </div>
@@ -82,6 +89,7 @@ export default {
     return {
       percent: 0,
       isShow: false,
+      processIsShow: false,
       title: null,
       personData: {
         imgUrl: null,
@@ -113,11 +121,6 @@ export default {
         personId: null
       }
       this.$forceUpdate()
-    },
-    test: function () {
-      Axios.post('11').then((res) => {
-        console.log(res)
-      })
     },
     chooseImg: function (e) {
       this.personData.imgs = this.personData.imgs || []
@@ -161,6 +164,7 @@ export default {
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
       }
+      this.processIsShow = true
       let personData = new FormData()
       personData.append('personId', this.personData.personId)
       personData.append('imgUrl', this.personData.imgUrl)
@@ -183,14 +187,17 @@ export default {
             _this.percent = Math.round((e.loaded * 100) / e.total)
           }
         }).then((res) => {
+          console.log(res)
           if (res.data.msg === 'SUCC') {
             // 1
             this.$Message.success('创建成功')
             this.close()
+            return
           }
           this.$Message.error(res.data.msg)
           this.percent = 0
         }, (err) => {
+          console.log(err)
           this.$Message.error(err.data.msg)
         })
       } else if (this.title === '编辑') {
@@ -204,10 +211,12 @@ export default {
             // this.$emit('popState', '0')
             this.$Message.success('编辑成功')
             this.close()
+            return
           }
           this.$Message.error(res.data.msg)
           this.percent = 0
         }, (err) => {
+          console.log(err)
           this.$Message.error(err.data.msg)
         })
       }
@@ -254,7 +263,10 @@ export default {
     },
     toRegisterUser: {
       handler (val, old) {
+        // 获取数据
         this.personData = val
+        // 默认不显示进度条
+        this.processIsShow = false
         console.log(val)
         this.personData.imgUrl = val.headimage
       },
@@ -272,12 +284,12 @@ export default {
 .popup{
   display: none
 }
-.popup>div{
-  border:1px solid red;
-}
 header>div{
-  margin-top: 10px
+  margin-top: 10px;
 }
+header{
+    color: white
+  }
 h3{
   margin:0;
   font-size: 24px
@@ -290,21 +302,20 @@ header .addUser{
   margin-top:10px
 }
 header .addUser .addMessage{
-  margin:0 0 10px 0;
-  width: 100%;
+  margin-top:20px;
+  padding-top: 20px;
+  /*width: 100%;*/
   max-width: 300px;
- /* display: flex;
-  justify-content: left;*/
 }
 .addMessage label{
   width:20%;
 }
-.addMessage.long>input{
-  /*background-color: red;*/
+.addMessage.long>input,.addMessage.long>.input{
   width: 65%;
   max-width: 160px;
   height: 30px;
-  margin-left: 10%
+  margin-left: 10%;
+  display: inline-block;
 }
 .addMessage.short>input{
   margin-left:20%
@@ -324,20 +335,17 @@ header .setHead>div{
 .goLong{
   width: 150%!important
 }
-/*header .setHead>p{
-  position: absolute;
-  bottom:-20px;
-  left: 0
-}*/
 header .setHead img{
   /*width: 100%;*/
 }
 header .setHead .changePic{
   width: 144px;
   height: 100%;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
   border: 1px solid grey;
-  background-color: rgba(255,255,255,0.5);
+  background-color: white;
   text-align: center;
   color: white;
   /*float:left;*/
@@ -348,7 +356,9 @@ header .setHead .changePic{
 }
 header .setHead .changePic img{
   /*width: 100%;*/
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
   height: 100%;
   min-width: 100%;
   min-height: 100%;
@@ -356,25 +366,25 @@ header .setHead .changePic img{
 article{
   clear: both;
   text-align: center;
-  letter-spacing: 60px;
+  /*letter-spacing: 60px;*/
   width: 100%;
   position: relative;
 }
-article>div{
-  display: flex;
-  justify-content: space-around;
+article>div .foot{
+  margin-top: 40px;
+  letter-spacing: 20px
+
 }
-article>div>button{
+article>div .foot button{
   background-color: #2B77D5;
+  letter-spacing: 0;
   max-width: 100px;
   margin: 0;
   width: 40%;
+  height: 30px;
   color: white
 }
 .goDelete{
-  /*position: absolute;*/
-  /*right: 0;*/
-  /*bottom: 0*/
   text-align: right
 }
 
@@ -405,7 +415,7 @@ article>div>button{
   /*box-sizing: content-box;*/
   /*background-color: red;*/
   /*border:1px solid red;*/
-  letter-spacing: 50px;
+  letter-spacing: 1em;
   /*display: table-cell;*/
   text-align: center;
   padding:60px 60px;

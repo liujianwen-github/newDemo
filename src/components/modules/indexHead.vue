@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="container"> -->
+  <div class="container">
   <Row class="container" type="flex" justify="center" align="middle">
     <Col :sm="10" :md="10" :lg="10" :xs="18" class="leftHead">
       <!-- <div > -->
@@ -41,8 +41,25 @@
         </router-link>     
       <!-- </div> -->
     </Col>   
-  </Row>  
-  <!-- </div> -->
+  </Row>
+  <!-- <br> -->
+  <!-- <Row>
+    <Col>1</Col>
+    <Col>2</Col>
+    <Col>3</Col>
+  </Row> -->
+  <!-- <Row class="userinfo">
+    <Col class="user" span="8" align="left">
+      <span>userinfo</span>
+    </Col>
+    <Col class="personData" span="8">
+      <span>personData</span>
+    </Col>
+    <Col class="logout" span="8" align="right">
+      <span>退出</span>
+    </Col>
+  </Row> -->
+  </div>
 </template>
 
 <script>
@@ -81,8 +98,10 @@ export default {
 <style scoped>
   .container{
     /*width: 100%;*/
-    height: 40px;
+    /*height: 40px;*/
     position: relative;
+    padding: 0;
+    border:1px solid transparent;
     /*margin: 0 auto*/
     /*text-align: left;*/
     /*display: flex;*/
@@ -143,6 +162,16 @@ export default {
     .contentBtnList,.toUser{
       display: none!important
     }
+  }
+  .userinfo{
+    height: 40px;
+    width: 100%;
+    padding: 0 20px;
+    background-color: #ABB6C6;
+    color: rgba(255,255,255,0.9)
+  }
+  .userinfo span{
+    line-height: 40px
   }
 
 

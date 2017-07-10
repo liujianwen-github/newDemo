@@ -2,7 +2,7 @@
   <div class="popup" id="createUser" :class="{notshow:intellNotShow}">
    <div v-if="viewWhich=='createUser'">
     <header>
-      <h3>新建用户</h3>
+      <h3 class="whiteText">新建用户</h3>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
         <img :src="img" alt="">
@@ -16,7 +16,7 @@
           <label>姓名</label>
           <input type="text" name="" v-model="name">
         </div>
-        <div class="addMessage">
+        <div class="addMessage short">
           <label>性别</label>
           <input type="radio" name="sex" value="1" checked="checked" v-model="sex">男
           <input type="radio" name="sex" value="0" v-model="sex">女
@@ -159,12 +159,16 @@ export default {
   display: none;
 }
 .popup>div{
-  border:1px solid red;
-  background-color: pink
+  /*border:1px solid red;*/
+  /*background-color: pink*/
 }
-header>div{
+header{
+  height: 60%
+}
+header>div:not(.closeWindow){
   display: inline-block;
-  float: left;
+  /*float: left;*/
+  vertical-align: top;
   margin-top: 20px
 }
 header .addUser{
@@ -176,6 +180,9 @@ header .addUser .addMessage{
 .addMessage.long>input{
   width: 160px;
   height: 30px
+}
+.addMessage.short>input{
+  margin-left:20%
 }
 
 header .setHead{
@@ -200,11 +207,13 @@ article{
   text-align: center;
   letter-spacing: 60px;
   width: 100%;
+  height: 40px;
   position: absolute;
-  bottom:40px
+  bottom:20px;
 }
 article>div>button{
   background-color: #2B77D5;
+  letter-spacing: 1px;
   width: 100px;
   color: white
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" id="model1">
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
       <div class="item" v-for="item in list"  @click="viewItem(item)" :class="{vague: vagueModel}">
@@ -117,11 +117,7 @@ export default {
       this.$emit('pageOne', msg, 1)
     },
     changeState: function (msg) {
-      alert(msg)
       this.viewWhich = msg
-      if (this.viewwhich === 0) {
-        alert('1')
-      }
     }
   },
   watch: {
@@ -164,13 +160,15 @@ export default {
     width: 100%
   }
   .itemList{
-    text-align: left
+    text-align: left;
+    padding-top: 10px
   }
   .show{
     display: block
   }
   .item{
-    border: 1px solid lightgrey;
+    /*border: 1px solid lightgrey;*/
+    background-color: white;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;

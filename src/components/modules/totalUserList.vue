@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" id="userManage">
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
@@ -77,7 +77,7 @@ export default {
       this.$emit('popState', '0')
     },
     deleteItem: function (msg) {
-      alert('delete NO' + msg)
+      // alert('delete NO' + msg)
       this.list.splice(msg, 1)
     },
     changePage: function (msg) {
@@ -129,7 +129,7 @@ export default {
 <style scoped>
 .container{
     box-sizing: border-box;
-    border: 1px solid #005BAB;
+    /*border: 1px solid #005BAB;*/
     border-radius: 5px;
     padding: 10px 15px;
     min-height: 500px;
@@ -145,6 +145,7 @@ export default {
   }
   .item{
     border: 1px solid lightgrey;
+    background-color: #f1f1f1;
     border-radius: 5%;
     overflow: hidden;
     box-sizing: border-box;
@@ -191,8 +192,11 @@ export default {
     height: 30px;
   }
   .content .foot button{
-    width: 60px;
+    width: 50%;
+    /*max-width: 100px;*/
+    /*width: 100px;*/
     height: 30px;
+    letter-spacing: 5px;
     text-align: center;
   }
   @media only screen and (min-width: 768px) and (max-width: 1200px) {

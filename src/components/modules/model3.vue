@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" id="model3">
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
@@ -127,7 +127,8 @@ export default {
     /*border: 1px solid red;*/
     min-height: 500px;
     background-color: white;
-    width: 100%
+    width: 100%;
+    padding-top: 5px
   }
   .show{
     display: block
@@ -138,7 +139,7 @@ export default {
   }
   .item{
     border: 1px solid lightgrey;
-    border-radius: 5%;
+    border-radius: 10px;
     overflow: hidden;
     box-sizing: border-box;
     position: relative;
@@ -147,6 +148,7 @@ export default {
     display: inline-block;
     margin:5px 1% 5px 1%;
     position: relative;
+    background-color: white
   }
   /*.item>div{
     text-align: center;

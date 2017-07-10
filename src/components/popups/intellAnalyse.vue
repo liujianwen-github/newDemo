@@ -6,7 +6,7 @@
       <div class="setHead">
         <img :src="personData.facetrackImage" alt="">
       </div>
-      <div class="addUser">
+      <div class="addUser whiteText">
         <p class="headInfo">来访时间:<span v-text="personData.createTime"></span></p>
         <p class="headInfo">采集地点:<span v-text="personData.sourceDes"></span></p>
         <p>以下是智能分析找到最接近的三名注册用户</p>
@@ -16,7 +16,9 @@
       <div class="content">
         <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.persontag)">
           <input type="checkbox" name="chooseItem" :value="item.persontag" v-model="chooseItem">
-          <div class="bgc" :class="{showme:index==whichBgc}" style="color:white"></div>
+          <div class="bgc" :class="{showme:index==whichBgc}" style="color:white">
+            <img src="../../assets/checked.png" height="25" width="25">
+          </div>
           <img :src="item.headImage" alt="">
           <p v-text="item.name">name</p>
         </div>
@@ -60,6 +62,7 @@ export default {
       this.intellNotShow = true
       this.whichBgc = null
       this.dataList = null
+      this.whichBgc = null
       // console.log(this.dataList)
       this.$emit('popState', '0')
     },
@@ -149,7 +152,6 @@ export default {
   height: 200px;
   /*background-color: #2B77D5;*/
   padding: 20px;
-  border-bottom: 1px solid black;
   box-sizing: border-box;
 }
 .popup header>div{
@@ -189,7 +191,10 @@ export default {
   padding-top: 20px
 }
 .popup article .content>.item{
-  background-color: lightblue;
+  color: rgb(70,60,70);
+  /*border:3px solid rgba(0,0,0,0.5);*/
+  background-color: white;
+  border-radius: 5px; 
   width: 140px;
   height: 160px;
   text-align: center;
@@ -204,8 +209,14 @@ export default {
   height: 100%;
   display: none
 }
+.popup article .content>.item .bgc>img{
+  position: absolute;
+  right: 0;
+  bottom: 0
+}
 .popup article .content>.item .bgc.showme{
   display: block;
+  border:3px solid #2C78D6;
 }
 .popup article .content>.item>img{
   width: 120px;

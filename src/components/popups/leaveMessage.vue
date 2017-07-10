@@ -8,27 +8,27 @@
       </div>
       <div class="addUser">
         <p class="headInfo">
-          <span v-text="personData.name"></span>
+          <span v-text="personData.name" class="whiteText"></span>
         </p>
-        <p class="headInfo">留言设置</p>
+        <p class="headInfo whiteText">留言设置</p>
         <div class="headInfo">
           <div>
-            <input type="radio" name="timeLine" value="short" v-model="messageForm.timeLine">短期留言
+            <input type="radio" name="timeLine" value="short" v-model="messageForm.timeLine"><span class="whiteText">短期留言</span>
           </div>
           <div>
-            <input type="radio" name="timeLine" value="long" v-model="messageForm.timeLine">长期留言
+            <input type="radio" name="timeLine" value="long" v-model="messageForm.timeLine"><span class="whiteText">长期留言</span>
           </div>
         </div>
         <div class="headInfo">
-          开始时间：<input type="date" value="" v-model="messageForm.startTime">
+          <span class="whiteText">开始时间：</span><Date-picker class="date" v-model="messageForm.startTime"></Date-picker>
         </div>
         <div class="headInfo">
-          结束时间：<input type="date" value="" v-model="messageForm.endTime">
+          <span class="whiteText">结束时间：</span><Date-picker class="date" v-model="messageForm.endTime"></Date-picker>
         </div>
       </div>
     </header>
     <article>
-      <p>留言会在设定时间段内识别时出现</p>
+      <p class="message">留言会在设定时间段内识别时出现</p>
       <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.message"></textarea>
       <div class="foot">
         <button class="btn" @click="close">取消</button>
@@ -154,13 +154,13 @@ export default {
   width: 100%;
   height: 200px;
   padding: 20px;
-  border-bottom: 1px solid black
+}
+.popup>div{
+  background-color: #F6F7FB
 }
 .popup header>div{
-  /*display: inline-block;*/
   float:left;
   height: 160px;
-  /*background-color: green*/
 }
 .popup header .setHead{
   width: 160px;
@@ -173,12 +173,18 @@ export default {
 .popup header .addUser{
   padding-left:10px
 }
+.popup header .addUser .headInfo{
+  margin-bottom: 5px
+}
 .popup header .addUser .headInfo>div{
   display: inline-block;
 }
-.popup header .addUser .headInfo input[type="date"]{
+.popup header .addUser .headInfo .date{
   width: 160px;
   height: 30px
+}
+.message{
+  color: rgb(100,100,100)
 }
 .popup .btn{
   /*border:1px solid white;*/
@@ -190,15 +196,19 @@ export default {
   font-weight: 800;
   margin-top: 20px;
 }
+article{
+  text-align: center;
+}
 textarea{
-  width: 100%;
+  width: 80%;
   height: 180px;
   resize: none
 }
 .foot{
-  /*text-align: center;*/
-  display: flex;
-  justify-content: space-around;
+  letter-spacing: 20px
+}
+.foot>button{
+  letter-spacing: 0
 }
 
 
