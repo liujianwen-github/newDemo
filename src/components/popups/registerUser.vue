@@ -3,14 +3,14 @@
    <div>
     <header>
       <h3><span v-text="title"></span>用户</h3>
-      <p v-if="title=='新建'">新建用户上传的图片，第一张将作为头像，上传图片不得少于4张</p>
+      <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于4张</p>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead" >      
         <div>
           <div class="changePic"  v-if="title=='编辑'">
             <!-- <img :src="personData.imgUrl" alt="1"> -->
-            <img :src="personData.imgUrl" alt="1">
+            <img :src="personData.imgUrl" alt="头像">
           </div>
           <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
             <!-- <img v-if="title=='新建'" src="../../assets/userHeader.png" alt=""> -->
@@ -33,24 +33,28 @@
         <Row>
           <Col span="12" class="addMessage long">
               <label>姓名</label>
-              <input type="text" name="" v-model="personData.name">
+              <input type="text" name="name" v-model="personData.name" v-validate="'required|name'">
+              <p v-show="errors.has('name')">{{ errors.first('name') }}</p>
           </Col>
           <Col span="12" class="addMessage short">
             <label>性别</label>
-            <input type="radio" name="sex" value="1"  v-model="personData.sex">男
-            <input type="radio" name="sex" value="0" v-model="personData.sex">女
+            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'">男
+            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'">女
+            <p v-show="errors.has('sex')">{{ errors.first('sex') }}</p>
           </Col>
         </Row> 
         <br>
         <Row> 
           <Col span="12" class="addMessage long">
             <label>卡号</label>
-            <input type="text" name="" v-model="personData.cardId">
+            <input type="text" name="cardId"  v-model="personData.cardId" v-validate="'required'">
+            <p v-show="errors.has('cardId')">{{ errors.first('cardId') }}</p>
           </Col>
           <Col span="12" class="addMessage long">
             <label>生日</label>
             <!-- <input type="date" name="" v-model="personData.birthDay"> -->
-            <Date-picker v-model="personData.birthDay" class="input"></Date-picker>
+            <Date-picker name="birthday" v-model="personData.birthDay" class="input"></Date-picker>
+            <p v-show="errors.has('birthday')">{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
         </div>
@@ -91,6 +95,20 @@ export default {
       isShow: false,
       processIsShow: false,
       title: null,
+      checkForm: {
+        name: {
+          required: true
+        },
+        sex: {
+          required: true
+        },
+        cardId: {
+          required: true
+        },
+        birthday: {
+          required: true
+        }
+      },
       personData: {
         imgUrl: null,
         imgs: [],
@@ -112,7 +130,7 @@ export default {
       this.personData = {
         imgUrl: null,
         imgs: [],
-        name: null,
+        name: '',
         sex: 1,
         cardId: null,
         birthDay: null,
@@ -138,11 +156,11 @@ export default {
             this.personData.imgUrl = e.target.result.split(',')[1]
             // 新建用户的情况下，imgs序列中选择第一张图片作为头像
           }
-          console.log(this.personData.imgs)
+          // console.log(this.personData.imgs)
           this.$forceUpdate()
         }
       }
-      console.log(this.personData)
+      // console.log(this.personData)
     },
     godelete: function () {
       $('.deleteUser').css('display', 'block')
@@ -150,9 +168,14 @@ export default {
       $('#registerUser>div>article').addClass('vague')
     },
     pushFormat: function () {
-      console.log(Axios.defaults)
-      console.log(this.title)
-      console.log(this.personData)
+      // 调用validator验证全部条件
+      this.$validator.validateAll().then(result => {
+        console.log(this.errors)
+        if (!result) {
+          alert('表单报错')
+          return
+        }
+      })
       if (this.title === '新建' && this.personData.imgs.length > 0) {
         if (this.personData.imgs.length < config.minImageCount) {
           alert('照片太少，不能上传')
@@ -160,7 +183,7 @@ export default {
         }
         this.personData.imgs.shift()
       }
-      console.log(this.personData.imgs)
+      // console.log(this.personData.imgs)
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
       }
@@ -194,7 +217,7 @@ export default {
             this.close()
             return
           }
-          this.$Message.error(res.data.msg)
+          this.$Message.error('创建失败')
           this.percent = 0
         }, (err) => {
           console.log(err)
@@ -253,6 +276,7 @@ export default {
   },
   watch: {
     viewWhich: function (val, old) {
+      console.log(this.$validator)
       if (val === 'editUser') {
         this.isShow = true
         this.title = '编辑'
@@ -263,11 +287,11 @@ export default {
     },
     toRegisterUser: {
       handler (val, old) {
-        // 获取数据
-        this.personData = val
+        // 获取数据,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
+        this.personData = config.deepCopy(val)
+        // console.log(this.$vee-validate)
         // 默认不显示进度条
         this.processIsShow = false
-        console.log(val)
         this.personData.imgUrl = val.headimage
       },
       deep: true
@@ -283,6 +307,9 @@ export default {
 <style scoped>
 .popup{
   display: none
+}
+p{
+  margin-bottom: 0; 
 }
 header>div{
   margin-top: 10px;
@@ -335,17 +362,15 @@ header .setHead>div{
 .goLong{
   width: 150%!important
 }
-header .setHead img{
-  /*width: 100%;*/
-}
+
 header .setHead .changePic{
   width: 144px;
   height: 100%;
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
-  border: 1px solid grey;
-  background-color: white;
+  /*border: 1px solid grey;*/
+  /*background-color: white;*/
   text-align: center;
   color: white;
   /*float:left;*/
@@ -360,8 +385,8 @@ header .setHead .changePic img{
      -moz-box-sizing: border-box;
           box-sizing: border-box;
   height: 100%;
-  min-width: 100%;
-  min-height: 100%;
+  /*width: 100%;*/
+  /*min-height: 100%;*/
 }
 article{
   clear: both;

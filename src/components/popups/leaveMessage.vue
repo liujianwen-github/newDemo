@@ -29,7 +29,7 @@
     </header>
     <article>
       <p class="message">留言会在设定时间段内识别时出现</p>
-      <textarea autofocus placeholder="请输入留言内容" v-model="messageForm.message"></textarea>
+      <textarea autofocus placeholder="请输入留言内容"  v-model="messageForm.message"></textarea>
       <div class="foot">
         <button class="btn" @click="close">取消</button>
         <button class="btn" @click="setMessage">确定</button>

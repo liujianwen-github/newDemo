@@ -168,7 +168,8 @@ export default {
   .item>div img{
     /*margin-top: 20px;*/
     margin-bottom: 10px;
-    width: 60%;
+    /*width: 60%;*/
+    height: 100%;
     background-color: blue
   }
   .item .name{
@@ -183,8 +184,8 @@ export default {
     margin-bottom: 5px
     /*border: 1px solid #005BAB;*/
   }
-  .content{
-    /*height: 205px*/
+  .item .content>div{
+    min-height: 21px
   }
   .content .foot{
     width: 100%;

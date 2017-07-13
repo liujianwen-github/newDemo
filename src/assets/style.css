@@ -2,7 +2,7 @@
   font-size: 14px
 }
 .container{
-  overflow:hidden;
+  /*overflow:hidden;*/
 }
 #model1,#model2,#model3,#userManage{
   background: -webkit-gradient(linear, left top, left bottom, from(#7B8EA7), to(#90AEBD));

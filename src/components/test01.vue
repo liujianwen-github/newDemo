@@ -1,46 +1,33 @@
 <template>
-	<div>
-		<button @click="talkfa">{{bibi}}</button>
-    <input type="text" v-model="lili" name="" @change="biubiu">
-	</div>
+  <div class="columns is-multiline">
+    <!-- <div class="column is-12">
+        <label class="label">Email (1s delay)</label>
+        <p class="control has-icon has-icon-right">
+            <input name="email" v-validate="'required|email'" data-vv-delay="1000" :class="{'input': true, 'is-danger': errors.has('email') }" type="text" placeholder="Email">
+            <i v-show="errors.has('email')" class="fa fa-warning"></i>
+            <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
+        </p>
+    </div>
+    <div class="column is-12">
+        <label class="label">Name (0.5s delay)</label>
+        <p class="control has-icon has-icon-right">
+            <input name="name" v-validate="'required|alpha'" data-vv-delay="500" :class="{'input': true, 'is-danger': errors.has('name') }" type="text" placeholder="Name">
+            <i v-show="errors.has('name')" class="fa fa-warning"></i>
+            <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+        </p>
+    </div> -->
+</div>
 </template>
 <script>
-import http from 'axios'
-import conf from '@/axiosCon'
-// http.defaults = conf
 export default {
-  name: 'test01',
+  name: 'test1',
   data () {
     return {
-      bibi: 'son',
-      lili: ' '
+      now: new Date()
     }
   },
-  props: ['page'],
-  methods: {
-    talkfa: function () {
-      console.log(conf)
-      console.log(http.defaults)
-      // this.$emit('fromson', 'im son')
-      http.get('apiServer/personManage/getPersonList?userkey=391cb26c_45f3_4817_86f8_644e293cce60&deviceId=aaa-a01-001&beginTime=0&endTime=1499067147460&pageNo=1').then((res) => {
-        console.log(http.defaults)
-        console.log(res)
-      }, (err) => {
-        console.log(err)
-      })
-    },
-    biubiu: function (msg) {
-      console.log(msg)
-      // console.log(this.bibi)
-    }
-  },
-  watch: {
-    page: function (val, old) {
-      this.bibi = val
-    },
-    lili: function (val, old) {
-      // console.log(val)
-    }
+  destroyed () {
+    console.log('destroyed')
   }
 }
 </script>

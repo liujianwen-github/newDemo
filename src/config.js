@@ -15,6 +15,10 @@ export default{
       return date
     }
   },
+  dayBefor: function (date) {
+    let daybefore = new Date(date)
+    return daybefore
+  },
   // yyyy-mm-dd格式转换为毫秒
   changeDateType: function (msg) {
     let date = new Date(msg).getTime()
@@ -27,10 +31,12 @@ export default{
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-    // axios.defaults.auth = {
-    //   username: 'liujianwen',
-    //   password: 's00pers3cret'
-    // }
-    // axios.defaults.
+  },
+  deepCopy: function (source) {
+    let result = {}
+    for (var key in source) {
+      result[key] = typeof source[key] === 'object' ? this.deepCopy(source[key]) : source[key]
+    }
+    return result
   }
 }

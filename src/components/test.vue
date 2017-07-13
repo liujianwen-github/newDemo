@@ -1,23 +1,27 @@
 <template>
   <div>
-  	<div>father</div>
-  	<son @fromson="bibi" :page="mimi"></son>
-    <div @click="mimi">111</div>
+  	<!-- <div>father</div> -->
+  	<!-- <son @fromson="bibi" :page="mimi"></son> -->
+    <!-- <div @click="mimi">111</div> -->
+    <crop :crop-type="'png'" :crop-size="0.1" crop-img="img"></crop>
     <!-- <input type="text" v-model="lili" name=""> -->
   </div>
 </template>
 <script>
 import son from '@/components/test01'
+import crop from '@/components/crop'
+import img from '../assets/listSide.png'
 export default {
   name: 'test',
   dara () {
     return {
       mimi: 'data',
       bibi: [1, 2, 3, 4, 4, 5, 6, 7],
-      lili: null
+      lili: null,
+      img: img
     }
   },
-  components: {son},
+  components: {son, crop},
   // props: ['fromson'],
   methods: {
     bibi: function (msg) {

@@ -8,6 +8,8 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import config from '@/config'
 import store from './store/store'
+import VeeValidate from 'vee-validate'
+import '@/validate'
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)
@@ -15,6 +17,7 @@ import store from './store/store'
 // import ''
 Vue.use(router)
 Vue.use(iView)
+Vue.use(VeeValidate)
 // Vue.use(Vuex)
 Vue.config.productionTip = false
 

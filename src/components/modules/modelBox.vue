@@ -41,15 +41,9 @@ export default {
       if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
       Axios.get('apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
         this.modelOne = res.data.results.list
-        // this.modelOne = {
-        //   '0': 121,
-        //   '1': 2323,
-        //   '3': 2323
-        // }
         this.pageInfo1 = res.data.results.pageInfo
-        console.log(res)
       }, (err) => {
-        console.log(err)
+        this.$Message.error(err)
       })
     },
     getStranger: function () {
@@ -58,9 +52,9 @@ export default {
       Axios.get('apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
         this.modelTwo = res.data.results.list
         this.pageInfo2 = res.data.results.pageInfo
-        console.log(res)
+        // console.log(res)
       }, (err) => {
-        console.log(err)
+        this.$Message.error(err)
       })
     },
     getUser: function () {
@@ -69,10 +63,9 @@ export default {
       Axios.get('apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
         this.modelThree = res.data.results.list
         this.pageInfo3 = res.data.results.pageInfo
-        console.log(res)
-        // console.log(this.pageInfo3)
+        // console.log(res)
       }, (err) => {
-        console.log(err)
+        this.$Message.error(err)
       })
     },
     model_Change: function (msg, which) {
@@ -105,7 +98,7 @@ export default {
       } else if (this.notice === '2') {
         this.getUser()
       } else {
-        'moduleBox wcnm'
+        this.$Message.error('意料之外的错误')
       }
     }
   },
