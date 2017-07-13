@@ -11,7 +11,7 @@ export default {
     return {
       data: null,
       X: 0,
-      Y: 0
+      Y: 0,
     }
   },
   props: ['cropType', 'cropSize', 'cropImg'],
@@ -19,14 +19,14 @@ export default {
     mousedown: (event) => {
       console.log('down')
       console.log(event.clientX)
-      this.default.data = function () {
-        return {
-          X: event.clientX,
-          Y: event.clientY
-        }
+      let data = this.default.data()
+      data = {
+      	X: event.clientX,
+        Y: event.clientY
       }
-      document.getElementById('box').addEventListener('mousemove', this.default.methods.mousemove(event), false)
-      console.log(this)
+      console.log(data)
+      // this.default.data.set('X',event.clientX)
+      document.getElementById('box').addEventListener('mousemove', this.default.methods.mousemove(event), false)  
     },
     mousemove: (event) => {
       console.log('move')
