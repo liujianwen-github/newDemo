@@ -53,7 +53,7 @@
           <Col span="12" class="addMessage long">
             <label>生日</label>
             <!-- <input type="date" name="" v-model="personData.birthDay"> -->
-            <Date-picker name="birthday" v-model="personData.birthDay" class="input"></Date-picker>
+            <Date-picker name="birthday" v-model="personData.birthDay" class="input" ></Date-picker>
             <p v-show="errors.has('birthday')">{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
@@ -127,17 +127,17 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
-      this.personData = {
-        imgUrl: null,
-        imgs: [],
-        name: '',
-        sex: 1,
-        cardId: null,
-        birthDay: null,
-        userkey: config.userkey,
-        deviceId: config.deviceId,
-        personId: null
-      }
+      // this.personData = {
+      //   imgUrl: null,
+      //   imgs: [],
+      //   name: '',
+      //   sex: 1,
+      //   cardId: null,
+      //   birthDay: null,
+      //   userkey: config.userkey,
+      //   deviceId: config.deviceId,
+      //   personId: null
+      // }
       this.$forceUpdate()
     },
     chooseImg: function (e) {
@@ -189,6 +189,7 @@ export default {
       }
       this.processIsShow = true
       let personData = new FormData()
+      // let birthday = new Date
       personData.append('personId', this.personData.personId)
       personData.append('imgUrl', this.personData.imgUrl)
       personData.append('imgs', this.personData.imgs)
