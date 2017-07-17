@@ -10,6 +10,7 @@ import config from '@/config'
 import store from './store/store'
 import VeeValidate from 'vee-validate'
 import '@/validate'
+import date from '@/date'
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)
@@ -18,6 +19,7 @@ import '@/validate'
 Vue.use(router)
 Vue.use(iView)
 Vue.use(VeeValidate)
+// Vue.use(date)
 // Vue.use(Vuex)
 Vue.config.productionTip = false
 

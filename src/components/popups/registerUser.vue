@@ -34,13 +34,13 @@
           <Col span="12" class="addMessage long">
               <label>姓名</label>
               <input type="text" name="name" v-model="personData.name" v-validate="'required|name'">
-              <p v-show="errors.has('name')">{{ errors.first('name') }}</p>
+              <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
           </Col>
           <Col span="12" class="addMessage short">
-            <label>性别</label>
-            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'">男
-            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'">女
-            <p v-show="errors.has('sex')">{{ errors.first('sex') }}</p>
+            <!-- <label>性别</label>
+            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'" disabled="true">男
+            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'" disabled="true">女
+            <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p> -->
           </Col>
         </Row> 
         <br>
@@ -48,13 +48,13 @@
           <Col span="12" class="addMessage long">
             <label>卡号</label>
             <input type="text" name="cardId"  v-model="personData.cardId" v-validate="'required'">
-            <p v-show="errors.has('cardId')">{{ errors.first('cardId') }}</p>
+            <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p>
           </Col>
           <Col span="12" class="addMessage long">
             <label>生日</label>
             <!-- <input type="date" name="" v-model="personData.birthDay"> -->
             <Date-picker name="birthday" v-model="personData.birthDay" class="input" ></Date-picker>
-            <p v-show="errors.has('birthday')">{{ errors.first('birthday') }}</p>
+            <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
         </div>
@@ -127,17 +127,20 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
-      // this.personData = {
-      //   imgUrl: null,
-      //   imgs: [],
-      //   name: '',
-      //   sex: 1,
-      //   cardId: null,
-      //   birthDay: null,
-      //   userkey: config.userkey,
-      //   deviceId: config.deviceId,
-      //   personId: null
-      // }
+      console.log(this.title)
+      if (this.title === '新建') {
+        this.personData = {
+          imgUrl: null,
+          imgs: [],
+          name: '',
+          sex: 1,
+          cardId: null,
+          birthDay: null,
+          userkey: config.userkey,
+          deviceId: config.deviceId,
+          personId: null
+        }
+      }
       this.$forceUpdate()
     },
     chooseImg: function (e) {
@@ -172,13 +175,17 @@ export default {
       this.$validator.validateAll().then(result => {
         console.log(this.errors)
         if (!result) {
-          alert('表单报错')
+          this.$Message.error('请按照提示完整填写')
+          this.$emit('popState','registerUser')
           return
         }
       })
+      // 新建用户验证图片数量
       if (this.title === '新建' && this.personData.imgs.length > 0) {
         if (this.personData.imgs.length < config.minImageCount) {
-          alert('照片太少，不能上传')
+         this.$Message.error('照片太少，不能上传')
+         this.personData.imgUrl = null
+         this.personData.imgs = []
           return
         }
         this.personData.imgs.shift()
@@ -189,7 +196,10 @@ export default {
       }
       this.processIsShow = true
       let personData = new FormData()
-      // let birthday = new Date
+      // let birthday = new Date(this.personData.birthday)
+      // 修改日期格式
+      this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
+      console.log(this.personData.birthDay)
       personData.append('personId', this.personData.personId)
       personData.append('imgUrl', this.personData.imgUrl)
       personData.append('imgs', this.personData.imgs)
@@ -218,7 +228,7 @@ export default {
             this.close()
             return
           }
-          this.$Message.error('创建失败')
+          this.$Message.error(res.msg)
           this.percent = 0
         }, (err) => {
           console.log(err)
