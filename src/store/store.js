@@ -5,12 +5,17 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    popState: '0'
+    username: '',
+    counter: 0,
+    prompt: '错误提示'
   },
   // 展示内容, 无法改变状态
   getters: {
     tripleCounter: state => {
-      return state.counter * 3
+      return state.username
+    },
+    getPrompt: state => {
+      return state.prompt
     }
   },
   // 改变状态
@@ -19,6 +24,9 @@ const store = new Vuex.Store({
     // 显示传递的载荷 payload, 用 num 表示
     increment: (state, num) => {
       state.counter += num
+    },
+    setPrompt: (state, message) => {
+      state.prompy = message
     }
   },
   // 提交 mutation, 这是异步的

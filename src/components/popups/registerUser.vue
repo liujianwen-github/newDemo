@@ -47,7 +47,7 @@
         <Row> 
           <Col span="12" class="addMessage long">
             <label>卡号</label>
-            <input type="text" name="cardId"  v-model="personData.cardId" v-validate="'required'">
+            <input type="text" name="cardId"  v-model="personData.cardId" v-validate="'required|cardId'">
             <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p>
           </Col>
           <Col span="12" class="addMessage long">
@@ -58,6 +58,7 @@
           </Col>
         </Row> 
         </div>
+        <Progress :percent="percent"></Progress>
         <div class="foot">
           <button class="btn" @click="close">取消</button>
           <button class="btn" @click="pushFormat">确定</button>
@@ -92,34 +93,23 @@ export default {
   data () {
     return {
       percent: 0,
+      update: true,
       isShow: false,
       processIsShow: false,
       title: null,
-      checkForm: {
-        name: {
-          required: true
-        },
-        sex: {
-          required: true
-        },
-        cardId: {
-          required: true
-        },
-        birthday: {
-          required: true
-        }
-      },
       personData: {
         imgUrl: null,
         imgs: [],
         name: null,
         sex: 1,
+        time: null,
         cardId: null,
         birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: null
-      }
+      },
+
     }
   },
   props: ['viewWhich', 'toRegisterUser'],
@@ -134,7 +124,7 @@ export default {
           imgs: [],
           name: '',
           sex: 1,
-          cardId: null,
+          cardId: '0123456789012',
           birthDay: null,
           userkey: config.userkey,
           deviceId: config.deviceId,
@@ -152,18 +142,14 @@ export default {
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
-          // console.log(e.target.result.split(';')[1])
-          // this.$set(0, e.target.result)
           this.personData.imgs.push(e.target.result.split(',')[1])
           if (i === 0 && this.title === '新建') {
             this.personData.imgUrl = e.target.result.split(',')[1]
             // 新建用户的情况下，imgs序列中选择第一张图片作为头像
           }
-          // console.log(this.personData.imgs)
           this.$forceUpdate()
         }
       }
-      // console.log(this.personData)
     },
     godelete: function () {
       $('.deleteUser').css('display', 'block')
@@ -175,28 +161,32 @@ export default {
       this.$validator.validateAll().then(result => {
         console.log(this.errors)
         if (!result) {
-          this.$Message.error('请按照提示完整填写')
+          // this.$Message.error('请按照提示完整填写')
+          this.$emit('modalMessage','warning','请按照提示完整填写')
+          console.log(this.$store)
           this.$emit('popState','registerUser')
+          this.update = false
           return
         }
       })
       // 新建用户验证图片数量
-      if (this.title === '新建' && this.personData.imgs.length > 0) {
+      if (this.title === '新建' && this.personData.imgs.length >= 0) {
         if (this.personData.imgs.length < config.minImageCount) {
-         this.$Message.error('照片太少，不能上传')
+         // this.$Message.error('照片太少，不能上传')
+         this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
+         console.log(this.$Store)
          this.personData.imgUrl = null
          this.personData.imgs = []
-          return
+         this.update = false
         }
         this.personData.imgs.shift()
       }
-      // console.log(this.personData.imgs)
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
       }
+      if (this.update === false) return false
       this.processIsShow = true
       let personData = new FormData()
-      // let birthday = new Date(this.personData.birthday)
       // 修改日期格式
       this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
       console.log(this.personData.birthDay)
@@ -222,14 +212,16 @@ export default {
           }
         }).then((res) => {
           console.log(res)
+          this.percent = 0
           if (res.data.msg === 'SUCC') {
-            // 1
-            this.$Message.success('创建成功')
+            this.$Message.success({content:'创建成功',duration: 5})
+            this.$emit('popState','update')
             this.close()
             return
-          }
-          this.$Message.error(res.msg)
-          this.percent = 0
+          }else{
+            // alert(res.data.msg)
+            this.$Message.error(res.data.msg)
+          } 
         }, (err) => {
           console.log(err)
           this.$Message.error(err.data.msg)
@@ -241,14 +233,15 @@ export default {
           data: personData
         }).then((res) => {
           console.log(res)
+          this.percent = 0
           if (res.data.msg === 'SUCC') {
             // this.$emit('popState', '0')
             this.$Message.success('编辑成功')
+            this.$emit('popState','update')
             this.close()
             return
           }
-          this.$Message.error(res.data.msg)
-          this.percent = 0
+          this.$emit('modalMessage','error',res.data.msg)
         }, (err) => {
           console.log(err)
           this.$Message.error(err.data.msg)
@@ -281,7 +274,7 @@ export default {
         this.$emit('deleteItem', this.personData.index)
         this.close()
       }, (err) => {
-        alert(err)
+         this.$Message.error(err.data.msg)
       })
     }
   },
@@ -293,6 +286,10 @@ export default {
         this.title = '编辑'
       } else if (val === 'addNewUser') {
         this.isShow = true
+        this.personData.name = ''
+        this.personData.cardId = new Date().getTime().toString()
+        this.personData.birthday = null
+        this.personData.time = new Date().getTime()
         this.title = '新建'
       }
     },
@@ -300,7 +297,7 @@ export default {
       handler (val, old) {
         // 获取数据,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
         this.personData = config.deepCopy(val)
-        // console.log(this.$vee-validate)
+        console.log(this.personData)
         // 默认不显示进度条
         this.processIsShow = false
         this.personData.imgUrl = val.headimage
@@ -407,7 +404,7 @@ article{
   position: relative;
 }
 article>div .foot{
-  margin-top: 40px;
+  margin-top: 20px;
   letter-spacing: 20px
 
 }

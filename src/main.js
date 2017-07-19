@@ -14,13 +14,13 @@ import date from '@/date'
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)
-// import Vuex from 'vuex'
+import Vuex from 'vuex'
 // import ''
 Vue.use(router)
 Vue.use(iView)
 Vue.use(VeeValidate)
 // Vue.use(date)
-// Vue.use(Vuex)
+Vue.use(Vuex)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -13,13 +13,15 @@
         <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p>
         <div class="btn" @click="setMessage">设置留言</div>
       </div>
+      <div @click="searchHistory" class="searchHistory">
+          <p align="center">
+            <img src="../../assets/search_800px.png" width="40" height="40"  alt="">
+          </p>
+          <p class="whiteText" align="center">查找未成功识别记录</p>
+        </div>
     </header>
     <article>
-      <div class="content">
-        <div @click="searchHistory" class="searchHistory">
-          <img src="../../assets/search.png"  alt="">
-          <p>查找未成功识别记录</p>
-        </div>
+      <div class="content"> 
         <div class="message">
            <p>识别记录</p>
            <span class="prompt">搜索的识别记录最多为当前时间以前的20条</span>
@@ -29,20 +31,20 @@
             <div>
               <ul>
               <!-- TODO v-for -->
-                <li v-for="item in list" :style="liBgc">
+                <li v-for="item in list">
                   <div>
-                    <div class="left">
-                      <p v-text="item.createTime.split(' ')[0]">date</p>
-                      <p v-text="item.createTime.split(' ')[1]">time</p>
-                      <p v-text="item.sourceDes">address</p>
-                      <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
-                    </div>
                     <div class="right" @click="viewGif(item.facetrackId)">
                       <div>
                         <img :src="item.facetrackImage" alt="">
                         <span class="gif">GIF</span>
                       </div>
                     </div>
+                    <div class="left">
+                      <p v-text="item.createTime.split(' ')[0]">date</p>
+                      <p v-text="item.createTime.split(' ')[1]">time</p>
+                      <p v-text="item.sourceDes">address</p>
+                      <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
+                    </div> 
                   </div>
                 </li>
               </ul>
@@ -71,7 +73,7 @@
 // import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
-import listSide from '@/assets/listSide.png'
+// import listSide from '@/assets/listSide.png'
 import INTERFACE from '@/interface'
 
 export default {
@@ -79,7 +81,7 @@ export default {
   props: ['toUserInfos', 'viewWhich'],
   data () {
     return {
-      liBgc: 'background: url(' + listSide + ') no-repeat',
+      // liBgc: 'background: url(' + listSide + ') no-repeat',
       isShow: false,
       personData: null,
       scene: {
@@ -254,34 +256,63 @@ export default {
   font-weight: 800;
   margin-top: 20px
 }
+header .searchHistory{
+  width: 35%;
+  cursor: pointer;
+  text-align: center;
+  padding-top: 60px;  
+}
+
 .popup article{
   color: rgb(10,10,10);
   clear: both;
   width: 100%;
-  height: 280px;
+  height: 300px;
 }
 .popup article .content{
-  display: flex;
+  /*display: flex;*/
   position: relative;
-  height: 260px;
+  height: 300px;
+  /*overflow: hidden;*/
 }
 .popup article .content>div:first-child{
   cursor: pointer;
-  width: 40%;
+  width: 100%;
   text-align: center;
   /*border-right: 1px solid red*/
 }
-.popup article .content>div:first-child>img{
-  margin-top: 40px
+.popup article .content>.discern{
+  /*overflow-x:auto ;*/
+  /*overflow-y: hidden;*/
+  width: 100%;
+  height: 260px
 }
-.popup article .content>discern>.itemList{
-  /*width: 60%;*/
-  overflow-y: auto;
+.popup article .content>.discern>.itemList{
   position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 250px
 }
-article .searchHistory{
-  color: black
+.popup article .content>.discern>.itemList>div{
+  display: inline-block;
 }
+.popup article .content>.discern>.itemList ul{
+  /*width: 10000px;*/
+    height: 240px;
+    list-style:none; 
+    overflow: auto; 
+    margin:0; 
+    padding:0; 
+    zoom:1; 
+    white-space: nowrap;
+}
+.popup article .content>.discern>.itemList li{   
+    text-align:center; 
+    display: inline-block; 
+    height:100%; 
+    width: 160px;
+}
+
 article .content>p{
   /*color: red*/
   display: inline-block;
@@ -292,7 +323,7 @@ article .content>span{
   height: 20px
 }
 article .discern{
-  margin-top: 40px;
+  /*margin-top: 40px;*/
   position: relative;
   border: 1px solid grey;
   border-radius: 5px;
@@ -307,8 +338,8 @@ article span.prompt{
   font-size: 12px
 }
 article .content .message{
-  position: absolute;
-  left: 40%
+  height: 40px;
+  /*display:inline-block;*/
 }
 article .content .message p{
   margin: 0
@@ -323,12 +354,16 @@ article .content .itemList li{
   height: 130px;
 }
 article .content .itemList li>div{
-  display: flex;
+  /*display: flex;*/
+  height: 100%
 }
 article .content .itemList li>div>div{
   /*display: inline-block;*/
   padding-left: 30px;
-  width: 49%
+  width: 100%
+}
+article .content .itemList li>div>.left p{
+  margin:0 
 }
 article .content .itemList li>div>.right>div{
   width: 120px;

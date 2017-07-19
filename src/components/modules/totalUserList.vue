@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState" @deleteItem="deleteItem"></registerUser>
+      <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState" @modalMessage="modalMessage" @deleteItem="deleteItem"></registerUser>
     </div>
     <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
   </div>
@@ -38,7 +38,7 @@ export default {
       pageInfo: {
         totalRecord: 0,
         pageNo: 1,
-        limit: 20
+        limit: 20,
       },
       emptyPage: {
         size: 'large',
@@ -55,6 +55,37 @@ export default {
   },
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
+    // 警告、错误提示信息
+    modalMessage: function (type, content) {
+      const title = type
+      switch (type) {
+          case 'info':
+              this.$Modal.info({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'success':
+              this.$Modal.success({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'warning':
+              this.$Modal.warning({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'error':
+              this.$Modal.error({
+                  title: title,
+                  content: content
+              });
+              break;
+      }
+    },
+    // 获取所有注册用户数据
     getAllUser: function () {
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
@@ -66,14 +97,23 @@ export default {
         console.log(err)
       })
     },
+    // 编辑用户
     goEdit: function (data, index) {
       this.viewWhich = 'editUser'
       this.personData = data
       this.personData.index = index
+      this.personData.time = new Date().getTime()
     },
+    // 修改状态
     changeState: function (msg) {
-      // console.log(msg)
-      this.viewWhich = msg
+      // console.log(msg)   
+      if (msg === 'update') {
+        // 更新数据
+        this.getAllUser()
+      }else {
+        this.viewWhich = msg
+        console.log(msg)
+      }
       this.$emit('popState', '0')
     },
     deleteItem: function (msg) {

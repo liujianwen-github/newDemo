@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@/components/index'
 import userManage from '@/components/userManage'
 import test from '@/components/test'
+import upload from '@/upload'
 // import test from '@/components/test'
 // import Vuex from 'vuex'
 // import models from '@/components/modules'
@@ -30,6 +31,10 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: test
+    }, {
+      path: '/upload',
+      name: 'upload',
+      component: upload
     }
   ],
   computed: {

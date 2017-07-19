@@ -19,17 +19,18 @@
             <input type="radio" name="timeLine" value="long" v-model="messageForm.timeLine"><span class="whiteText">长期留言</span>
           </div>
         </div>
-        <div class="headInfo">
-          <span class="whiteText">开始时间：</span><Date-picker class="date" v-model="messageForm.startTime"></Date-picker>
+        <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
+          <span class="whiteText">开始时间：</span><Date-picker type="datetime" class="date" v-model="messageForm.startTime" format="yyyy-MM-dd HH:mm"></Date-picker>
         </div>
-        <div class="headInfo">
-          <span class="whiteText">结束时间：</span><Date-picker class="date" v-model="messageForm.endTime"></Date-picker>
+        <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
+          <span class="whiteText">结束时间：</span><Date-picker type="datetime" class="date" v-model="messageForm.endTime" format="yyyy-MM-dd HH:mm"></Date-picker>
         </div>
       </div>
     </header>
     <article>
       <p class="message">留言会在设定时间段内识别时出现</p>
-      <textarea autofocus placeholder="请输入留言内容"  v-model="messageForm.message"></textarea>
+      <textarea autofocus placeholder="请输入留言内容" name="leaveMessage"  v-model="messageForm.message" v-validate="'required|leaveMessage'"></textarea>
+      <p v-show="errors.has('leaveMessage')" style="margin:0">&nbsp;{{ errors.first('leaveMessage') }}</p>
       <div class="foot">
         <button class="btn" @click="close">取消</button>
         <button class="btn" @click="setMessage">确定</button>
@@ -48,12 +49,12 @@ export default {
   data () {
     return {
       isShow: false,
+      update: true,
       messageForm: {
         timeLine: 'short',
-        startTime: new Date().getFullYear() + '-' + config.addDate((Number(new Date().getMonth()) + 1)) + '-' +
-                   config.addDate(new Date().getDate()),
+        startTime: new Date().Format('yyyy-MM-dd'),
         // startTime: null,
-        endTime: null,
+        endTime: new Date().Format('yyyy-MM-dd').addDay(2),
         message: null
       },
       personData: {
@@ -80,17 +81,14 @@ export default {
       this.$emit('popState', 'history')
     },
     setMessage: function () {
-      // alert(typeof new Date().getDate())
-      // console.log(this.messageForm.startTime)
-      // console.log(config.addDate((Number(new Date().getMonth()) + 1)) + '-')
-      // let data = {
-      //   userkey: config.userkey,
-      //   deviceId: config.deviceId,
-      //   msgBeginTime: this.messageForm.msgBeginTime,
-      //   msgEndTime: this.messageForm.msgEndTime,
-      //   message: this.messageForm.message
-      // }
-      //
+      this.$validator.validateAll().then(result => {
+        console.log(this.errors)
+        if (!result) {
+          this.$Message.error('请按照提示完整填写')
+          this.update = false
+        }
+      })
+      if (this.update === false) return false
       let messageList = new FormData()
       config.changeDateType(this.messageForm.startTime)
       messageList.append('userkey', config.userkey)
@@ -148,6 +146,9 @@ export default {
 
 <style scoped>
 .popup{
+  display: none
+}
+.notShow{
   display: none
 }
 .popup header{

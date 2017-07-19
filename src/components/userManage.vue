@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="container">
   <!-- index -->
     <userHead @popState="changeState" @searchPerson="searchPerson"></userHead>

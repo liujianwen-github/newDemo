@@ -17,7 +17,9 @@ const dictionary = {
       email: '邮箱',
       password: '密码',
       name: '姓名',
-      phone: '手机'
+      phone: '手机',
+      cardId: '卡号',
+      leaveMessage: '留言'
     }
   }
 }
@@ -33,4 +35,24 @@ const isName = {
     // 自定义规则中必须有validate方法，或者直接定义isName为函数
   }
 }
+const isCard = {
+  messages: {
+    zh_CN: (field, args) => field + '不能多于15位'
+  },
+  validate: (value, args) => {
+    return value.length <= 15
+    // 自定义规则中必须有validate方法，或者直接定义isName为函数
+  }
+}
+const leaveMessage = {
+  messages: {
+    zh_CN: (field, args) => field + '不能多于20个字！'
+  },
+  validate: (value, args) => {
+    return value.length <= 20
+    // 自定义规则中必须有validate方法，或者直接定义isName为函数
+  }
+}
 Validator.extend('name', isName)
+Validator.extend('cardId', isCard)
+Validator.extend('leaveMessage', leaveMessage)

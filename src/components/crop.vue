@@ -1,7 +1,8 @@
 <template>
 <div>
-	<div class="cropBox" @mousedown="mousedown" id='box'  @mouseup.prevent="mouseup"></div>
-	<p><input type="text" v-model="X" name=""><input type="text" v-model="Y" name=""></p>
+  <img src="../assets/logo.png" height="240" width="240" alt="" style="position:absolute">
+	<div class="cropBox" @mousedown="mousedown" id='box' @mouseup="mouseup"  :style="{marginLeft:X + 'px',marginTop:Y +'px'}"></div>
+	<p style="position:fixed"><input type="text" v-model="X" name=""><input type="text" v-model="Y" name=""></p>
 </div>
 </template>
 <script>
@@ -10,6 +11,8 @@ export default {
   data () {
     return {
       data: null,
+      startX:null,
+      startY:null,
       X: 0,
       Y: 0,
     }
@@ -24,45 +27,28 @@ export default {
   	set: (el, bind) => {
   		
   	},
-    mousedown: (event) => {
+    mousedown: function (e){
       console.log(this.X)
-      console.log('down')
-      console.log(event.clientX)
-      // let data = this.default.data()
-      console.log(this.default.data)
-      this.default.data = () => {
-      	return {
-      	  data: null,
-          X: event.clientX,
-          Y: event.clientX,
-      	}
-      }
-      // console.log(data)
-      // this.default.data.set('X',event.clientX)
-      document.getElementById('box').addEventListener('mousemove', this.default.methods.mousemove(event), false)  
+      this.startX=e.pageX
+      this.startY=e.pageY
+      console.log('起始坐标x=' + this.startX)
+      console.log('起始坐标y=' + this.startY)
+      document.getElementById('box').addEventListener('mousemove',this.mousemove,false)
     },
-    mousemove: (event) => {
-      console.log(event.srcElement)
-      const el = event.srcElement
-      el.style.marginLeft = event.clientX
-      el.style.marginTop = event.clientY
-      console.log(event.clientX)
-      // this.X = event.clientX
-      // this.Y = event.clientY
+    mousemove: function (e) {
+      this.X = e.pageX - 150
+      this.Y = e.pageY - 150
+      console.log(this.X + ',' + this.Y)
     },
-    mouseup: (event) => {
-      console.log('leave')
-      console.log(this.default.data())
-      console.log(event.clientX)
+    mouseup:function (e) {
+       document.getElementById('box').removeEventListener('mousemove',this.mousemove)
+       console.log(this.X)
     }
   },
   watch: {
     cropImg: function (val, old) {
     	console.log(this)
       this.data = val
-    },
-    X: function (val, old) {
-    	alert(val)
     }
   }
 }
@@ -71,6 +57,7 @@ export default {
 	.cropBox{
 		width: 300px;
 		height: 300px;
-		background-color: lightblue
+		background-color: lightblue;
+    position: absolute;
 	}
 </style>

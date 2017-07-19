@@ -16,3 +16,10 @@ Date.prototype.Format = function(fmt)
   fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
   return fmt;   
 }
+String.prototype.addDay = function (num) {
+  var _thisDay = this
+  console.log(new Date(_thisDay))
+  var res = new Date(_thisDay).getTime() + 60*60*24*1000*num
+  console.log(res)
+  return new Date(res)
+}
