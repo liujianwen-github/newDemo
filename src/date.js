@@ -18,8 +18,8 @@ Date.prototype.Format = function(fmt)
 }
 String.prototype.addDay = function (num) {
   var _thisDay = this
-  console.log(new Date(_thisDay))
+  // console.log(new Date(_thisDay))
   var res = new Date(_thisDay).getTime() + 60*60*24*1000*num
-  console.log(res)
+  // console.log(res)
   return new Date(res)
 }

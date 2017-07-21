@@ -34,7 +34,18 @@ export default {
     return {
       list: null,
       viewWhich: '0',
-      personData: null,
+      personData: {
+        imgUrl: '',
+        imgs: [],
+        name: null,
+        sex: 1,
+        time: null,
+        cardId: null,
+        birthDay: null,
+        userkey: config.userkey,
+        deviceId: config.deviceId,
+        personId: null
+      },
       pageInfo: {
         totalRecord: 0,
         pageNo: 1,
@@ -42,7 +53,7 @@ export default {
       },
       emptyPage: {
         size: 'large',
-        isShow: false
+        isShow: true
       },
       getParams: {
         userkey: config.userkey,
@@ -90,6 +101,7 @@ export default {
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
           console.log(res)
+          if (res.data.code != 0) return
           this.list = res.data.results.list
           this.pageInfo = res.data.results.pageInfo
           console.log(this.list)
@@ -98,11 +110,13 @@ export default {
       })
     },
     // 编辑用户
+    // 
     goEdit: function (data, index) {
       this.viewWhich = 'editUser'
-      this.personData = data
+      this.personData = config.deepCopy(data)
       this.personData.index = index
       this.personData.time = new Date().getTime()
+      console.log(this.personData)
     },
     // 修改状态
     changeState: function (msg) {
@@ -129,7 +143,6 @@ export default {
   watch: {
     fromFa: function (val) {
       this.viewWhich = val
-      console.log(this.viewWhich)
     },
     searchPerson: function (val, old) {
       console.log(val)
@@ -139,7 +152,7 @@ export default {
       }
       Axios({
         method: 'get',
-        url: '/apiServer/personManage/searchPerson',
+        url: INTERFACE.USER_SEARCH,
         params: {
           userkey: config.userkey,
           deviceId: config.deviceId,
@@ -158,6 +171,24 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    viewWhich: function (val, old) {
+      if (val === 'addNewUser') {
+        this.personData.imgUrl = ''
+        this.personData.name = ''
+        this.personData.cardId = new Date().getTime().toString()
+        this.personData.birthDay = null
+        this.personData.time = new Date().getTime()
+        this.personData.imgs = []
+        this.title = '新建'
+      } else if (val === 'editUser') {
+        console.log(this.personData)
+      }
+    },
+    list: function (val, old) {
+      if (val != null) {
+        this.emptyPage.isShow = false
+      }
     }
   },
   created () {

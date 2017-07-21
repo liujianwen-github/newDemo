@@ -8,15 +8,15 @@
       </div>
       <div class="addUser">
         <p class="headInfo">
-          <span v-text="personData.name"></span>
-          <span>智能分析查找</span>
+          <span v-text="personData.name"  class="whiteText"></span>&nbsp;
+          <span class="whiteText">智能分析查找</span>
         </p>
         <p class="headInfo">
-            <input type="radio" name="chooseTime" value="0.5" v-model="chooseTime" @click="resetPersonSetTime">半小时
-            <input type="radio" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime">4小时
-            <input type="radio" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime">12小时
-            <input type="radio" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime">24小时
-            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime" @click="toZero">自定义
+            <input type="radio" name="chooseTime" value="0.5" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">半小时</span>
+            <input type="radio" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">4小时</span>
+            <input type="radio" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">12小时</span>
+            <input type="radio" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">24小时</span>
+            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime" @click="toZero"><span class="whiteText">自定义</span>
             <input type="text" name="" value="" v-model="chooseTime" autofocus :class="{isShow:personSetTime=='personSet'}">
         </p>
         <div>
@@ -46,6 +46,7 @@
 // import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
+import INTERFACE from '@/interface'
 export default {
   name: 'history',
   data () {
@@ -65,12 +66,6 @@ export default {
       this.isShow = false
       // this.
     },
-    searchHistory: function () {
-      alert('search history')
-    },
-    setMessage: function () {
-      alert('set message')
-    },
     toZero: function () {
       this.chooseTime = ''
     },
@@ -84,7 +79,7 @@ export default {
       console.log(dataList)
       Axios({
         method: 'post',
-        url: config.HOST + '/apiServer/personManage/confirmFacetrackByPerson',
+        url: INTERFACE.USER_CONFIRM,
         data: dataList,
         headers: {
           'Content-Type': 'application/json'
@@ -92,23 +87,21 @@ export default {
       }).then((res) => {
         console.log(res)
         if (res.data.msg === 'SUCC') {
-          alert('succ')
+         this.$Message.success('添加成功')
           // console.log(typeof this.historyList)
         }
       }, (err) => {
-        console.log(err)
+        this.$Message.error(err.data.msg)
       })
     },
     resetPersonSetTime: function () {
       this.personSetTime = ' '
     },
     searchNoMatchedList: function () {
-      alert('查找未成功识别记录数据,post请求')
-      alert(this.chooseTime)
       console.log(this.personData)
       Axios({
         methods: 'GET',
-        url: config.HOST + '/apiServer/personManage/getPersonUnMatchedList',
+        url: INTERFACE. USER_UNMATCHEDHISTORY,
         params: {
           beginTime: new Date().getTime() - this.chooseTime * 3600000,
           endTime: new Date().getTime(),

@@ -65,7 +65,7 @@ export default {
       },
       emptyPage: {
         size: 'large',
-        show: false
+        isShow: true
       }
     }
   },
@@ -94,11 +94,8 @@ export default {
   watch: {
     toThird: function (val, old) {
       if (typeof val === 'undefined') {
-        this.emptyPage.isShow = true
         return
       }
-      this.emptyPage.isShow = false
-      console.log(val)
       this.list = val
     },
     pageThree: function (val, old) {
@@ -112,6 +109,11 @@ export default {
         this.vagueModel = true
       } else {
         this.vagueModel = false
+      }
+    },
+    list: function (val, old) {
+      if (val != null) {
+        this.emptyPage.isShow = false
       }
     }
   }
@@ -128,7 +130,7 @@ export default {
     min-height: 500px;
     background-color: white;
     width: 100%;
-    padding-top: 5px
+    padding-top: 10px
   }
   .show{
     display: block

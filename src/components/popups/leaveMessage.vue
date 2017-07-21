@@ -44,6 +44,7 @@
 // import $ from 'jquery'
 import config from '@/config'
 import Axios from 'axios'
+import INTERFACE from '@/interface'
 export default {
   name: 'history',
   data () {
@@ -100,7 +101,7 @@ export default {
       messageList.append('message', this.messageForm.message)
       console.log(messageList)
       Axios({
-        url: config.HOST + 'apiServer/personManage/uploadPersonInfo',
+        url: INTERFACE.USER_EDIT,
         method: 'POST',
         data: messageList,
         headers: {

@@ -9,6 +9,20 @@ export default{
   minImageCount: 3,
   maxImageCount: 5,
   pageShow: 5,
+  cropImg: {
+    img: '',
+    info: true,
+    size: 1,
+    outputType: 'jpeg',
+    canScale: false,
+    autoCrop: true,
+    // 只有自动截图开启 宽度高度才生效
+    autoCropWidth: 300,
+    autoCropHeight: 300,
+    // 开启宽度和高度比例
+    fixed: true,
+    fixedNumber: [1,1]
+  },
   addDate: function (date) {
     if (Number(date) <= 10) {
       return '0' + date
@@ -27,7 +41,7 @@ export default{
   },
   axiosCon: function () {
     axios.defaults.baseURL = this.HOST
-    axios.defaults.timeout = 10000
+    axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'

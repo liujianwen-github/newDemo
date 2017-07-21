@@ -8,22 +8,29 @@
       <!-- 上传头像 -->
       <div class="setHead" >      
         <div>
-          <div class="changePic"  v-if="title=='编辑'">
+          <!-- 显示用户头像，新建用户时显示默认头像 -->
+          <div class="changePic">
             <!-- <img :src="personData.imgUrl" alt="1"> -->
-            <img :src="personData.imgUrl" alt="头像">
+            <div v-if="title==='新建'">
+              <img src="../../assets/userHeader.png" alt="" v-if="personData.imgUrl===''">
+              <img :src="personData.imgUrl" v-else>
+            </div>
+            <input type="file"  name="" ref="fileUpdateHead" @change="updateHead"  accept="image/png,image/jpg,image/jpeg">
+            <img :src="personData.imgUrl" v-if="title==='编辑'">
           </div>
+          <!-- 已选中待上传的图片序列 -->
           <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
-            <!-- <img v-if="title=='新建'" src="../../assets/userHeader.png" alt=""> -->
             <img :src="'data:image/png;base64,'+item" alt="">
           </div>
+          <!-- 添加图片序列的按钮 -->
           <div class="changePic">
             <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
             <img src="../../assets/inputImg.png" alt="">
-            <!-- todo 创建一个存储图片数组，数组为零时显示头像图片 -->
           </div>
         </div>    
       </div>
-      <p>上传用户头像</p>
+      <p style="display:inline-block;width:25%;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:25%;text-align:center"><span>上传用户照片</span></p>
+      
     </header>
     <article>
       <div class="content">
@@ -37,19 +44,21 @@
               <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
           </Col>
           <Col span="12" class="addMessage short">
-            <!-- <label>性别</label>
-            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'" disabled="true">男
-            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'" disabled="true">女
-            <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p> -->
+            <label>性别</label>
+            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'">男
+            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'">女
+            <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
           </Col>
         </Row> 
-        <br>
-        <Row> 
-          <Col span="12" class="addMessage long">
-            <label>卡号</label>
-            <input type="text" name="cardId"  v-model="personData.cardId" v-validate="'required|cardId'">
-            <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p>
+        <!-- <br> -->
+        <Row>
+          <Col span="12" class="addMessage short">
+            <label>VIP</label>
+            <input type="radio" name="isVip" v-validate="'required'" value="0" v-model="vip" >&nbsp;是
+            <input type="radio" name="isVip" v-validate="'required'" value="1" v-model="vip">&nbsp;否
+            <p v-show="errors.has('isVip')">&nbsp;{{ errors.first('isVip') }}</p>
           </Col>
+          
           <Col span="12" class="addMessage long">
             <label>生日</label>
             <!-- <input type="date" name="" v-model="personData.birthDay"> -->
@@ -57,8 +66,15 @@
             <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
+        <Row> 
+          <Col span="12" class="addMessage long" id="cardBox" :class="{processHide: cardHide}">
+            <label>卡号</label>
+            <input type="text" name="cardId"  v-model="personData.cardId">
+            <!-- <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p> -->
+          </Col>
+        </Row> 
         </div>
-        <Progress :percent="percent"></Progress>
+        <Progress :percent="percent" :class="{processHide: processHide}"></Progress>
         <div class="foot">
           <button class="btn" @click="close">取消</button>
           <button class="btn" @click="pushFormat">确定</button>
@@ -78,6 +94,21 @@
       </div>   
       </div>
     </div>
+    <VueCropper
+      :class="{cropShow:cropShow}"
+      class="cropBox"
+      ref="cropper"
+      :img="cropImg.img"
+      :outputSize="cropImg.size"
+      :outputType="cropImg.outputType"
+      :info="cropImg.info"
+      :canScale="cropImg.canScale"
+      :autoCrop="cropImg.autoCrop"
+      :autoCropWidth="cropImg.autoCropWidth"
+      :autoCropHeight="cropImg.autoCropHeight"
+      :fixed="cropImg.fixed"
+      :fixedNumber="cropImg.fixedNumber"
+    ></VueCropper>
    </div>
   </div>
 </template>
@@ -88,17 +119,25 @@ import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config'
 import INTERFACE from '@/interface'
+import userHead from '../../assets/userHeader.png'
+import VueCropper from 'vue-cropper'
 export default {
   name: 'registerUser',
   data () {
     return {
       percent: 0,
+      userHead: userHead,
+      itemInfo:null,
       update: true,
       isShow: false,
-      processIsShow: false,
+      cropShow: false,
+      cardHide: true,
+      processHide: true,
+      cropImg: config.cropImg,
+      vip: -1,
       title: null,
       personData: {
-        imgUrl: null,
+        imgUrl: '',
         imgs: [],
         name: null,
         sex: 1,
@@ -108,30 +147,33 @@ export default {
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: null
-      },
+      }
 
     }
   },
   props: ['viewWhich', 'toRegisterUser'],
+  components: {VueCropper},
   methods: {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
-      console.log(this.title)
-      if (this.title === '新建') {
-        this.personData = {
-          imgUrl: null,
-          imgs: [],
-          name: '',
-          sex: 1,
-          cardId: '0123456789012',
-          birthDay: null,
-          userkey: config.userkey,
-          deviceId: config.deviceId,
-          personId: null
-        }
-      }
       this.$forceUpdate()
+    },
+    updateHead: function () {
+      const files = this.$refs.fileUpdateHead.files
+      let reader = new FileReader()
+
+      reader.readAsDataURL(files[0])
+      reader.onload = (e) => {
+        // console.log(this)
+        this.personData.imgUrl = e.target.result
+        this.cropShow = true
+        this.cropImg.img = e.target.result
+        this.$Message.info({
+          content:'调整好图片后，回车键确认',
+          duration: 10
+        })
+      }
     },
     chooseImg: function (e) {
       this.personData.imgs = this.personData.imgs || []
@@ -142,11 +184,12 @@ export default {
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
+          console.log(this)
           this.personData.imgs.push(e.target.result.split(',')[1])
-          if (i === 0 && this.title === '新建') {
-            this.personData.imgUrl = e.target.result.split(',')[1]
-            // 新建用户的情况下，imgs序列中选择第一张图片作为头像
-          }
+          // if (i === 0 && this.title === '新建') {
+          //   this.personData.imgUrl = e.target.result.split(',')[1]
+          //   // 新建用户的情况下，imgs序列中选择第一张图片作为头像
+          // }
           this.$forceUpdate()
         }
       }
@@ -175,17 +218,17 @@ export default {
          // this.$Message.error('照片太少，不能上传')
          this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
          console.log(this.$Store)
-         this.personData.imgUrl = null
+         this.personData.imgUrl = ''
          this.personData.imgs = []
          this.update = false
         }
-        this.personData.imgs.shift()
+        // this.personData.imgs.shift()
       }
       if (typeof this.personData.imgs === 'undefined') {
         this.personData.imgs = []
       }
       if (this.update === false) return false
-      this.processIsShow = true
+      this.processHide = false
       let personData = new FormData()
       // 修改日期格式
       this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
@@ -199,6 +242,7 @@ export default {
       personData.append('birthDay', this.personData.birthDay)
       personData.append('userkey', config.userkey)
       personData.append('deviceId', config.deviceId)
+      personData.append('vip', this.vip)
       let _this = this
       console.log(personData)
       if (this.title === '新建') {
@@ -211,6 +255,7 @@ export default {
             _this.percent = Math.round((e.loaded * 100) / e.total)
           }
         }).then((res) => {
+          this.processHide = true
           console.log(res)
           this.percent = 0
           if (res.data.msg === 'SUCC') {
@@ -224,8 +269,11 @@ export default {
           } 
         }, (err) => {
           console.log(err)
-          this.$Message.error(err.data.msg)
+          // this.$Message.error(err.data.msg)
         })
+        // .catch((evt)=>{
+        //   console.log(evt)
+        // })
       } else if (this.title === '编辑') {
         Axios({
           method: 'POST',
@@ -276,33 +324,72 @@ export default {
       }, (err) => {
          this.$Message.error(err.data.msg)
       })
+    },
+    cropTheImg: function(e){
+      console.log(e)
+      // 回车确认裁剪图片
+      if (e.keyCode === 13){
+        this.$refs.cropper.startCrop() 
+        this.$refs.cropper.stopCrop()
+        this.$refs.cropper.getCropData((data) => {
+          // 确定裁剪的图片，输出
+          this.itemInfo.headimage = 'data'
+          this.cropShow = false
+          console.log(this.personData)
+          console.log(this.itemInfo)
+        })
+      }
+      //
     }
   },
   watch: {
     viewWhich: function (val, old) {
-      console.log(this.$validator)
+      // console.log(Axios())
+      // console.log(v)
       if (val === 'editUser') {
         this.isShow = true
         this.title = '编辑'
+        console.log(this.toRegisterUser)
       } else if (val === 'addNewUser') {
-        this.isShow = true
-        this.personData.name = ''
-        this.personData.cardId = new Date().getTime().toString()
-        this.personData.birthday = null
-        this.personData.time = new Date().getTime()
         this.title = '新建'
       }
     },
     toRegisterUser: {
       handler (val, old) {
-        // 获取数据,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
+        // 获取元数据一份,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
+        this.itemInfo = val  
         this.personData = config.deepCopy(val)
-        console.log(this.personData)
+        if (this.title === '新建') {
+          // 初始化修改用户信息窗口的数据
+          this.isShow = true
+          this.personData.imgs = []
+          this.vip = 0
+          this.cardHide = true
+          return
+        }
         // 默认不显示进度条
-        this.processIsShow = false
         this.personData.imgUrl = val.headimage
       },
       deep: true
+    },
+    vip: function (val, old) { 
+      switch(val) {
+        case '1':
+          this.cardHide = false
+
+          break;
+        case '0':
+          this.cardHide = true
+          break;
+      }
+    },
+    cropShow: function(val, old) {
+      const _this = this
+      if(val === true) {
+        document.body.addEventListener('keyup',_this.cropTheImg,false)
+      }else if (val === false) {
+        document.body.removeEventListener('keyup',_this.cropTheImg,false)
+      }
     }
   }
 }
@@ -314,7 +401,13 @@ export default {
 
 <style scoped>
 .popup{
-  display: none
+  display: none;
+}
+.cropShow{
+  display: block
+}
+.processHide{
+  visibility: hidden;
 }
 p{
   margin-bottom: 0; 
@@ -332,29 +425,7 @@ h3{
 h3>span{
   font-size: 24px
 }
-header .addUser{
-  padding-left: 10px;
-  margin-top:10px
-}
-header .addUser .addMessage{
-  margin-top:20px;
-  padding-top: 20px;
-  /*width: 100%;*/
-  max-width: 300px;
-}
-.addMessage label{
-  width:20%;
-}
-.addMessage.long>input,.addMessage.long>.input{
-  width: 65%;
-  max-width: 160px;
-  height: 30px;
-  margin-left: 10%;
-  display: inline-block;
-}
-.addMessage.short>input{
-  margin-left:20%
-}
+
 header .setHead{
   position: relative;
   height: 150px;
@@ -387,6 +458,10 @@ header .setHead .changePic{
   position: relative;
   overflow:hidden; 
 }
+header .setHead .changePic>div{
+  width: 100%;
+  height: 100%
+}
 header .setHead .changePic img{
   /*width: 100%;*/
   -webkit-box-sizing: border-box;
@@ -403,10 +478,28 @@ article{
   width: 100%;
   position: relative;
 }
+article .addUser{
+  padding-left: 10px;
+  margin-top:10px
+}
+article .addUser .addMessage{
+  min-height: 50px
+}
+article .addMessage label{
+  width:20%;
+}
+article .addMessage.long>input,.addMessage.long>.input{
+  width: 65%;
+  max-width: 160px;
+  height: 30px;
+  margin-left: 10%;
+  display: inline-block;
+}
+article .addMessage.short>input{
+  margin-left:20%
+}
 article>div .foot{
-  margin-top: 20px;
   letter-spacing: 20px
-
 }
 article>div .foot button{
   background-color: #2B77D5;

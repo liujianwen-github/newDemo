@@ -21,7 +21,7 @@
       <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
       <!-- stranger -->
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
-      <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
+      <createUser :viewWhich="viewWhich" @update="update_createUser" @modalMessage="modalMessage" @popState="changeState" :toCreateUser="createUserData"></createUser>
       <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
       <!-- user -->
       <userInfos :viewWhich="viewWhich" :toUserInfos="personData" @popState="changeState"></userInfos>
@@ -53,7 +53,7 @@ export default {
       pageSize: 5,
       emptyPage: {
         size: 'large',
-        isShow: false
+        isShow: true
       },
       viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错
@@ -118,15 +118,46 @@ export default {
     },
     changeState: function (msg) {
       this.viewWhich = msg
-    }
+    },
+    update_createUser: function () {
+      this.$emit('update', 1)
+    },
+    // 警告、错误提示信息
+    modalMessage: function (type, content) {
+      const title = type
+      switch (type) {
+          case 'info':
+              this.$Modal.info({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'success':
+              this.$Modal.success({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'warning':
+              this.$Modal.warning({
+                  title: title,
+                  content: content
+              });
+              break;
+          case 'error':
+              this.$Modal.error({
+                  title: title,
+                  content: content
+              });
+              break;
+      }
+    },
   },
   watch: {
     toFirst: function (val, old) {
       if (typeof val === 'undefined') {
-        this.emptyPage.isShow = true
         return
       }
-      this.emptyPage.isShow = false
       this.list = val
       console.log(this.list)
     },
@@ -142,6 +173,11 @@ export default {
         this.vagueModel = true
       } else {
         this.vagueModel = false
+      }
+    },
+    list: function (val, old) {
+      if (val != null) {
+        this.emptyPage.isShow = false
       }
     }
   }

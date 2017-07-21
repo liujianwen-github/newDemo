@@ -39,6 +39,7 @@
 // import $ from 'jquery'
 import Axios from 'axios'
 import config from '@/config.js'
+import INTERFACE from '@/interface'
 export default {
   name: 'intellAnalyse',
   data () {
@@ -80,7 +81,7 @@ export default {
       this.chooseItem = item
     },
     getDataList: function () {
-      Axios.get(config.HOST + 'apiServer/facetrackManage/getFacetrackInfo', {params: this.intellParams}).then(
+      Axios.get(INTERFACE.STRANGER_ANALYSE, {params: this.intellParams}).then(
         (res) => {
           this.dataList = res.data.results.matchs || []
           console.log(this.dataList)
@@ -107,7 +108,7 @@ export default {
       dataForm.append('facetrackId', this.intellParams.facetrackId)
       Axios({
         method: 'POST',
-        url: config.HOST + 'apiServer/facetrackManage/addFacetrackToPerson',
+        url: INTERFACE. STRANGER_ANALYSE_UPDATE,
         data: dataForm
       }).then((res) => {
         console.log(res)

@@ -3,48 +3,84 @@
   	<!-- <div>father</div> -->
   	<!-- <son @fromson="bibi" :page="mimi"></son> -->
     <!-- <div @click="mimi">111</div> -->
-    <crop :crop-type="'png'" :crop-size="0.1" crop-img="img"></crop>
+    <!-- <crop :crop-type="'png'" :crop-size="0.1" crop-img="img"></crop> -->
+    <input type="file" accept="image/jpg,image/jpeg,image/png" @change="go"  ref="image" name="">
+    <!-- <img src="../assets/listSide.png" ref="img1" alt=""> -->
+   <div class="crop">
+      <vueCropper
+        ref="cropper"
+        :img="cropImg.img"
+        :outputSize="cropImg.size"
+        :outputType="cropImg.outputType"
+        :info="cropImg.info"
+        :canScale="cropImg.canScale"
+        :autoCrop="cropImg.autoCrop"
+        :autoCropWidth="cropImg.autoCropWidth"
+        :autoCropHeight="cropImg.autoCropHeight"
+        :fixed="cropImg.fixed"
+        :fixedNumber="cropImg.fixedNumber"
+      ></vueCropper>
+   </div>
+   <button @click="start">start</button>
     <!-- <input type="text" v-model="lili" name=""> -->
   </div>
 </template>
 <script>
-import son from '@/components/test01'
-import crop from '@/components/crop'
-import img from '../assets/listSide.png'
+import VueCropper from 'vue-cropper'
+// import 
 export default {
   name: 'test',
-  dara () {
+  components: {VueCropper},
+  data: function () {
     return {
-      mimi: 'data',
-      bibi: [1, 2, 3, 4, 4, 5, 6, 7],
-      lili: null,
-      img: img
+      cropImg: {
+        img: '',
+        info: true,
+        size: 1,
+        outputType: 'jpeg',
+        canScale: false,
+        autoCrop: true,
+        // 只有自动截图开启 宽度高度才生效
+        autoCropWidth: 300,
+        autoCropHeight: 300,
+        // 开启宽度和高度比例
+        fixed: true,
+        fixedNumber: [1,1]
+      }
     }
   },
-  components: {son, crop},
-  // props: ['fromson'],
   methods: {
-    bibi: function (msg) {
-      // var ne = this.bibi
-      // ne.shift()
-      // console.log(this.bibi)
-      alert(msg)
-      var bibi = new Date() + 5
-      console.log(bibi)
+    go: function () {
+      const file = this.$refs.image.files[0]
+      console.log(file)
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (e) => {
+        this.cropImg.img = e.target.result
+        // this.$refs.cropper.startCrop() 
+      }
     },
-    mimi: function () {
-      // alert('mimi')
-      this.mimi = 'change'
-      alert(this.mimi)
-    },
-    stringifyDate: function (date) {
-      console.log(date)
+    start: function () {
+      this.$refs.cropper.startCrop() 
+      console.log(VueCropper)
+      console.log(this)
+      console.log(this.$refs.cropper)
+      this.$refs.cropper.stopCrop()
+      this.$refs.cropper.getCropData((data) => {
+        let img = new Image()
+        img.src = data
+        document.body.append(img)
+      })
     }
   },
-  watch: {
-    lili: function (val, old) {
-      console.log(val)
-    }
+  created() {
+    console.log(this.autoCropWidth)
   }
 }
 </script>
+<style scoped>
+  .crop{
+    width: 600px;
+    height: 600px
+  }
+</style>

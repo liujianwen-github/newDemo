@@ -1,6 +1,6 @@
 <template>
   <div class="emptyBox">
-    <p @click="bibi">查询数据为空!!!</p>
+    <p>查询数据为空!!!</p>
   </div>
 </template>
 <!-- 陌生人操作组件 -->
@@ -9,19 +9,11 @@
 export default {
   name: 'empty',
   props: ['toempty'],
-  methods: {
-    bibi: function () {
-      console.log(this.isShow)
-    }
-  },
   watch: {
     toempty: function (val, old) {
       this.size = val.size
       this.isShow = val.show
     }
-  },
-  created () {
-    console.log(this)
   }
 }
 </script>

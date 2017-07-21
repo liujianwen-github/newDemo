@@ -19,13 +19,16 @@ const dictionary = {
       name: '姓名',
       phone: '手机',
       cardId: '卡号',
-      leaveMessage: '留言'
+      leaveMessage: '留言',
+      birthday: '生日',
+      isVip: 'VIP'
     }
   }
 }
 Validator.updateDictionary(dictionary) // 更新配置
 
 // 验证规则
+// 姓名
 const isName = {
   messages: {
     zh_CN: (field, args) => field + '不能少于两位字符'
@@ -35,6 +38,7 @@ const isName = {
     // 自定义规则中必须有validate方法，或者直接定义isName为函数
   }
 }
+// 卡号
 const isCard = {
   messages: {
     zh_CN: (field, args) => field + '不能多于15位'
@@ -44,6 +48,7 @@ const isCard = {
     // 自定义规则中必须有validate方法，或者直接定义isName为函数
   }
 }
+// 留言
 const leaveMessage = {
   messages: {
     zh_CN: (field, args) => field + '不能多于20个字！'
@@ -53,6 +58,18 @@ const leaveMessage = {
     // 自定义规则中必须有validate方法，或者直接定义isName为函数
   }
 }
+const isVip = {
+  messages: {
+    zh_CN: (field, args) => '请选择是否为VIP用户'
+  },
+  validate: (value, args) => {
+    console.log(value)
+    return false
+    // 自定义规则中必须有validate方法，或者直接定义isName为函数
+  }
+}
+// 注册自定义规则
 Validator.extend('name', isName)
 Validator.extend('cardId', isCard)
 Validator.extend('leaveMessage', leaveMessage)
+Validator.extend('isVip', isVip)

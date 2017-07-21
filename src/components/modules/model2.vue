@@ -55,7 +55,7 @@ export default {
       },
       emptyPage: {
         size: 'large',
-        isShow: false
+        isShow: true
       }
     }
   },
@@ -93,10 +93,8 @@ export default {
     toSecond: function (val, old) {
       console.log(val)
       if (typeof val === 'undefined') {
-        this.emptyPage.isShow = true
         return
       }
-      this.emptyPage.isShow = false
       this.list = val
     },
     pageTwo: function (val, old) {
@@ -111,6 +109,11 @@ export default {
         this.vagueModel = true
       } else {
         this.vagueModel = false
+      }
+    },
+    list: function (val, old) {
+      if (val != null) {
+        this.emptyPage.isShow = false
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <div id="modulesBox">
-    <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" :page-one="pageInfo1"></model1>
+    <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" @update="update" :page-one="pageInfo1"></model1>
     <model2 v-show="notice==1" :to-second="modelTwo" @pageTwo="model_Change" :page-two="pageInfo2"></model2>
     <model3 v-show="notice==2" :to-third="modelThree" @pageThree="model_Change" :page-three="pageInfo3"></model3>
   </div>
@@ -13,7 +13,7 @@ import model2 from '@/components/modules/model2.vue'
 import model3 from '@/components/modules/model3.vue'
 import Axios from 'axios'
 import config from '@/config'
-// import INTERFACE from '@/interface'
+import INTERFACE from '@/interface'
 export default {
   name: 'modelBox',
   data () {
@@ -39,33 +39,42 @@ export default {
       // 今日到访
       // this.getParams.pageNo = this.pagination1
       if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
-      Axios.get('apiServer/facetrackManage/getFacetrackList', {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.TODAY_TOTALPERSON, {params: this.getParams}).then((res) => {
+        if (res.data.code != res.data.succ_code) return
         this.modelOne = res.data.results.list
         this.pageInfo1 = res.data.results.pageInfo
       }, (err) => {
-        this.$Message.error(err)
+        this.$Message.error('请求超时')
+        console.log(err)
+        // console.log(err.join(''))
+        // document.write(err)
+      })
+      Axios.spread(function (msg) {
+        alert(msg)
       })
     },
     getStranger: function () {
       // 陌生人
       if (this.pageInfo2 !== null) this.getParams.pageNo = this.pageInfo2.pageNo
-      Axios.get('apiServer/facetrackManage/getUnMatchedList', {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.TODAY_STRANGER, {params: this.getParams}).then((res) => {
+        if (res.data.code != res.data.succ_code) return
         this.modelTwo = res.data.results.list
         this.pageInfo2 = res.data.results.pageInfo
         // console.log(res)
       }, (err) => {
-        this.$Message.error(err)
+        this.$Message.error('请求超时')
       })
     },
     getUser: function () {
       // 注册用户
       if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
-      Axios.get('apiServer/personManage/getMatchedPersonList', {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.TODAY_USER, {params: this.getParams}).then((res) => {
+        if (res.data.code != res.data.succ_code) return
         this.modelThree = res.data.results.list
         this.pageInfo3 = res.data.results.pageInfo
         // console.log(res)
       }, (err) => {
-        this.$Message.error(err)
+        this.$Message.error('请求超时')
       })
     },
     model_Change: function (msg, which) {
@@ -86,6 +95,19 @@ export default {
       }
       // this.$forceUpdate()
       // which 选择调用哪个接口
+    },
+    update: function (type) {
+      switch (type) {
+        case 1:
+          this.getTotal()
+          break
+        case 2:
+          this.getStranger()
+          break
+        case 3:
+          this.getUser()
+          break
+      }
     }
   },
   watch: {

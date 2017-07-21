@@ -401,7 +401,8 @@ article .content .itemList li>div>.right>div .gif{
   vertical-align: middle
 }*/
 .sceneBox img{
-  width: 100%;
+  /*width: 100%;*/
+  height: 100%;
   position: relative;
   /*left: -50%;*/
   /*top:-50%;*/
