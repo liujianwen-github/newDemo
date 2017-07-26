@@ -31,7 +31,7 @@ Validator.updateDictionary(dictionary) // 更新配置
 // 姓名
 const isName = {
   messages: {
-    zh_CN: (field, args) => field + '不能少于两位字符'
+    zh_CN: (field, args) => field + '不能少于两位'
   },
   validate: (value, args) => {
     return value.length >= 2

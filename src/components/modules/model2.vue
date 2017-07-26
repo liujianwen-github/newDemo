@@ -17,7 +17,7 @@
       </div>
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
       <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
-      <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
+      <intellAnalyse :viewWhich="viewWhich" @popState="changeState" @update="update" :toIntellAnalyse="intellValue"></intellAnalyse>
     </div>
   </div>
 </template>
@@ -85,6 +85,9 @@ export default {
     // 翻页
     changePage: function (msg) {
       this.$emit('pageTwo', msg, 2)
+    },
+    update: function (msg) {
+      this.$emit('update',2)
     }
   },
   components: {Intell, createUser, intellAnalyse, empty},

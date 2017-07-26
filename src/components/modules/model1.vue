@@ -21,8 +21,8 @@
       <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
       <!-- stranger -->
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
-      <createUser :viewWhich="viewWhich" @update="update_createUser" @modalMessage="modalMessage" @popState="changeState" :toCreateUser="createUserData"></createUser>
-      <intellAnalyse :viewWhich="viewWhich" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
+      <createUser :viewWhich="viewWhich" @update="update" @modalMessage="modalMessage" @popState="changeState" :toCreateUser="createUserData"></createUser>
+      <intellAnalyse :viewWhich="viewWhich" @update="update" @popState="changeState" :toIntellAnalyse="intellValue"></intellAnalyse>
       <!-- user -->
       <userInfos :viewWhich="viewWhich" :toUserInfos="personData" @popState="changeState"></userInfos>
       <history :viewWhich="viewWhich" :toHistory="personData" @popState="changeState"></history>
@@ -108,6 +108,7 @@ export default {
           this.viewWhich = 'userInfos'
           this.personData = data
           this.personData.headimage = data.personImage
+          this.personData.name = data.personName
           console.log(this.personData)
           break
       }
@@ -119,7 +120,7 @@ export default {
     changeState: function (msg) {
       this.viewWhich = msg
     },
-    update_createUser: function () {
+    update: function () {
       this.$emit('update', 1)
     },
     // 警告、错误提示信息

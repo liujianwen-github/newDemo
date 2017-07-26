@@ -27,7 +27,9 @@
     </header>
     <article>
      <div class="content">
-     <div v-if="historyList.length==0">empty</div>
+       <div v-show="historyList.length==0" class="emptyBox">
+         <p>查询结果为空！！</p>
+       </div>
        <div class="item" v-for="(item,index) in historyList">
          <img :src="item.facetrackImage"  alt="">
          <p><span v-text="item.createTime.split(' ')[0]"></span> <span v-text="item.createTime.split(' ')[1]"></span></p>
@@ -72,11 +74,19 @@ export default {
     confirmFacetrack: function (facetrackId, index) {
       // alert('push img')
       // console.log(this.personData)
+      // let dataList = new FormData()
+      // dataList.append('facetrackId', facetrackId)
+      // dataList.append('personId', this.personData.personId)
+      // dataList.append('userkey', config.userkey)
+      let data = {
+        facetrackId: facetrackId,
+        personId:this.personData.personId,
+        userkey:config.userkey
+      }
       let dataList = new FormData()
-      dataList.append('facetrackId', facetrackId)
-      dataList.append('personId', this.personData.personId)
-      dataList.append('userkey', config.userkey)
-      console.log(dataList)
+      for(let key in data){
+        dataList.append(key,data[key])
+      }
       Axios({
         method: 'post',
         url: INTERFACE.USER_CONFIRM,
@@ -88,7 +98,7 @@ export default {
         console.log(res)
         if (res.data.msg === 'SUCC') {
          this.$Message.success('添加成功')
-          // console.log(typeof this.historyList)
+         this.searchNoMatchedList()
         }
       }, (err) => {
         this.$Message.error(err.data.msg)
@@ -125,6 +135,12 @@ export default {
     viewWhich: function (val, old) {
       if (val === 'history') {
         this.isShow = true
+        // 清空列表
+        this.historyList = []
+        // 恢复默认时间
+        this.chooseTime = '0.5'
+      } else {
+        this.isShow = false
       }
     },
     toHistory: function (val, old) {
@@ -170,8 +186,6 @@ export default {
   padding-left:10px
 }
 .popup .btn{
-  /*border:1px solid white;*/
-  /*color: white;*/
   background-color: #6AA0E2;
   width: 120px;
   height: 30px;
@@ -180,12 +194,13 @@ export default {
   margin-top: 20px;
 }
 article .content{
-  display: flex;
-  overflow-x: auto
+  overflow-x: auto;
+  white-space: nowrap;
 }
 article .content .item{
   padding: 10px;
-  width: 26%
+  width: 26%;
+  display: inline-block;
 }
 article .content .item img{
   width: 100%;
@@ -196,6 +211,15 @@ article .content .item p{
 input[type="text"]{
   width: 50px;
   display: none
+}
+.emptyBox{
+  height: 40px
+}
+.emptyBox p{
+  position: relative;
+  width: 100%;
+  text-align:center;
+  line-height: 40px
 }
 
 </style>

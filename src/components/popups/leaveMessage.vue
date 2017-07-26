@@ -20,19 +20,22 @@
           </div>
         </div>
         <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
-          <span class="whiteText">开始时间：</span><Date-picker type="datetime" class="date" v-model="messageForm.startTime" format="yyyy-MM-dd HH:mm"></Date-picker>
+        <!-- 开始时间结束时间限制条件一样 -->
+          <span class="whiteText">开始时间：</span><Date-picker type="datetime" class="date" :clearable="false" :options="endTimeOPT" v-model="messageForm.startTime" format="yyyy-MM-dd HH:mm"></Date-picker>
         </div>
         <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
-          <span class="whiteText">结束时间：</span><Date-picker type="datetime" class="date" v-model="messageForm.endTime" format="yyyy-MM-dd HH:mm"></Date-picker>
+          <span class="whiteText">结束时间：</span><Date-picker type="datetime" class="date" :clearable="false" :options="endTimeOPT" v-model="messageForm.endTime" format="yyyy-MM-dd HH:mm"></Date-picker>
         </div>
       </div>
     </header>
     <article>
-      <p class="message">留言会在设定时间段内识别时出现</p>
-      <textarea autofocus placeholder="请输入留言内容" name="leaveMessage"  v-model="messageForm.message" v-validate="'required|leaveMessage'"></textarea>
-      <p v-show="errors.has('leaveMessage')" style="margin:0">&nbsp;{{ errors.first('leaveMessage') }}</p>
+      <div class="msgBox">
+        <p class="message">留言会在设定时间段内识别时出现</p>
+        <textarea autofocus placeholder="请输入留言内容" name="leaveMessage"  v-model="messageForm.message" v-validate="'required|leaveMessage'"></textarea>
+        <p v-show="errors.has('leaveMessage')" style="margin:0">&nbsp;{{ errors.first('leaveMessage') }}</p>
+      </div>
       <div class="foot">
-        <button class="btn" @click="close">取消</button>
+        <button class="btn" @click="returnUserInfo">取消</button>
         <button class="btn" @click="setMessage">确定</button>
       </div>
     </article>
@@ -49,14 +52,24 @@ export default {
   name: 'history',
   data () {
     return {
+      msg:null,
       isShow: false,
       update: true,
+      endTimeOPT: {
+        disabledDate(date) {
+          return date <  Date.now()
+        }
+      },
+      beginTimeOPT: {
+        disabledDate(date) {
+          return date < Date.now()
+        }
+      },
       messageForm: {
         timeLine: 'short',
-        startTime: new Date().Format('yyyy-MM-dd'),
-        // startTime: null,
-        endTime: new Date().Format('yyyy-MM-dd').addDay(2),
-        message: null
+        startTime: new Date().Format('yyyy-MM-dd hh:mm'),
+        endTime: new Date().Format('yyyy-MM-dd hh:mm').addDay(2),
+        message: ' '
       },
       personData: {
         image: null,
@@ -70,7 +83,17 @@ export default {
     close: function () {
       // $('#leaveMessage').css('display', 'none')
       this.isShow = false
+      this.messageForm = {
+        timeLine: 'short',
+        startTime: new Date().Format('yyyy-MM-dd'),
+        endTime: new Date().Format('yyyy-MM-dd').addDay(2),
+        message: ' '
+      }
       this.$emit('popState', '0')
+    },
+    returnUserInfo: function () {
+      this.close()
+      this.$emit('popState', 'userInfos')
     },
     viewGif: function () {
       alert('viewgif')
@@ -83,36 +106,61 @@ export default {
     },
     setMessage: function () {
       this.$validator.validateAll().then(result => {
-        console.log(this.errors)
+        console.log(result)
         if (!result) {
           this.$Message.error('请按照提示完整填写')
+          console.log(this)
           this.update = false
+        } else {
+          this.update = true
         }
-      })
-      if (this.update === false) return false
-      let messageList = new FormData()
-      config.changeDateType(this.messageForm.startTime)
-      messageList.append('userkey', config.userkey)
-      messageList.append('deviceId', config.deviceId)
-      messageList.append('personId', this.personData.personId)
-      // alert(this.messageForm.startTime)
-      messageList.append('msgBeginTime', config.changeDateType(this.messageForm.startTime))
-      messageList.append('msgEndTime', config.changeDateType(this.messageForm.endTime))
-      messageList.append('message', this.messageForm.message)
-      console.log(messageList)
-      Axios({
-        url: INTERFACE.USER_EDIT,
-        method: 'POST',
-        data: messageList,
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      }).then((data)=>{
+        console.log(typeof this.messageForm.startTime)
+        if(this.messageForm.timeLine ==='short') {
+          if (this.messageForm.startTime === "" ||this.messageForm.endTime === "" ) {
+            this.msg = this.$Message.error({content: '短期留言时间区间不能为空',duration: 5})
+            this.update = false
+          } else {
+            this.update = true
+          }
         }
-      }).then((res) => {
-        // alert(res.data.msg)
-        this.$emit('popState', '0')
-      }, (err) => {
-        console.log(err)
+        if (this.update === false) return false
+        let messageList = new FormData()
+        config.changeDateType(this.messageForm.startTime)
+        messageList.append('userkey', config.userkey)
+        messageList.append('deviceId', config.deviceId)
+        messageList.append('personId', this.personData.personId)
+        // TODO 长期留言时间
+        if(this.messageForm.timeLine ==='short') {
+          messageList.append('msgBeginTime', config.changeDateType(this.messageForm.startTime))
+          messageList.append('msgEndTime', config.changeDateType(this.messageForm.endTime))
+        } 
+        messageList.append('message', this.messageForm.message)
+        console.log(messageList)
+        Axios({
+          url: INTERFACE.USER_EDIT,
+          method: 'POST',
+          data: messageList,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((res) => {
+          if (res.data.code === res.data.succ_code) {
+            // msg内容消失
+            // this.msg()
+            console.log(this.msg)
+            if (this.msg === null) alert('empty')
+            this.$Message.info({content:'留言成功'})
+            this.close()
+            return
+          }
+           this.$Message.error({content:'预料之外的错误！！'})
+           this.close()
+        }, (err) => {
+          console.log(err)
+        })
       })
+      
     },
     stringifyDate: function (date) {
       console.log(date)
@@ -122,6 +170,8 @@ export default {
     viewWhich: function (val, old) {
       if (val === 'leaveMessage') {
         this.isShow = true
+      } else {
+        this.isShow = false
       }
     },
     messageForm: {
@@ -134,6 +184,7 @@ export default {
       handler (val, old) {
         this.personData = val
         console.log(this.personData)
+        this
       },
       deep: true
     }
@@ -206,13 +257,13 @@ textarea{
   height: 180px;
   resize: none
 }
+article .msgBox{
+  min-height: 240px
+}
 .foot{
   letter-spacing: 20px
 }
 .foot>button{
   letter-spacing: 0
 }
-
-
-
 </style>

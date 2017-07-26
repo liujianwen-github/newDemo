@@ -9,6 +9,12 @@ export default{
   minImageCount: 3,
   maxImageCount: 5,
   pageShow: 5,
+  dayBefore: {
+    // 筛选规则，不能选择今天之后的时间
+    disabledDate(date) {
+          return date > Date.now()
+        }
+  },
   cropImg: {
     img: '',
     info: true,

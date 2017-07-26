@@ -25,7 +25,7 @@
         </div>
         <div class="addMessage long">
           <label class="whiteText">生日</label>
-          <Date-picker v-model="birthDay" class="input"></Date-picker>
+          <Date-picker v-model="birthDay" class="input" :options="birthdayOPT"></Date-picker>
           <!-- <input type="date" name="" v-model="birthDay"> -->
         </div>
         <div class="addMessage short">
@@ -36,8 +36,7 @@
         </div>
         <div class="addMessage long" :class="{itemHide:cardHide}">
           <label class="whiteText">卡号</label>
-          <input class="input" type="text" name="cardId" v-model="cardId" v-validate="'required|cardId'">
-          <span v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</span>
+          <input class="input" type="text" name="cardId" v-model="cardId">
         </div>
         
       </div>
@@ -49,6 +48,19 @@
       </div>
     </article>
    </div>
+   <VueCropper
+      :class="{cropShow:cropShow}"
+      class="cropBox"
+      ref="cropper"
+      :img="cropImg.img"
+      :info="cropImg.info"
+      :canScale="cropImg.canScale"
+      :autoCrop="cropImg.autoCrop"
+      :autoCropWidth="cropImg.autoCropWidth"
+      :autoCropHeight="cropImg.autoCropHeight"
+      :fixed="cropImg.fixed"
+      :fixedNumber="cropImg.fixedNumber"
+    ></VueCropper>
   </div>
 </template>
 <!-- 新建用户组件 -->
@@ -57,11 +69,16 @@
 import Axios from 'axios'
 import config from '@/config'
 import INTERFACE from '@/interface'
+import VueCropper from 'vue-cropper'
 // import QsConfig from '@/axiosCon'
 export default {
   name: 'createUser',
   data () {
     return {
+      msg:null,
+      cropImg: config.cropImg,
+      birthdayOPT:config.dayBefore,
+      cropShow: false,
       intellNotShow: true,
       cardHide: true,
       img: null,
@@ -75,6 +92,7 @@ export default {
     }
   },
   props: ['viewWhich', 'toCreateUser'],
+  components: {VueCropper},
   methods: {
     // 关闭窗口
     close: function () {
@@ -103,14 +121,22 @@ export default {
       let reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = (e) => {
-        // console.log(e.target.result)
+        // 获取上传图片的base64编码，赋值给img
         this.img = e.target.result
+        this.cropShow = true
+        this.cropImg.img = e.target.result
+        this.msg = this.$Message.info({
+          content:'调整好图片后，回车键确认',
+          duration: 0
+        })
+        $("input[type='file']").attr('disabled',true)
       }
     },
     // 检查表单
     checkForm: function (argument) {
       this.$validator.validateAll().then(result => {
-        console.log(this.errors)
+        console.log(this.cardId === null)
+        const isVip = this.vip === 0 
         if (!result) {
           // this.$Message.error('请按照提示完整填写')
           this.$emit('modalMessage','warning',this.errors.errors[0].msg)
@@ -118,15 +144,36 @@ export default {
           this.update = false
           console.log(this.update)
           return
+        } else if(!isVip &&this.cardId === null){
+          this.$Message.error({content:'非vip卡号不能为空',duration:5})
         } else {
-          this.createUser()
+          this.createUser(isVip)          
         }
       })
     },
+    // 上传图片截图
+    cropTheImg: function (e) {
+      // 回车确认裁剪图片
+      if (e.keyCode === 13){
+        this.$refs.cropper.startCrop() 
+        this.$refs.cropper.stopCrop()
+        this.$refs.cropper.getCropData((data) => {
+          // 确定裁剪的图片，输出
+          this.img = data
+          // 裁剪窗口消失
+          this.cropShow = false
+          // 提示信息消失
+          this.msg()
+          console.log(this.msg)
+          //按钮恢复可用
+          $("input[type='file']").attr('disabled',false)
+        })
+      }
+    },
     // 创建用户
-    createUser: function () {
+    createUser: function (isVip) {
       if (this.img.match(/base64/g)) this.img = this.img.split(',')[1]
-        // 数据格式化
+      // 数据格式化
       let dataList = new FormData()
       // 修改日期格式
       this.birthDay = typeof this.birthDay === 'undefined' ? '' : new Date(this.birthDay).Format('yyyy-MM-dd')
@@ -136,8 +183,10 @@ export default {
       dataList.append('sex', this.sex)
       dataList.append('imgUrl', this.img)
       dataList.append('name', this.name)
-      dataList.append('cardId', this.cardId)
+      // 如果不是vip，加上卡号信息
+      if (!isVip)  dataList.append('cardId', this.cardId)
       dataList.append('birthDay', this.birthDay)
+      dataList.append('vip', this.vip)
       // http操作
       Axios({
         method: 'POST',
@@ -197,6 +246,14 @@ export default {
           this.cardHide = true
           break;
       }
+    },
+    cropShow: function(val, old) {
+      const _this = this
+      if(val === true) {
+        document.body.addEventListener('keyup',_this.cropTheImg,false)
+      }else if (val === false) {
+        document.body.removeEventListener('keyup',_this.cropTheImg,false)
+      }
     }
   }
 }
@@ -207,9 +264,6 @@ export default {
 </style>
 
 <style scoped>
-#createUser{
-  /*display: none*/
-}
 .notshow{
   display: none;
 }
@@ -289,5 +343,8 @@ input[type="file"]{
   height: 30px;
   margin-left: 10%;
   display: inline-block;
+}
+.cropShow{
+  display: block
 }
 </style>

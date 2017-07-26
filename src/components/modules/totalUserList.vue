@@ -29,6 +29,7 @@ import Axios from 'axios'
 import INTERFACE from '@/interface'
 import empty from '@/components/popups/empty'
 export default {
+  // 注册用户总列表
   name: 'totalUserList',
   data () {
     return {
@@ -66,7 +67,14 @@ export default {
   },
   props: ['toUserList', 'fromFa', 'searchPerson'],
   methods: {
-    // 警告、错误提示信息
+    /**
+     * @Author    liujianwen
+     * @DateTime  2017-07-24
+     * @copyright [提示信息的弹窗]
+     * @param     {[String]}      type    [提示信息类型]
+     * @param     {[String]}      content [提示信息内容]
+     * @return    void
+     */
     modalMessage: function (type, content) {
       const title = type
       switch (type) {
@@ -96,7 +104,12 @@ export default {
               break;
       }
     },
-    // 获取所有注册用户数据
+    /**
+     * @Author    liujianwen
+     * @DateTime  2017-07-24
+     * @copyright [get all register user]
+     * @return    void
+     */
     getAllUser: function () {
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
@@ -109,8 +122,14 @@ export default {
         console.log(err)
       })
     },
-    // 编辑用户
-    // 
+    /**
+     * @Author    liujianwen
+     * @DateTime  2017-07-24
+     * @copyright [跳转到编辑弹窗]
+     * @param     {[object]}      data  [需要编辑的信息]
+     * @param     {[Number]}      index [item在list中的排序号]
+     * @return    void
+     */
     goEdit: function (data, index) {
       this.viewWhich = 'editUser'
       this.personData = config.deepCopy(data)
@@ -176,7 +195,7 @@ export default {
       if (val === 'addNewUser') {
         this.personData.imgUrl = ''
         this.personData.name = ''
-        this.personData.cardId = new Date().getTime().toString()
+        this.personData.cardId = null
         this.personData.birthDay = null
         this.personData.time = new Date().getTime()
         this.personData.imgs = []

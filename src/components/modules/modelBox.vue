@@ -1,8 +1,8 @@
 <template>
   <div id="modulesBox">
     <model1 v-show="notice==0" :to-first="modelOne" @pageOne="model_Change" @update="update" :page-one="pageInfo1"></model1>
-    <model2 v-show="notice==1" :to-second="modelTwo" @pageTwo="model_Change" :page-two="pageInfo2"></model2>
-    <model3 v-show="notice==2" :to-third="modelThree" @pageThree="model_Change" :page-three="pageInfo3"></model3>
+    <model2 v-show="notice==1" :to-second="modelTwo" @pageTwo="model_Change" @update="update" :page-two="pageInfo2"></model2>
+    <model3 v-show="notice==2" :to-third="modelThree" @pageThree="model_Change" @update="update" :page-three="pageInfo3"></model3>
   </div>
 </template>
 

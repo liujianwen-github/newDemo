@@ -9,9 +9,9 @@
       </div>
       <div class="addUser whiteText">
         <p class="headInfo" v-text="personData.name">name</p>
-        <p class="headInfo">最后到访时间：<span v-text="personData.latestMatchTime"></span></p>
-        <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p>
-        <div class="btn" @click="setMessage">设置留言</div>
+        <!-- <p class="headInfo">最后到访时间：<span v-text="personData.latestMatchTime"></span></p> -->
+        <!-- <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p> -->
+        <div class="btn" style="position:absolute;bottom: 0" @click="setMessage">设置留言</div>
       </div>
       <div @click="searchHistory" class="searchHistory">
           <p align="center">
@@ -48,8 +48,7 @@
                   </div>
                 </li>
               </ul>
-          </div>
-            
+            </div> 
           </div>
           <div class="sceneBox" :class="{show:scene.isShow}" @click="closeScene">
            <!-- <div> -->
@@ -61,8 +60,7 @@
               <img :src="gif.imgHead + gif.imgURL"  alt="" >
             <!-- </div> -->
           </div>
-        </div>
-        
+        </div>   
       </div>
     </article>
    </div>
@@ -177,9 +175,13 @@ export default {
     },
     searchHistory: function () {
       this.$emit('popState', 'history')
+      this.stopGif()
+      this.closeScene()
     },
     setMessage: function () {
       this.$emit('popState', 'leaveMessage')
+      this.stopGif()
+      this.closeScene()
     }
   },
   watch: {
@@ -200,8 +202,11 @@ export default {
       })
     },
     viewWhich: function (val, old) {
+      console.log('createUser->viewWhich:' + val)
       if (val === 'userInfos') {
         this.isShow = true
+      } else{
+        this.isShow = false
       }
       // alert(val)
     }
@@ -246,7 +251,9 @@ export default {
   width: 100%;  
 }
 .popup header .addUser{
-  padding-left:10px
+  position: relative;
+  padding-left:10px;
+  width: 30%
 }
 .popup header .btn{
   /*border:1px solid white;*/
@@ -359,8 +366,13 @@ article .content .itemList li>div{
 }
 article .content .itemList li>div>div{
   /*display: inline-block;*/
-  padding-left: 30px;
+  /*padding-left: 30px;*/
+  /*text-align: center;*/
   width: 100%
+}
+article .content .itemList li>div>.right{
+  display: flex;
+  justify-content: center;
 }
 article .content .itemList li>div>.left p{
   margin:0 
@@ -369,6 +381,7 @@ article .content .itemList li>div>.right>div{
   width: 120px;
   height: 120px;
   position: relative;
+  /*text-align: center;*/
 }
 article .content .itemList li>div>.right img{
   width: 100%;

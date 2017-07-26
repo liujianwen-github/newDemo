@@ -15,14 +15,16 @@
     <article>
       <div class="content">
         <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.persontag)">
-          <input type="checkbox" name="chooseItem" :value="item.persontag" v-model="chooseItem">
+          <input type="radio" name="chooseItem" :value="item.persontag" v-model="chooseItem">
           <div class="bgc" :class="{showme:index==whichBgc}" style="color:white">
             <img src="../../assets/checked.png" height="25" width="25">
           </div>
           <img :src="item.headImage" alt="">
           <p v-text="item.name">name</p>
         </div>
-        <!-- <div class=""></div> -->
+        <div v-show="dataList.length==0" class="emptyBox">
+          <p>查询结果为空！！</p>
+        </div>
       </div>
       <div class="foot">
         <div>
@@ -101,6 +103,7 @@ export default {
         this.$emit('popState', 'intell')
         return
       }
+      // return
       let dataForm = new FormData()
       dataForm.append('userkey', config.userkey)
       dataForm.append('deviceId', config.deviceId)
@@ -112,8 +115,13 @@ export default {
         data: dataForm
       }).then((res) => {
         console.log(res)
-        if (res.data.msg === 'SUCC') alert('添加成功')
-        this.close()
+        if (res.data.code === res.data.succ_code) {
+          this.$Message.success({content: '添加成功'})
+          this.close()
+          this.$emit('update')
+          return
+        }
+        this.$Message.error({content: res.data.msg})
       }, (err) => {
         // alert(err)
         console.log(err)
@@ -240,12 +248,21 @@ export default {
   background-color: #2B77D5;
   color: white
 }
-input[type="checkbox"]{
+input[type="radio"]{
   width: 100%;
   height: 100%;
   position: absolute;
   left: 0;
   top: 0;
   opacity: 0
+}
+.emptyBox{
+  height: 40px
+}
+.emptyBox p{
+  position: relative;
+  width: 100%;
+  text-align:center;
+  line-height: 40px
 }
 </style>

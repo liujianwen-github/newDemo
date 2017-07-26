@@ -62,7 +62,7 @@
           <Col span="12" class="addMessage long">
             <label>生日</label>
             <!-- <input type="date" name="" v-model="personData.birthDay"> -->
-            <Date-picker name="birthday" v-model="personData.birthDay" class="input" ></Date-picker>
+            <Date-picker name="birthday" v-model="personData.birthDay" class="input" :options="birthdayOPT"></Date-picker>
             <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
@@ -77,7 +77,7 @@
         <Progress :percent="percent" :class="{processHide: processHide}"></Progress>
         <div class="foot">
           <button class="btn" @click="close">取消</button>
-          <button class="btn" @click="pushFormat">确定</button>
+          <button class="btn" @click="checkForm">确定</button>
         </div>
       </div>
     </article>
@@ -99,8 +99,6 @@
       class="cropBox"
       ref="cropper"
       :img="cropImg.img"
-      :outputSize="cropImg.size"
-      :outputType="cropImg.outputType"
       :info="cropImg.info"
       :canScale="cropImg.canScale"
       :autoCrop="cropImg.autoCrop"
@@ -109,6 +107,19 @@
       :fixed="cropImg.fixed"
       :fixedNumber="cropImg.fixedNumber"
     ></VueCropper>
+   <!--  <VueCropper
+      :class="{cropShow:cropShow}"
+      class="cropBox"
+      ref="cropper"
+      :img="cropImg.img"
+      :info="cropImg.info"
+      :canScale="cropImg.canScale"
+      :autoCrop="cropImg.autoCrop"
+      :autoCropWidth="cropImg.autoCropWidth"
+      :autoCropHeight="cropImg.autoCropHeight"
+      :fixed="cropImg.fixed"
+      :fixedNumber="cropImg.fixedNumber"
+    ></VueCropper> -->
    </div>
   </div>
 </template>
@@ -125,6 +136,7 @@ export default {
   name: 'registerUser',
   data () {
     return {
+      msg: null,
       percent: 0,
       userHead: userHead,
       itemInfo:null,
@@ -134,13 +146,15 @@ export default {
       cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
-      vip: -1,
+      vip: null,
+      birthdayOPT: config.dayBefore,
+      // personData中的数据以及vip等，都是从totalUserList中带过来的
       title: null,
       personData: {
         imgUrl: '',
         imgs: [],
         name: null,
-        sex: 1,
+        sex: null,
         time: null,
         cardId: null,
         birthDay: null,
@@ -148,7 +162,6 @@ export default {
         deviceId: config.deviceId,
         personId: null
       }
-
     }
   },
   props: ['viewWhich', 'toRegisterUser'],
@@ -157,24 +170,30 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
+      this.processHide = true
       this.$forceUpdate()
     },
+    // 更新头像
     updateHead: function () {
+       this.msg = this.$Message.info({
+          content:'调整好图片后，回车键确认',
+          duration: 0,
+          closable: true
+        })
       const files = this.$refs.fileUpdateHead.files
       let reader = new FileReader()
-
+      console.log(files)
       reader.readAsDataURL(files[0])
       reader.onload = (e) => {
-        // console.log(this)
         this.personData.imgUrl = e.target.result
         this.cropShow = true
         this.cropImg.img = e.target.result
-        this.$Message.info({
-          content:'调整好图片后，回车键确认',
-          duration: 10
-        })
+
+        // 禁用上传文件按钮，避免回车继续打开传文件
+        $("input[type='file']").attr('disabled',true)
       }
     },
+    // 图片序列添加
     chooseImg: function (e) {
       this.personData.imgs = this.personData.imgs || []
       // console.log(this.$refs.fileInputOne.files)
@@ -186,121 +205,131 @@ export default {
         reader.onload = (e) => {
           console.log(this)
           this.personData.imgs.push(e.target.result.split(',')[1])
-          // if (i === 0 && this.title === '新建') {
-          //   this.personData.imgUrl = e.target.result.split(',')[1]
-          //   // 新建用户的情况下，imgs序列中选择第一张图片作为头像
-          // }
           this.$forceUpdate()
         }
       }
     },
+    // 去往删除界面
     godelete: function () {
       $('.deleteUser').css('display', 'block')
       $('#registerUser>div>header').addClass('vague')
       $('#registerUser>div>article').addClass('vague')
     },
-    pushFormat: function () {
+    // 检查表单
+    checkForm: function () {
       // 调用validator验证全部条件
       this.$validator.validateAll().then(result => {
-        console.log(this.errors)
+        const isVip = this.vip === 0 
+        console.log(this.personData.cardId === '')
         if (!result) {
           // this.$Message.error('请按照提示完整填写')
           this.$emit('modalMessage','warning','请按照提示完整填写')
           console.log(this.$store)
           this.$emit('popState','registerUser')
-          this.update = false
-          return
+        } else if(!isVip &&this.personData.cardId === ''){
+          this.$Message.error({content:'非vip卡号不能为空',duration:5})
+        } else {
+          this.pushFormat()
         }
       })
-      // 新建用户验证图片数量
-      if (this.title === '新建' && this.personData.imgs.length >= 0) {
-        if (this.personData.imgs.length < config.minImageCount) {
-         // this.$Message.error('照片太少，不能上传')
-         this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
-         console.log(this.$Store)
-         this.personData.imgUrl = ''
-         this.personData.imgs = []
-         this.update = false
-        }
-        // this.personData.imgs.shift()
-      }
-      if (typeof this.personData.imgs === 'undefined') {
-        this.personData.imgs = []
-      }
-      if (this.update === false) return false
-      this.processHide = false
-      let personData = new FormData()
-      // 修改日期格式
-      this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
-      console.log(this.personData.birthDay)
-      personData.append('personId', this.personData.personId)
-      personData.append('imgUrl', this.personData.imgUrl)
-      personData.append('imgs', this.personData.imgs)
-      personData.append('name', this.personData.name)
-      personData.append('sex', this.personData.sex)
-      personData.append('cardId', this.personData.cardId)
-      personData.append('birthDay', this.personData.birthDay)
-      personData.append('userkey', config.userkey)
-      personData.append('deviceId', config.deviceId)
-      personData.append('vip', this.vip)
-      let _this = this
-      console.log(personData)
-      if (this.title === '新建') {
-        Axios({
-          method: 'POST',
-          url: INTERFACE.USER_ADDNEW,
-          data: personData,
-          onUploadProgress: function (e) {
-            // 这里的this指向xhr对象
-            _this.percent = Math.round((e.loaded * 100) / e.total)
-          }
-        }).then((res) => {
-          this.processHide = true
-          console.log(res)
-          this.percent = 0
-          if (res.data.msg === 'SUCC') {
-            this.$Message.success({content:'创建成功',duration: 5})
-            this.$emit('popState','update')
-            this.close()
-            return
-          }else{
-            // alert(res.data.msg)
-            this.$Message.error(res.data.msg)
-          } 
-        }, (err) => {
-          console.log(err)
-          // this.$Message.error(err.data.msg)
-        })
-        // .catch((evt)=>{
-        //   console.log(evt)
-        // })
-      } else if (this.title === '编辑') {
-        Axios({
-          method: 'POST',
-          url: INTERFACE.USER_EDIT,
-          data: personData
-        }).then((res) => {
-          console.log(res)
-          this.percent = 0
-          if (res.data.msg === 'SUCC') {
-            // this.$emit('popState', '0')
-            this.$Message.success('编辑成功')
-            this.$emit('popState','update')
-            this.close()
-            return
-          }
-          this.$emit('modalMessage','error',res.data.msg)
-        }, (err) => {
-          console.log(err)
-          this.$Message.error(err.data.msg)
-        })
-      }
     },
+    pushFormat: function () {
+        // 新建用户验证图片数量
+        if (this.title === '新建' && this.personData.imgs.length >= 0) {
+          if (this.personData.imgs.length < config.minImageCount) {
+           // this.$Message.error('照片太少，不能上传')
+           this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
+           console.log(this.$Store)
+           this.personData.imgUrl = ''
+           this.personData.imgs = []
+           this.update = false
+          } else {
+            this.update = true
+          }
+          // this.personData.imgs.shift()
+        }
+        if (typeof this.personData.imgs === 'undefined') {
+          this.personData.imgs = []
+        }
+        if (this.update === false) return false
+        this.processHide = false
+        let personData = new FormData()
+        // 修改日期格式
+        this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
+        console.log(this.personData.birthDay)
+        console.log(typeof Number(this.personData.sex))
+        personData.append('personId', this.personData.personId)
+        personData.append('imgUrl', this.personData.imgUrl)
+        personData.append('imgs', this.personData.imgs)
+        personData.append('name', this.personData.name)
+        personData.append('sex', Number(this.personData.sex))
+        personData.append('birthDay', this.personData.birthDay)
+        personData.append('userkey', config.userkey)
+        personData.append('deviceId', config.deviceId)
+        personData.append('vip', this.vip)
+        if (this.vip === '1') {
+          personData.append('cardId', this.personData.cardId)
+        }
+        let _this = this
+        if (this.title === '新建') {
+          Axios({
+            method: 'POST',
+            url: INTERFACE.USER_ADDNEW,
+            data: personData,
+            onUploadProgress: function (e) {
+              // 这里的this指向xhr对象
+              _this.percent = Math.round((e.loaded * 100) / e.total)
+            }
+          }).then((res) => {
+            this.processHide = true
+            console.log(res)
+            this.percent = 0
+            if (res.data.msg === 'SUCC') {
+              this.$Message.success({content:'创建成功',duration: 5})
+              this.$emit('popState','update')
+              this.close()
+              return
+            }else{
+              // alert(res.data.msg)
+              this.$Message.error(res.data.msg)
+            } 
+          }, (err) => {
+            console.log(err)
+            // this.$Message.error(err.data.msg)
+          })
+          // .catch((evt)=>{
+          //   console.log(evt)
+          // })
+        } else if (this.title === '编辑') {
+          Axios({
+            method: 'POST',
+            url: INTERFACE.USER_EDIT,
+            data: personData
+          }).then((res) => {
+            console.log(res)
+            this.percent = 0
+            if (res.data.msg === 'SUCC') {
+              // this.$emit('popState', '0')
+              this.$Message.success('编辑成功')
+              this.$emit('popState','update')
+              this.close()
+              return
+            }
+            this.$emit('modalMessage','error',res.data.msg)
+          }, (err) => {
+            console.log(err)
+            this.$Message.error(err.data.msg)
+          })
+        }
+      
+    },
+    // 取消删除操作
     dontDelete: function () {
       $('.deleteUser').css('display', 'none')
       $('#registerUser>div>header').removeClass('vague')
       $('#registerUser>div>article').removeClass('vague')
     },
+    // 确认删除
     mksureDelete: function () {
       // alert('push delete,return userManage')
       let dataForm = new FormData()
@@ -325,6 +354,7 @@ export default {
          this.$Message.error(err.data.msg)
       })
     },
+    // 确认裁剪图片
     cropTheImg: function(e){
       console.log(e)
       // 回车确认裁剪图片
@@ -333,8 +363,11 @@ export default {
         this.$refs.cropper.stopCrop()
         this.$refs.cropper.getCropData((data) => {
           // 确定裁剪的图片，输出
-          this.itemInfo.headimage = 'data'
+          this.itemInfo.headimage = data
+          this.personData.imgUrl = data
           this.cropShow = false
+          $("input[type='file']").attr('disabled',false)
+          this.msg()
           console.log(this.personData)
           console.log(this.itemInfo)
         })
@@ -345,7 +378,7 @@ export default {
   watch: {
     viewWhich: function (val, old) {
       // console.log(Axios())
-      // console.log(v)
+      // 新建or编辑
       if (val === 'editUser') {
         this.isShow = true
         this.title = '编辑'
@@ -357,7 +390,7 @@ export default {
     toRegisterUser: {
       handler (val, old) {
         // 获取元数据一份,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
-        this.itemInfo = val  
+        this.itemInfo = val 
         this.personData = config.deepCopy(val)
         if (this.title === '新建') {
           // 初始化修改用户信息窗口的数据
@@ -365,6 +398,7 @@ export default {
           this.personData.imgs = []
           this.vip = 0
           this.cardHide = true
+          console.log(this.personData)
           return
         }
         // 默认不显示进度条
