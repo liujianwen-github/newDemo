@@ -26,7 +26,7 @@ export default {
       pageInfo2: null,
       pageInfo3: null,
       getParams: {
-        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': 0, 'endTime': new Date().getTime(), 'pageNo': 1
+        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
       }
     }
   },
