@@ -20,6 +20,7 @@
         :fixed="cropImg.fixed"
         :fixedNumber="cropImg.fixedNumber"
       ></vueCropper>
+      <test1></test1>
    </div>
    <button @click="start">start</button>
     <!-- <input type="text" v-model="lili" name=""> -->
@@ -27,10 +28,11 @@
 </template>
 <script>
 import VueCropper from 'vue-cropper'
+import test1 from './test01'
 // import 
 export default {
   name: 'test',
-  components: {VueCropper},
+  components: {VueCropper,test1},
   data: function () {
     return {
       cropImg: {

@@ -181,16 +181,19 @@ export default {
           closable: true
         })
       const files = this.$refs.fileUpdateHead.files
+      // if (files.length = 0) return
       let reader = new FileReader()
       console.log(files)
-      reader.readAsDataURL(files[0])
-      reader.onload = (e) => {
-        this.personData.imgUrl = e.target.result
-        this.cropShow = true
-        this.cropImg.img = e.target.result
+      for(let i in files) {
+        reader.readAsDataURL(files[i])
+        reader.onload = (e) => {
+          this.personData.imgUrl = e.target.result
+          this.cropShow = true
+          this.cropImg.img = e.target.result
 
-        // 禁用上传文件按钮，避免回车继续打开传文件
-        $("input[type='file']").attr('disabled',true)
+          // 禁用上传文件按钮，避免回车继续打开传文件
+          $("input[type='file']").attr('disabled',true)
+        }
       }
     },
     // 图片序列添加
@@ -234,6 +237,7 @@ export default {
       })
     },
     pushFormat: function () {
+        $("button").attr('disabled',true)
         // 新建用户验证图片数量
         if (this.title === '新建' && this.personData.imgs.length >= 0) {
           if (this.personData.imgs.length < config.minImageCount) {
@@ -246,7 +250,6 @@ export default {
           } else {
             this.update = true
           }
-          // this.personData.imgs.shift()
         }
         if (typeof this.personData.imgs === 'undefined') {
           this.personData.imgs = []
@@ -279,32 +282,38 @@ export default {
             onUploadProgress: function (e) {
               // 这里的this指向xhr对象
               _this.percent = Math.round((e.loaded * 100) / e.total)
+            },
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
             }
-          }).then((res) => {
-            this.processHide = true
+          }).then((res) =>{
             console.log(res)
+            this.processHide = true
             this.percent = 0
             if (res.data.msg === 'SUCC') {
               this.$Message.success({content:'创建成功',duration: 5})
               this.$emit('popState','update')
               this.close()
+              $("button").attr('disabled',false)
               return
             }else{
               // alert(res.data.msg)
               this.$Message.error(res.data.msg)
+              $("button").attr('disabled',false)
             } 
           }, (err) => {
             console.log(err)
-            // this.$Message.error(err.data.msg)
+            $("button").attr('disabled',false)
           })
-          // .catch((evt)=>{
-          //   console.log(evt)
-          // })
         } else if (this.title === '编辑') {
           Axios({
             method: 'POST',
             url: INTERFACE.USER_EDIT,
-            data: personData
+            data: personData,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+              // 'Content-Type': 'text/plain'
+            }
           }).then((res) => {
             console.log(res)
             this.percent = 0
@@ -313,14 +322,16 @@ export default {
               this.$Message.success('编辑成功')
               this.$emit('popState','update')
               this.close()
+              $("button").attr('disabled',false)
               return
             }
             this.$emit('modalMessage','error',res.data.msg)
           }, (err) => {
             console.log(err)
-            this.$Message.error(err.data.msg)
+            $("button").attr('disabled',false)
           })
         }
+        
       
     },
     // 取消删除操作

@@ -22,7 +22,7 @@
           <img :src="item.headImage" alt="">
           <p v-text="item.name">name</p>
         </div>
-        <div v-show="dataList.length==0" class="emptyBox">
+        <div v-show="dataList.length==0" class="emptyBox" :class="{emptyShow:emptyShow}">
           <p>查询结果为空！！</p>
         </div>
       </div>
@@ -47,6 +47,7 @@ export default {
   data () {
     return {
       intellNotShow: true,
+      emptyShow: false,
       dataList: [],
       personData: null,
       whichBgc: null,
@@ -257,7 +258,11 @@ input[type="radio"]{
   opacity: 0
 }
 .emptyBox{
-  height: 40px
+  height: 40px;
+  visibility: hidden;
+}
+.emptyShow{
+  visibility: visible;
 }
 .emptyBox p{
   position: relative;

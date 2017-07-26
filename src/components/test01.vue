@@ -16,14 +16,36 @@
             <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
         </p>
     </div> -->
+    <button @click="testAbort">clicke,me</button>
 </div>
 </template>
 <script>
+import Axios from 'axios'
 export default {
   name: 'test1',
   data () {
     return {
       now: new Date()
+    }
+  },
+  methods: {
+    testAbort: function (e) {
+      // Axios.defaults.HOST=''
+      Axios.get('../test.txt')
+        .then(result => {
+          this.setState({
+            daily: '1111111111',
+            loading: false,
+            error: null
+          });
+        })
+          .catch(err => {
+            // Something went wrong. Save the error in state and re-render.
+            this.setState({
+              loading: false,
+              error: err
+            });
+          });
     }
   },
   destroyed () {
