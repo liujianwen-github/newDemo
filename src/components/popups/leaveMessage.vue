@@ -85,8 +85,8 @@ export default {
       this.isShow = false
       this.messageForm = {
         timeLine: 'short',
-        startTime: new Date().Format('yyyy-MM-dd'),
-        endTime: new Date().Format('yyyy-MM-dd').addDay(2),
+        startTime: new Date().Format('yyyy-MM-dd hh:mm'),
+        endTime: new Date().Format('yyyy-MM-dd hh:mm').addDay(2),
         message: ' '
       }
       this.$emit('popState', '0')
