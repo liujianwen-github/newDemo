@@ -20,11 +20,24 @@
           </div>
         </div>
         <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
-        <!-- 开始时间结束时间限制条件一样 -->
-          <span class="whiteText">开始时间：</span><Date-picker type="datetime" class="date" :clearable="false" :options="endTimeOPT" v-model="messageForm.startTime" format="yyyy-MM-dd HH:mm"></Date-picker>
+          <span class="whiteText">留言日期:</span>
+          <Date-picker type="date" :clearable="false" :options="beginTimeOPT" v-model="messageForm.baseTime" format="yyyy-MM-dd "></Date-picker>
         </div>
         <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
-          <span class="whiteText">结束时间：</span><Date-picker type="datetime" class="date" :clearable="false" :options="endTimeOPT" v-model="messageForm.endTime" format="yyyy-MM-dd HH:mm"></Date-picker>
+        <!-- 开始时间结束时间限制条件一样 -->
+          <span class="whiteText">留言时间段:</span>
+          <Time-picker confirm type="timerange"
+          hide-disabled-options
+          v-model="stime"
+          @on-change="editTime"
+          :disabled-hours="timeHOPT"
+           placement="bottom-end" format="HH:mm" placeholder="选择时间"></Time-picker>
+          <!-- <Date-picker type="datetime" class="date" :clearable="false" :options="beginTimeOPT" v-model="messageForm.startTime" format="yyyy-MM-dd HH:mm"></Date-picker> -->
+        </div>
+        <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
+          <!-- <span class="whiteText">结束时间：</span> -->
+           <!-- <Time-picker type="time" placeholder="选择时间" style="width: 168px"></Time-picker> -->
+          <!-- <Date-picker type="datetime" class="date" :clearable="false" :options="endTimeOPT" v-model="messageForm.endTime" format="yyyy-MM-dd HH:mm"></Date-picker> -->
         </div>
       </div>
     </header>
@@ -57,18 +70,23 @@ export default {
       update: true,
       endTimeOPT: {
         disabledDate(date) {
-          return date <  Date.now()
+          return date < Date.now()
         }
       },
       beginTimeOPT: {
         disabledDate(date) {
-          return date < Date.now()
+          return date <= Date.now()
         }
       },
+      timeHOPT:[],
+      // timeMOPT:[],
+      stime: null,
+      etime: null,
       messageForm: {
         timeLine: 'short',
-        startTime: new Date().Format('yyyy-MM-dd hh:mm'),
-        endTime: new Date().Format('yyyy-MM-dd hh:mm').addDay(2),
+        baseTime: new Date().Format('yyyy-MM-dd'),
+        startTime: null,
+        endTime: null,
         message: ' '
       },
       personData: {
@@ -80,13 +98,38 @@ export default {
   },
   props: ['viewWhich', 'toMessage'],
   methods: {
+    editTime: function (msg){
+      console.log(msg)
+      // 用户修改过的时间
+      this.messageForm.startTime = this.messageForm.baseTime +' '+ msg[0]
+      this.messageForm.endTime = this.messageForm.baseTime +' '+ msg[0]
+      console.log(this.messageForm)
+      // const h = msg[0].substring(0,2) //当前选中的小时
+      // console.log(typeof minute)
+      // console.log(typeof new Date().getHours())
+      // console.log(Number(h) === new Date().getHours())
+      // const curr = Number(h) === new Date().getHours()
+      // if(curr) {
+      //   //选择时间等于当前时间的小时
+      //   const min = new Date().getMinutes() //获取当前的分钟数
+      //   for(let i =0;i<min;i++){
+      //     this.timeMOPT[i] = i
+      //   }
+      // } else{
+      //    this.timeMOPT = []
+      // }
+      // this.$forceUpdate()
+      // console.log(this.timeMOPT)
+      // // 这种方法并不能生效，修改之后的时间限制条件没有刷新视图
+    },
     close: function () {
       // $('#leaveMessage').css('display', 'none')
       this.isShow = false
       this.messageForm = {
         timeLine: 'short',
-        startTime: new Date().Format('yyyy-MM-dd hh:mm'),
-        endTime: new Date().Format('yyyy-MM-dd hh:mm').addDay(2),
+        baseTime: new Date().Format('yyyy-MM-dd '),
+        startTime: null,
+        endTime: null,
         message: ' '
       }
       this.$emit('popState', '0')
@@ -105,14 +148,14 @@ export default {
       this.$emit('popState', 'history')
     },
     setMessage: function () {
+      this.update = true // 默认允许更新
       this.$validator.validateAll().then(result => {
         console.log(result)
         if (!result) {
           this.$Message.error('请按照提示完整填写')
           console.log(this)
           this.update = false
-        } else {
-          this.update = true
+          return false
         }
       }).then((data)=>{
         console.log(typeof this.messageForm.startTime)
@@ -120,10 +163,12 @@ export default {
           if (this.messageForm.startTime === "" ||this.messageForm.endTime === "" ) {
             this.msg = this.$Message.error({content: '短期留言时间区间不能为空',duration: 5})
             this.update = false
-          } else {
-            this.update = true
           }
         }
+        // if (new Date(this.messageForm.startTime).getTime() >=new Date(this.messageForm.endTime).getTime()) {
+        //   this.update = false
+        //   this.$Message.error('留言结束时间早于开始时间')
+        // }
         if (this.update === false) return false
         let messageList = new FormData()
         config.changeDateType(this.messageForm.startTime)
@@ -132,8 +177,8 @@ export default {
         messageList.append('personId', this.personData.personId)
         // TODO 长期留言时间
         if(this.messageForm.timeLine ==='short') {
-          messageList.append('msgBeginTime', config.changeDateType(this.messageForm.startTime))
-          messageList.append('msgEndTime', config.changeDateType(this.messageForm.endTime))
+          messageList.append('msgBeginTime', this.messageForm.startTime)
+          messageList.append('msgEndTime', this.messageForm.endTime)
         } 
         messageList.append('message', this.messageForm.message)
         console.log(messageList)
@@ -148,8 +193,8 @@ export default {
           if (res.data.code === res.data.succ_code) {
             // msg内容消失
             // this.msg()
-            console.log(this.msg)
-            if (this.msg === null) alert('empty')
+            // console.log(this.msg)
+            // if (this.msg === null) alert('empty')
             this.$Message.info({content:'留言成功'})
             this.close()
             return
@@ -170,6 +215,9 @@ export default {
     viewWhich: function (val, old) {
       if (val === 'leaveMessage') {
         this.isShow = true
+        // 用户如果没有修改过时间，留言开始结束时间是这个
+        this.messageForm.startTime = this.messageForm.baseTime +' '+ new Date().Format('hh:mm')
+        this.messageForm.endTime = this.messageForm.baseTime +' '+ new Date().Format('hh:mm')
       } else {
         this.isShow = false
       }
@@ -187,6 +235,17 @@ export default {
         this
       },
       deep: true
+    },
+    stime: function (val, old){
+      // console.log(val[0].getHours())
+    }
+  },
+  created() {
+    // 根据当前时间设置禁用的小时
+    let now = new Date().getHours()
+     this.stime = [new Date().Format('hh:mm'),new Date().Format('hh:mm')]
+    for(let i =0;i<now;i++){
+      this.timeHOPT[i] = i
     }
   }
 }
@@ -265,5 +324,9 @@ article .msgBox{
 }
 .foot>button{
   letter-spacing: 0
+}
+.headInfo>span{
+  display:inline-block;
+  width: 75px
 }
 </style>

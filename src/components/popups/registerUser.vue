@@ -407,13 +407,15 @@ export default {
           // 初始化修改用户信息窗口的数据
           this.isShow = true
           this.personData.imgs = []
-          this.vip = 0
+          // this.vip = 0
           this.cardHide = true
           console.log(this.personData)
           return
         }
         // 默认不显示进度条
         this.personData.imgUrl = val.headimage
+        this.vip = this.personData.vip
+        console.log(this.personData)
       },
       deep: true
     },
