@@ -143,7 +143,7 @@ export default {
       update: true,
       isShow: false,
       cropShow: false,
-      cardHide: true,
+      // cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
       vip: null,
@@ -166,11 +166,22 @@ export default {
   },
   props: ['viewWhich', 'toRegisterUser'],
   components: {VueCropper},
+  computed: {
+    // 根据person是否具有vip属性，来判断cardId输入框是否显示
+    cardHide: function () {
+      if(this.vip === 0) {
+        return true
+      }else {
+        false
+      }
+    }
+  },
   methods: {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
       this.processHide = true
+      this.cardHide = true,
       this.$forceUpdate()
     },
     // 更新头像
@@ -419,7 +430,8 @@ export default {
       },
       deep: true
     },
-    vip: function (val, old) { 
+    vip: function (val, old) {
+      // console.log(this.personData.cardId)
       switch(val) {
         case '1':
           this.cardHide = false
