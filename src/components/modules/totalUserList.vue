@@ -41,7 +41,7 @@ export default {
         name: null,
         sex: 1,
         time: null,
-        cardId: null,
+        cardId: '',
         birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
@@ -195,7 +195,7 @@ export default {
       if (val === 'addNewUser') {
         this.personData.imgUrl = ''
         this.personData.name = ''
-        this.personData.cardId = null
+        this.personData.cardId = ''
         this.personData.birthDay = null
         this.personData.time = new Date().getTime()
         this.personData.imgs = []

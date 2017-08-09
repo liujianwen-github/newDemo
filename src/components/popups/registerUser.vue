@@ -146,7 +146,7 @@ export default {
       // cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
-      vip: null,
+      vip: '0',
       birthdayOPT: config.dayBefore,
       // personData中的数据以及vip等，都是从totalUserList中带过来的
       title: null,
@@ -156,7 +156,7 @@ export default {
         name: null,
         sex: null,
         time: null,
-        cardId: null,
+        cardId: '',
         birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
@@ -169,10 +169,10 @@ export default {
   computed: {
     // 根据person是否具有vip属性，来判断cardId输入框是否显示
     cardHide: function () {
-      if(this.vip === 0) {
+      if(this.vip === '0') {
         return true
-      }else {
-        false
+      }else if(this.vip ==='1'){
+        return false
       }
     }
   },
@@ -431,6 +431,7 @@ export default {
       deep: true
     },
     vip: function (val, old) {
+      console.log(val)
       // console.log(this.personData.cardId)
       switch(val) {
         case '1':
