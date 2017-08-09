@@ -3,7 +3,7 @@
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
-      <div class="item" v-for="(item,index) in list">
+      <div class="item" :class="{vague:itemVague}" v-for="(item,index) in list">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -66,6 +66,12 @@ export default {
     }
   },
   props: ['toUserList', 'fromFa', 'searchPerson'],
+  computed: {
+    itemVague: function(){
+      console.log(this.viewWhich ==='0')
+      return this.viewWhich === '0'?false : true
+    }
+  },
   methods: {
     /**
      * @Author    liujianwen

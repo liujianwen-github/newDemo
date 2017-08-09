@@ -233,7 +233,7 @@ export default {
     checkForm: function () {
       // 调用validator验证全部条件
       this.$validator.validateAll().then(result => {
-        const isVip = this.vip === 0 
+        const isVip = this.vip === '0' 
         console.log(this.personData.cardId === '')
         if (!result) {
           // this.$Message.error('请按照提示完整填写')
@@ -418,14 +418,14 @@ export default {
           // 初始化修改用户信息窗口的数据
           this.isShow = true
           this.personData.imgs = []
-          // this.vip = 0
+          this.vip = '0'
           this.cardHide = true
           console.log(this.personData)
           return
         }
         // 默认不显示进度条
         this.personData.imgUrl = val.headimage
-        this.vip = this.personData.vip
+        this.vip = String(this.personData.vip)
         console.log(this.personData)
       },
       deep: true
