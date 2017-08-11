@@ -177,7 +177,7 @@ export default {
       }
     },
     list: function (val, old) {
-      if (val != null) {
+      if (val.length != 0) {
         this.emptyPage.isShow = false
       }
     }
@@ -194,11 +194,11 @@ export default {
   	/*border: 1px solid red;*/
     background-color: white;
     min-height: 500px;
-    width: 100%
+    width: 100%;
+    padding-top: 10px
   }
   .itemList{
     text-align: left;
-    padding-top: 10px
   }
   .show{
     display: block

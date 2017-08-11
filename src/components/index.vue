@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
   <!-- index -->
     <indexHead @currentContent="go"></indexHead>
     <modelBox :notice="type"></modelBox>

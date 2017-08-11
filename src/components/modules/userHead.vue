@@ -6,11 +6,20 @@
       <span>未来门禁演示系统 1.0</span>
     </Col>
     <Col class="contentBtnList" span="5">
-      <div class="inputGroup">
-        <span class="glyphicon glyphicon-user"></span>
-        <input type="text" value="" v-model="searchText" @keyup="keySearch" autofocus="autofocus">
-        <span class="glyphicon glyphicon-remove"  @click="reSearch"></span>
-      </div>
+      <!-- <div > -->
+      <Row class="inputGroup">
+        <Col span="3" style="text-align: right">
+          <span class="user glyphicon glyphicon-user"></span>
+        </Col>
+        <Col span="18">
+           <input type="text" value="" v-model="searchText" @keyup="keySearch" autofocus="autofocus">
+        </Col>
+        <Col span="3">
+           <span class="remove glyphicon glyphicon-remove"  @click="reSearch"></span>
+        </Col>
+      </Row>
+
+      <!-- </div> -->
     </Col>
     <Col class="contentBtnList" span="7">
       <Row type="flex" justify="space-between" class="code-row-bg btnList" align="middle">
@@ -127,8 +136,6 @@ export default {
     height: 40px;
     color: #005BAB;
     text-align: left;
-    /*position: absolute;*/
-    /*left: 0*/
   }
   .container .leftHead img{
     /*height: 100%;*/
@@ -148,12 +155,14 @@ export default {
   }
   .container .inputGroup{
     border:1px solid grey;
-    height: 100%;
-    position: relative;
+    width: 100%;
+    height: 35px;
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    overflow: hidden;
     border-radius: 1.5em;
     box-sizing: border-box;
-    padding-left: 10px;
-    padding-right: 20px;
     display: inline-block;
   }
   .glyphicon-remove{
@@ -162,21 +171,22 @@ export default {
     font-size: 20px;
     cursor: pointer;
   }
-  .container .inputGroup{
-    display: flex;
-  }
   .container .inputGroup>span{
     line-height: 35px
   }
-  .container .inputGroup>input{
+  .container .inputGroup .user{
+    line-height: 35px
+  }
+  .container .inputGroup input{
     width: 100%;
     /*max-width: 150px;*/
-    height: 38px;
+    height: 35px;
     border: 0;
     box-sizing: border-box;
     /*background-color: red;*/
     display: inline-block;
     outline: none;
+    /*缩进*/
     text-indent: 0.5em
   }
   .container .contentBtnList button{
@@ -199,10 +209,7 @@ export default {
     text-align: center;
   }
   .glyphicon-remove{
-    position: absolute;
-    right: 5px;
-    height: 40px;
-    line-height: 40px;
+    line-height: 35px;
     font-size: 20px;
     cursor: pointer;
   }

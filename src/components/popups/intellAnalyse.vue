@@ -40,7 +40,7 @@
 <script>
 // import $ from 'jquery'
 import Axios from 'axios'
-import config from '@/config.js'
+import config from '../../../static/js/config'
 import INTERFACE from '@/interface'
 export default {
   name: 'intellAnalyse',

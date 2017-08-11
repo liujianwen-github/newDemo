@@ -230,7 +230,7 @@ export default {
     padding: 10px 15px;
     min-height: 500px;
     background-color: white;
-    margin-top: 10px;
+    margin-top: 2px;
     position: relative;
   }
   .show{

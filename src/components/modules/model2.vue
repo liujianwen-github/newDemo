@@ -115,7 +115,7 @@ export default {
       }
     },
     list: function (val, old) {
-      if (val != null) {
+      if (val.length != 0) {
         this.emptyPage.isShow = false
       }
     }

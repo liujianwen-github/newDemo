@@ -24,7 +24,7 @@
           </div>
           <!-- 添加图片序列的按钮 -->
           <div class="changePic">
-            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
+            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType">
             <img src="../../assets/inputImg.png" alt="">
           </div>
         </div>    
@@ -128,7 +128,7 @@
 <script>
 import $ from 'jquery'
 import Axios from 'axios'
-import config from '@/config'
+import config from '../../../static/js/config'
 import INTERFACE from '@/interface'
 import userHead from '../../assets/userHeader.png'
 import VueCropper from 'vue-cropper'
@@ -146,6 +146,8 @@ export default {
       // cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
+      // accepyType:"image/png,image/jpg,image/jpeg",
+      accepyType:"video/mp4",
       vip: '0',
       birthdayOPT: config.dayBefore,
       // personData中的数据以及vip等，都是从totalUserList中带过来的
@@ -186,12 +188,13 @@ export default {
     },
     // 更新头像
     updateHead: function () {
+      const files = this.$refs.fileUpdateHead.files
        this.msg = this.$Message.info({
           content:'调整好图片后，回车键确认',
           duration: 0,
           closable: true
         })
-      const files = this.$refs.fileUpdateHead.files
+      // const files = this.$refs.fileUpdateHead.files
       // if (files.length = 0) return
       let reader = new FileReader()
       console.log(files)
@@ -209,9 +212,15 @@ export default {
     },
     // 图片序列添加
     chooseImg: function (e) {
+      const _this = this
+      const files = this.$refs.fileInputOne.files
+      config.readFile(files[0],function(e){
+        console.log(_this)
+        _this.personData.imgs = e
+      })
+      return
       this.personData.imgs = this.personData.imgs || []
       // console.log(this.$refs.fileInputOne.files)
-      const files = this.$refs.fileInputOne.files
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
         let reader = new FileReader()
@@ -431,6 +440,7 @@ export default {
       deep: true
     },
     vip: function (val, old) {
+      console.log(this)
       console.log(val)
       // console.log(this.personData.cardId)
       switch(val) {
