@@ -59,5 +59,76 @@ export default{
       result[key] = typeof source[key] === 'object' ? this.deepCopy(source[key]) : source[key]
     }
     return result
-  }
+  },
+  /**
+    * @Author    liujianwen
+    * @DateTime  2017-08-10
+    * @copyright [读取文件，返回base64编码]
+    * @param     {[object]}      source   [文件资源]
+    * @param     {Function}    callback [获取编码后的回调函数]
+    * @return    {[void]}               
+    */
+   readFile: function (source,callback){
+     const _this = this
+     const reader = new FileReader()
+     console.log(source)
+     reader.readAsDataURL(source)
+     reader.onload = function (e){
+       console.log(this)
+       console.log(e)
+       _this.video2img(e.target.result,callback)
+     }
+   },
+   /**
+    * @Author    liujianwen
+    * @DateTime  2017-08-10
+    * @param     {[String]}      source [视频base64编码]
+    * @return    {[Array]}             [图片数组]
+    */
+   video2img: function (file,callback){
+     // console.log(file)
+     //创建视频元素
+     // var video = document.createElement('video') 
+     var video = document.getElementById('video1') 
+     video.setAttribute('id', 'video1');
+     video.style.maxWidth ='120px'
+     video.style.maxHeight ='120px'
+     video.src = file;
+
+     video.autoplay = true
+
+     // 创建canvas元素
+     video.onloadedmetadata = function (){
+      // 4倍速播放视频
+      video.playbackRate = 4
+      console.log(video.style)
+      console.log(video)
+      //视频时长
+      var videoTime = video.duration === 0&&typeof(video.duration ==='undefined') ? 4 : video.duration
+      alert(Math.round(videoTime))
+
+      // 待返回的图片数组
+      var imgs = []
+      var cvs = document.createElement("canvas");
+      cvs.width = 120
+      cvs.height= 120
+      var interval =setInterval(function(){
+       // 新建canvas开始截图，1000毫秒一次
+        cvs.getContext("2d").clearRect(0,0,video.clientWidth, video.clientHeight)
+        cvs.getContext("2d").drawImage(video,0,0, video.clientWidth, video.clientHeight)
+
+        imgs.push(cvs.toDataURL('image/png', 0.5).split(',')[1])
+        if(imgs.length===Math.round(videoTime)){
+          // setTimeout(function(){
+          clearInterval(interval)
+          alert(imgs[0])
+         // 截图结束，回调
+          callback(imgs)
+       // },Math.round(videoTime)*1000)
+         }
+       },1000/4)
+       // interval()
+       
+     }
+   }
 }

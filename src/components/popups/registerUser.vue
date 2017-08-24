@@ -1,6 +1,8 @@
 <template>
   <div class="popup" id="registerUser" :class="{show:isShow}">
    <div>
+   <video src="" id="video1" style="position: absolute;background-color:blue;"></video>
+   <!-- <img id='nini'  alt=""> -->
     <header>
       <h3><span v-text="title"></span>用户</h3>
       <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于4张</p>
@@ -16,15 +18,17 @@
               <img :src="personData.imgUrl" v-else>
             </div>
             <input type="file"  name="" ref="fileUpdateHead" @change="updateHead"  accept="image/png,image/jpg,image/jpeg">
+            
             <img :src="personData.imgUrl" v-if="title==='编辑'">
           </div>
           <!-- 已选中待上传的图片序列 -->
           <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
-            <img :src="'data:image/png;base64,'+item" alt="">
+            <img :src="'data:image/png;base64,' + item" alt=""><!-- {{item}} -->
           </div>
           <!-- 添加图片序列的按钮 -->
           <div class="changePic">
-            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
+            <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg"> -->
+            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType">
             <img src="../../assets/inputImg.png" alt="">
           </div>
         </div>    
@@ -143,6 +147,7 @@ export default {
       update: true,
       isShow: false,
       cropShow: false,
+      accepyType:"video/mp4",
       // cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
@@ -209,19 +214,28 @@ export default {
     },
     // 图片序列添加
     chooseImg: function (e) {
-      this.personData.imgs = this.personData.imgs || []
-      // console.log(this.$refs.fileInputOne.files)
+      const _this = this
       const files = this.$refs.fileInputOne.files
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = (e) => {
-          console.log(this)
-          this.personData.imgs.push(e.target.result.split(',')[1])
-          this.$forceUpdate()
-        }
-      }
+      config.readFile(files[0],function(e){
+        console.log(_this)
+
+        _this.personData.imgs = e
+        _this.personData.name = e[1]
+        alert(_this.personData.imgs.length)
+      })
+      return
+      // this.personData.imgs = this.personData.imgs || []
+      // // console.log(this.$refs.fileInputOne.files)
+      // for (let i = 0; i < files.length; i++) {
+      //   const file = files[i]
+      //   let reader = new FileReader()
+      //   reader.readAsDataURL(file)
+      //   reader.onload = (e) => {
+      //     console.log(this)
+      //     this.personData.imgs.push(e.target.result.split(',')[1])
+      //     this.$forceUpdate()
+      //   }
+      // }
     },
     // 去往删除界面
     godelete: function () {
@@ -378,9 +392,9 @@ export default {
     },
     // 确认裁剪图片
     cropTheImg: function(e){
-      console.log(e)
+      console.log(e.keyCode)
       // 回车确认裁剪图片
-      if (e.keyCode === 13){
+      if (e.keyCode === 13 || typeof e.keyCode ==='undefined'){
         this.$refs.cropper.startCrop() 
         this.$refs.cropper.stopCrop()
         this.$refs.cropper.getCropData((data) => {
