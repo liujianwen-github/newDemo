@@ -1,7 +1,7 @@
 <template>
   <div class="popup" id="registerUser" :class="{show:isShow}">
    <div>
-   <video src="" id="video1" style="position: absolute;background-color:blue;"></video>
+   <!-- <video src="" id="video1" style="position: absolute;background-color:blue;"></video> -->
    <!-- <img id='nini'  alt=""> -->
     <header>
       <h3><span v-text="title"></span>用户</h3>
@@ -27,8 +27,8 @@
           </div>
           <!-- 添加图片序列的按钮 -->
           <div class="changePic">
-            <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg"> -->
-            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType">
+            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
+            <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType"> -->
             <img src="../../assets/inputImg.png" alt="">
           </div>
         </div>    
@@ -216,26 +216,36 @@ export default {
     chooseImg: function (e) {
       const _this = this
       const files = this.$refs.fileInputOne.files
-      config.readFile(files[0],function(e){
-        console.log(_this)
+      // config.readFile(files[0],function(e){
+      //   console.log(_this)
 
-        _this.personData.imgs = e
-        _this.personData.name = e[1]
-        alert(_this.personData.imgs.length)
-      })
-      return
-      // this.personData.imgs = this.personData.imgs || []
-      // // console.log(this.$refs.fileInputOne.files)
-      // for (let i = 0; i < files.length; i++) {
-      //   const file = files[i]
-      //   let reader = new FileReader()
-      //   reader.readAsDataURL(file)
-      //   reader.onload = (e) => {
-      //     console.log(this)
-      //     this.personData.imgs.push(e.target.result.split(',')[1])
-      //     this.$forceUpdate()
-      //   }
-      // }
+      //   _this.personData.imgs = e
+      //   _this.personData.name = e[1]
+      //   alert(_this.personData.imgs.length)
+      // })
+      // return
+      this.personData.imgs = this.personData.imgs || []
+      // console.log(this.$refs.fileInputOne.files)
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        console.log()
+        let isTrue = file.type ==='image/png' || file.type==='image/jpeg' || file.type==='image/jpeg'
+        console.log(isTrue)
+        if(!isTrue){
+            this.msg = this.$Message.error({
+            content:'请选择图片上传',
+            duration: 5
+          })
+            return
+        }
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = (e) => {
+          console.log(this)
+          this.personData.imgs.push(e.target.result.split(',')[1])
+          this.$forceUpdate()
+        }
+      }
     },
     // 去往删除界面
     godelete: function () {
