@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/index'
 import userManage from '@/components/userManage'
+import updateConf from '@/components/updateConf'
 import test from '@/components/test'
-import upload from '@/upload'
+import test01 from '@/components/test01'
 // import test from '@/components/test'
 // import Vuex from 'vuex'
 // import models from '@/components/modules'
@@ -32,9 +33,9 @@ export default new Router({
       name: 'test',
       component: test
     }, {
-      path: '/upload',
-      name: 'upload',
-      component: upload
+      path: '/config',
+      name: 'config',
+      component: updateConf
     }
   ],
   computed: {

@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.headimage" alt="">
+        <img :src="get_image(personData.personId)" alt="">
         <!-- {{personData}} -->
       </div>
       <div class="addUser whiteText">
@@ -35,15 +35,15 @@
                   <div>
                     <div class="right" @click="viewGif(item.facetrackId)">
                       <div>
-                        <img :src="item.facetrackImage" alt="">
+                        <img :src="get_facetrackimage(item.facetrackId)" alt="">
                         <span class="gif">GIF</span>
                       </div>
                     </div>
                     <div class="left">
-                      <p v-text="item.createTime.split(' ')[0]">date</p>
-                      <p v-text="item.createTime.split(' ')[1]">time</p>
+                      <p v-text="item.facetrackCreateTime.split(' ')[0]">date</p>
+                      <p v-text="item.facetrackCreateTime.split(' ')[1]">time</p>
                       <p v-text="item.sourceDes">address</p>
-                      <button class="btn btn-info" @click="viewScene(item.sourceImg)">场景图</button>
+                      <button class="btn btn-info" @click="viewScene(item.facetrackId)">场景图</button>
                     </div> 
                   </div>
                 </li>
@@ -88,7 +88,7 @@ export default {
       },
       gifChange: null,
       gif: {
-        imgHead: null,
+        imgHead: 'data:image/png;base64,',
         imgURL: null,
         gifList: [],
         isShow: false,
@@ -96,35 +96,38 @@ export default {
       },
       list: null,
       getParams: {
-        userkey: config.userkey,
         personId: null,
-        deviceId: config.deviceId
       }
     }
   },
   methods: {
+    get_image: function(personId){
+      return config.get_image(personId)
+    },
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
       this.stopGif()
       this.closeScene()
     },
-    viewGif: function (msg) {
+    viewGif: function (facetrackId) {
       // alert(msg)
       Axios({
         method: 'get',
-        url: INTERFACE.USER_FACETRACK_GIF,
+        url: INTERFACE.GET_FACETRACKIMAGES,
         params: {
-          userkey: config.userkey,
-          facetrackId: msg,
-          count: 0
+          facetrackId: facetrackId
         }
       }).then((res) => {
-        console.log(res.data.results)
+        console.log(res.data.results.facetrackImagePos)
+        const data = res.data.results.facetrackImagePos
         this.gif = {
-          imgHead: res.data.results.imgHead,
-          imgURL: res.data.results.imgs[0],
-          gifList: res.data.results.imgs,
+          imgHead: 'data:image/png;base64,',
+          imgURL: data[0].imageContent,
+          gifList: data,
           isShow: true,
           curr: 0
         }
@@ -138,14 +141,13 @@ export default {
     gifAnimation: function () {
       // var i = 0
       const _this = this
-      if (_this.gif.gifList.legnt <= 1) {
+      if (_this.gif.gifList.legnth <= 1) {
         return
       }
       _this.gifChange = setInterval(function () {
         // console.log(_this)
         let i = _this.gif.curr
-        _this.gif.imgURL = _this.gif.gifList[i]
-        console.log(_this.gif.imgURL)
+        _this.gif.imgURL = _this.gif.gifList[i].imageContent
         // 播放到最后一张时下标退回到0
         _this.gif.curr = _this.gif.curr === _this.gif.gifList.length - 1 ? 0 : _this.gif.curr + 1
       }, 200)
@@ -161,10 +163,10 @@ export default {
         curr: 0
       }
     },
-    viewScene: function (msg) {
+    viewScene: function (facetrackId) {
       this.scene = {
         isShow: true,
-        img: msg
+        img: config.get_sceneimg(facetrackId)
       }
     },
     closeScene: function () {
@@ -192,9 +194,9 @@ export default {
       console.log(this.personData)
       this.getParams.personId = this.personData.personId
       // alert(this.getParams.personId)
-      Axios.get(INTERFACE.USER_GETINFOS, {params: this.getParams}).then(
+      Axios.get(INTERFACE.GET_USERINFOS, {params: this.getParams}).then(
         (res) => {
-          this.list = res.data.results.list
+          this.list = res.data.results.batchVo.list
           console.log(this.list)
           // TODO 根据personId获取场景图 动图
         }, (err) => {

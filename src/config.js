@@ -1,7 +1,10 @@
 import axios from 'axios'
+import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
-  HOST: 'http://demo.deepdot.cn/',
+  // HOST: 'http://demo.deepdot.cn/',
+  HOST: 'http://172.16.1.98:8080/deeppassterminate',
+  // HOST: 'http://192.168.2.71:8080',
   // HOST: 'localshot:8080/',
   // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
@@ -47,7 +50,7 @@ export default{
   },
   axiosCon: function () {
     axios.defaults.baseURL = this.HOST
-    axios.defaults.timeout = 5000
+    // axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'
@@ -59,6 +62,15 @@ export default{
       result[key] = typeof source[key] === 'object' ? this.deepCopy(source[key]) : source[key]
     }
     return result
+  },
+  get_image: function (personId){
+    return this.HOST + INTERFACE.GET_PERSONHEADIMAGE+'?personId='+ personId
+  },
+  get_facetrackimage :function(facetrackId){
+    return this.HOST + INTERFACE.GET_FACETRACKIMAGE + '?facetrackId=' + facetrackId
+  },
+  get_sceneimg: function(facetrackId){
+     return this.HOST + INTERFACE.GET_SCENEIMG + '?facetrackId=' + facetrackId
   },
   /**
     * @Author    liujianwen

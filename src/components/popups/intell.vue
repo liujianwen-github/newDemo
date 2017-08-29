@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img v-bind:src="toIntell.facetrackImage" alt="">
+        <img v-bind:src="get_facetrackimage(toIntell.facetrackId)" alt="">
       </div>
       <div class="addUser whiteText">
         <p class="headInfo">来访时间: <span v-text="toIntell.createTime"></span></p>
@@ -24,6 +24,7 @@
 <!-- 陌生人操作组件 -->
 <script>
 // import $ from 'jquery'
+import config from '@/config'
 export default {
   name: 'intell',
   data () {
@@ -33,14 +34,18 @@ export default {
   },
   props: ['toIntell', 'viewWhich'],
   methods: {
+    get_image: function(personId){
+      return config.get_image(personId)
+    },
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     close: function () {
       // $('#intell').css('display', 'none')
       this.$emit('popState', '0')
       console.log(this.toIntell)
     },
     createUser: function () {
-      // console.log('intell->create')
-      console.log()
       this.$emit('popState', 'createUser')
     },
     intellAnalyse: function () {
@@ -49,7 +54,7 @@ export default {
   },
   watch: {
     viewWhich: function (val, old) {
-      console.log('intel->viewWhich:' + val)
+      console.log(val)
       if (val === 'intell') {
         this.intellNotShow = false
         console.log(this.intellNotShow)
@@ -82,7 +87,7 @@ export default {
   clear: both
 }
 .popup header .setHead{
-  /*width: 160px;*/
+  width: 160px;
   height: 160px;
   background-color: white
 }

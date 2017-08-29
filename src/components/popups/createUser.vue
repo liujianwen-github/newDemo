@@ -19,8 +19,8 @@
         </div>
         <div class="addMessage short">
           <label class="whiteText">性别</label>
-          <input type="radio" name="sex" value="1" checked="checked" v-model="sex" v-validate="'required'">男
-          <input type="radio" name="sex" value="0" v-model="sex" v-validate="'required'">女
+          <input type="radio" name="sex" value="0" checked="checked" v-model="sex" v-validate="'required'">男
+          <input type="radio" name="sex" value="1" v-model="sex" v-validate="'required'">女
           <span v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</span>
         </div>
         <div class="addMessage long">
@@ -81,10 +81,9 @@ export default {
       cropShow: false,
       intellNotShow: true,
       cardHide: true,
-      img: null,
       name: null,
       vip: 0,
-      sex: 1,
+      sex: 0,
       cardId: null,
       birthDay: null,
       facetrackId: null,
@@ -93,6 +92,11 @@ export default {
   },
   props: ['viewWhich', 'toCreateUser'],
   components: {VueCropper},
+  computed:{
+    img: function(){
+      return config.get_facetrackimage(this.facetrackId)
+    }
+  },
   methods: {
     // 关闭窗口
     close: function () {
@@ -105,7 +109,7 @@ export default {
       this.cardHide = true
       this.name = null
       this.vip = 0
-      this.sex = 1
+      this.sex = 0
       this.cardId = null
       this.birthday = null
     },
@@ -158,6 +162,10 @@ export default {
         this.$refs.cropper.startCrop() 
         this.$refs.cropper.stopCrop()
         this.$refs.cropper.getCropData((data) => {
+          // TODO
+          // 2017/08/28 16:56
+          // 头像是用facetrackid获取的，实现截图功能的话返回base64地址，直接给base编码，或者不要截图（更换头像）
+          // ********************************************************************************************************
           // 确定裁剪的图片，输出
           this.img = data
           // 裁剪窗口消失
@@ -172,25 +180,28 @@ export default {
     },
     // 创建用户
     createUser: function (isVip) {
-      if (this.img.match(/base64/g)) this.img = this.img.split(',')[1]
+      // if (this.img.match(/base64/g)) this.img = this.img.split(',')[1]
+      this.img = this.get_facetrackimage(this.facetrackId)
       // 数据格式化
       let dataList = new FormData()
       // 修改日期格式
       this.birthDay = typeof this.birthDay === 'undefined' ? '' : new Date(this.birthDay).Format('yyyy-MM-dd')
-      dataList.append('userkey', config.userkey)
-      dataList.append('deviceId', config.deviceId)
       dataList.append('facetrackId', this.facetrackId)
       dataList.append('sex', this.sex)
-      dataList.append('imgUrl', this.img)
-      dataList.append('name', this.name)
+      dataList.append('headImage', this.img)//TODO图片格式的问题
+      dataList.append('userName', this.name)
       // 如果不是vip，加上卡号信息
       if (!isVip)  dataList.append('cardId', this.cardId)
       dataList.append('birthDay', this.birthDay)
       dataList.append('vip', this.vip)
+      // for(let item of dataList.values()){
+      //   console.log(item)
+      // }
+      // return 
       // http操作
       Axios({
         method: 'POST',
-        url: INTERFACE.STRANGER_CREATEUSER,
+        url: INTERFACE.POST_USER_FACETRACK,
         data: dataList,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -198,7 +209,7 @@ export default {
         }
       }).then((res) => {
         console.log()
-        if (res.data.msg === 'SUCC') {
+        if (res.data.status === 200) {
           // 回调操作
           this.$Message.success('创建成功')
           this.$emit('update')
@@ -209,7 +220,7 @@ export default {
         // this.$Message.error(res.data.msg)
         this.$Modal.error({
           title:'创建失败',
-          content: res.data.msg
+          content: res.data.message
         })
       }, (err) => {
         // 运行失败操作
@@ -230,7 +241,6 @@ export default {
     },
     // 传递到创建用户组件的数据
     toCreateUser: function (val, old) {
-      this.img = val.facetrackImage
       this.facetrackId = val.facetrackId
       // this.facetrackId = val.facetrackId
       this.intellNotShow = false

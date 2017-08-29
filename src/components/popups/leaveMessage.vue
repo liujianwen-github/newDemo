@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.headimage" alt="">
+        <img :src="get_image(personData.personId)" alt="">
       </div>
       <div class="addUser">
         <p class="headInfo">
@@ -98,6 +98,9 @@ export default {
   },
   props: ['viewWhich', 'toMessage'],
   methods: {
+    get_image: function(personId){
+      return config.get_image(personId)
+    },
     editTime: function (msg){
       console.log(msg)
       // 用户修改过的时间
@@ -172,8 +175,6 @@ export default {
         if (this.update === false) return false
         let messageList = new FormData()
         config.changeDateType(this.messageForm.startTime)
-        messageList.append('userkey', config.userkey)
-        messageList.append('deviceId', config.deviceId)
         messageList.append('personId', this.personData.personId)
         // TODO 长期留言时间
         if(this.messageForm.timeLine ==='short') {
@@ -183,14 +184,14 @@ export default {
         messageList.append('message', this.messageForm.message)
         console.log(messageList)
         Axios({
-          url: INTERFACE.USER_EDIT,
+          url: INTERFACE.PUT_USER,
           method: 'POST',
           data: messageList,
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         }).then((res) => {
-          if (res.data.code === res.data.succ_code) {
+          if (res.data.status === 200) {
             // msg内容消失
             // this.msg()
             // console.log(this.msg)
@@ -199,7 +200,7 @@ export default {
             this.close()
             return
           }
-           this.$Message.error({content:'预料之外的错误！！'})
+           this.$Message.error({content:res.data.message})
            this.close()
         }, (err) => {
           console.log(err)

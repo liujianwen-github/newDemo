@@ -12,14 +12,13 @@
         <div>
           <!-- 显示用户头像，新建用户时显示默认头像 -->
           <div class="changePic">
-            <!-- <img :src="personData.imgUrl" alt="1"> -->
+            <!-- <img :src="personData.headImage" alt="1"> -->
             <div v-if="title==='新建'">
-              <img src="../../assets/userHeader.png" alt="" v-if="personData.imgUrl===''">
-              <img :src="personData.imgUrl" v-else>
+              <img src="../../assets/userHeader.png" alt="" v-if="personData.headImage===''">
+              <img :src="'data:image/png;base64,'+personData.headImage" v-else>
             </div>
             <input type="file"  name="" ref="fileUpdateHead" @change="updateHead"  accept="image/png,image/jpg,image/jpeg">
-            
-            <img :src="personData.imgUrl" v-if="title==='编辑'">
+            <img :src="'data:image/png;base64,'+personData.headImage" v-if="title==='编辑'">
           </div>
           <!-- 已选中待上传的图片序列 -->
           <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
@@ -44,13 +43,13 @@
         <Row>
           <Col span="12" class="addMessage long">
               <label>姓名</label>
-              <input type="text" name="name" v-model="personData.name" v-validate="'required|name'">
+              <input type="text" name="name" v-model="personData.userName" v-validate="'required|name'">
               <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
           </Col>
           <Col span="12" class="addMessage short">
             <label>性别</label>
-            <input type="radio" name="sex" value="1"  v-model="personData.sex" v-validate="'required'">男
-            <input type="radio" name="sex" value="0" v-model="personData.sex" v-validate="'required'">女
+            <input type="radio" name="sex" value="0"  v-model="personData.sex" v-validate="'required'">男
+            <input type="radio" name="sex" value="1" v-model="personData.sex" v-validate="'required'">女
             <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
           </Col>
         </Row> 
@@ -132,7 +131,7 @@
 <script>
 import $ from 'jquery'
 import Axios from 'axios'
-import config from '@/config'
+import config from '../../../static/js/config'
 import INTERFACE from '@/interface'
 import userHead from '../../assets/userHeader.png'
 import VueCropper from 'vue-cropper'
@@ -151,21 +150,24 @@ export default {
       // cardHide: true,
       processHide: true,
       cropImg: config.cropImg,
+      // accepyType:"image/png,image/jpg,image/jpeg",
+      accepyType:"video/mp4",
       vip: '0',
       birthdayOPT: config.dayBefore,
       // personData中的数据以及vip等，都是从totalUserList中带过来的
       title: null,
       personData: {
-        imgUrl: '',
+        headImage: '',
         imgs: [],
-        name: null,
+        userName: null,
         sex: null,
         time: null,
         cardId: '',
         birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
-        personId: null
+        personId: '',
+        images:[]
       }
     }
   },
@@ -191,44 +193,37 @@ export default {
     },
     // 更新头像
     updateHead: function () {
+      const file = this.$refs.fileUpdateHead.files[0]
        this.msg = this.$Message.info({
           content:'调整好图片后，回车键确认',
           duration: 0,
           closable: true
         })
-      const files = this.$refs.fileUpdateHead.files
-      // if (files.length = 0) return
       let reader = new FileReader()
-      console.log(files)
-      for(let i in files) {
-        reader.readAsDataURL(files[i])
-        reader.onload = (e) => {
-          this.personData.imgUrl = e.target.result
-          this.cropShow = true
-          this.cropImg.img = e.target.result
-
-          // 禁用上传文件按钮，避免回车继续打开传文件
-          $("input[type='file']").attr('disabled',true)
-        }
+      reader.readAsDataURL(file)
+      reader.onload = (e) => {
+        this.cropShow = true
+        this.cropImg.img = e.target.result
+        // 禁用上传文件按钮，避免回车继续打开传文件
+        $("input[type='file']").attr('disabled',true)
       }
     },
     // 图片序列添加
     chooseImg: function (e) {
       const _this = this
       const files = this.$refs.fileInputOne.files
+
       // config.readFile(files[0],function(e){
       //   console.log(_this)
-
       //   _this.personData.imgs = e
-      //   _this.personData.name = e[1]
-      //   alert(_this.personData.imgs.length)
       // })
       // return
       this.personData.imgs = this.personData.imgs || []
       // console.log(this.$refs.fileInputOne.files)
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        console.log()
+
+        this.personData.images.push(file) //上传的图片文件
         let isTrue = file.type ==='image/png' || file.type==='image/jpeg' || file.type==='image/jpeg'
         console.log(isTrue)
         if(!isTrue){
@@ -241,7 +236,6 @@ export default {
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
-          console.log(this)
           this.personData.imgs.push(e.target.result.split(',')[1])
           this.$forceUpdate()
         }
@@ -279,7 +273,7 @@ export default {
            // this.$Message.error('照片太少，不能上传')
            this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
            console.log(this.$Store)
-           this.personData.imgUrl = ''
+           this.personData.headImage = ''
            this.personData.imgs = []
            this.update = false
           } else {
@@ -294,16 +288,15 @@ export default {
         let personData = new FormData()
         // 修改日期格式
         this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
-        console.log(this.personData.birthDay)
-        console.log(typeof Number(this.personData.sex))
+        console.log(this.personData)
         personData.append('personId', this.personData.personId)
-        personData.append('imgUrl', this.personData.imgUrl)
-        personData.append('imgs', this.personData.imgs)
-        personData.append('name', this.personData.name)
+        personData.append('headImage', this.personData.headImage)
+        personData.append('images', this.personData.images)
+        personData.append('userName', this.personData.userName)
         personData.append('sex', Number(this.personData.sex))
         personData.append('birthDay', this.personData.birthDay)
-        personData.append('userkey', config.userkey)
-        personData.append('deviceId', config.deviceId)
+        // personData.append('userkey', config.userkey)
+        // personData.append('deviceId', config.deviceId)
         personData.append('vip', this.vip)
         if (this.vip === '1') {
           personData.append('cardId', this.personData.cardId)
@@ -312,7 +305,7 @@ export default {
         if (this.title === '新建') {
           Axios({
             method: 'POST',
-            url: INTERFACE.USER_ADDNEW,
+            url: INTERFACE.POST_USER_IMAGE,
             data: personData,
             onUploadProgress: function (e) {
               // 这里的this指向xhr对象
@@ -325,7 +318,7 @@ export default {
             console.log(res)
             this.processHide = true
             this.percent = 0
-            if (res.data.msg === 'SUCC') {
+            if (res.data.status ===200) {
               this.$Message.success({content:'创建成功',duration: 5})
               this.$emit('popState','update')
               this.close()
@@ -333,7 +326,7 @@ export default {
               return
             }else{
               // alert(res.data.msg)
-              this.$Message.error(res.data.msg)
+              this.$Message.error(res.data.message)
               $("button").attr('disabled',false)
             } 
           }, (err) => {
@@ -343,24 +336,28 @@ export default {
         } else if (this.title === '编辑') {
           Axios({
             method: 'POST',
-            url: INTERFACE.USER_EDIT,
+            url: INTERFACE.PUT_USER,
             data: personData,
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
-              // 'Content-Type': 'text/plain'
+            },
+            onUploadProgress: function (e) {
+              // 这里的this指向xhr对象
+              _this.percent = Math.round((e.loaded * 100) / e.total)
             }
           }).then((res) => {
             console.log(res)
+            this.processHide = true
             this.percent = 0
-            if (res.data.msg === 'SUCC') {
+            if (res.data.status === 200) {
               // this.$emit('popState', '0')
-              this.$Message.success('编辑成功')
+              this.$Message.success(res.data.reference)
               this.$emit('popState','update')
               this.close()
               $("button").attr('disabled',false)
               return
             }
-            this.$emit('modalMessage','error',res.data.msg)
+            this.$emit('modalMessage','error',res.data.message)
           }, (err) => {
             console.log(err)
             $("button").attr('disabled',false)
@@ -379,12 +376,10 @@ export default {
     mksureDelete: function () {
       // alert('push delete,return userManage')
       let dataForm = new FormData()
-      dataForm.append('userkey', config.userkey)
-      dataForm.append('deviceId', config.deviceId)
       dataForm.append('personId', this.personData.personId)
       Axios({
         method: 'POST',
-        url: INTERFACE.USER_DELETE,
+        url: INTERFACE.DELETE_USER,
         data: dataForm,
         headers: {
           'Content-Type': ' application/x-www-form-urlencoded'
@@ -402,20 +397,18 @@ export default {
     },
     // 确认裁剪图片
     cropTheImg: function(e){
-      console.log(e.keyCode)
       // 回车确认裁剪图片
       if (e.keyCode === 13 || typeof e.keyCode ==='undefined'){
         this.$refs.cropper.startCrop() 
         this.$refs.cropper.stopCrop()
         this.$refs.cropper.getCropData((data) => {
           // 确定裁剪的图片，输出
-          this.itemInfo.headimage = data
-          this.personData.imgUrl = data
+          this.personData.headImage = data.split(',')[1]
+          //裁剪窗口消失
           this.cropShow = false
-          $("input[type='file']").attr('disabled',false)
+          // 提示消息消失
           this.msg()
-          console.log(this.personData)
-          console.log(this.itemInfo)
+          $("input[type='file']").attr('disabled',false)
         })
       }
       //
@@ -428,7 +421,7 @@ export default {
       if (val === 'editUser') {
         this.isShow = true
         this.title = '编辑'
-        console.log(this.toRegisterUser)
+        // console.log(this.toRegisterUser)
       } else if (val === 'addNewUser') {
         this.title = '新建'
       }
@@ -437,26 +430,25 @@ export default {
       handler (val, old) {
         // 获取元数据一份,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
         this.itemInfo = val 
-        this.personData = config.deepCopy(val)
+        this.personData = config.deepCopy(this.itemInfo)
         if (this.title === '新建') {
           // 初始化修改用户信息窗口的数据
           this.isShow = true
           this.personData.imgs = []
+          this.personData.images = []
           this.vip = '0'
           this.cardHide = true
           console.log(this.personData)
           return
         }
         // 默认不显示进度条
-        this.personData.imgUrl = val.headimage
+        this.personData.headImage = val.headImage
         this.vip = String(this.personData.vip)
         console.log(this.personData)
       },
       deep: true
     },
     vip: function (val, old) {
-      console.log(val)
-      // console.log(this.personData.cardId)
       switch(val) {
         case '1':
           this.cardHide = false
@@ -475,6 +467,16 @@ export default {
         document.body.removeEventListener('keyup',_this.cropTheImg,false)
       }
     }
+  },
+  created(){
+    var arr1 = {
+      user:'1',
+      psd: '2'
+    }
+    var arr2 = config.deepCopy(arr1)
+    arr2.psd = 'bibi'
+    console.log(arr1)
+    console.log(arr2)
   }
 }
 </script>

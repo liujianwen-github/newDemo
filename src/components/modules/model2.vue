@@ -7,13 +7,15 @@
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
-          <img :src="item.facetrackImage" alt="">
-          <div class="time">{{item.createTime.split(' ')[1]}}</div>
+          <div class="imgbox">
+            <img :src="get_facetrackimage(item.facetrackId)" alt="">
+          </div>
+          <div class="time">{{item.facetrackCreateTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
       <div class="pageBox">
-        <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total></Page>
       </div>
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
       <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>
@@ -28,7 +30,7 @@ import Intell from '@/components/popups/intell'
 import createUser from '@/components/popups/createUser'
 import intellAnalyse from '@/components/popups/intellAnalyse'
 import empty from '@/components/popups/empty'
-// import config from '@/config'
+import config from '@/config'
 // import Axios from 'axios'
 export default {
   name: 'model2',
@@ -61,6 +63,9 @@ export default {
   },
   props: ['toSecond', 'pageTwo'],
   methods: {
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     setIntell: function (msg) {
       console.log(msg)
       // TODO item点击触发事件，修改data中的参数，传值到intell组件中
@@ -115,7 +120,7 @@ export default {
       }
     },
     list: function (val, old) {
-      if (val != null) {
+      if (val.length != 0) {
         this.emptyPage.isShow = false
       }
     }
@@ -168,12 +173,18 @@ export default {
   .item>div{
     text-align: center;
   }
-  .item>div>img{
+  .item>div>.imgbox{
     margin-top: 20px;
     margin-bottom: 10px;
+    display: inline-block;
+    text-align: center;
     width:120px;
     height: 120px;
     background-color: blue
+  }
+  .item>div>.imgbox>img{
+    width: 100%;
+    height: 100%
   }
   .item .name{
     position: absolute;

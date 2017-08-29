@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.facetrackImage" alt="">
+        <img :src="get_facetrackimage(personData.facetrackId)" alt="">
       </div>
       <div class="addUser whiteText">
         <p class="headInfo">来访时间:<span v-text="personData.createTime"></span></p>
@@ -14,15 +14,15 @@
     </header>
     <article>
       <div class="content">
-        <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.persontag)">
+        <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.personId)">
           <input type="radio" name="chooseItem" :value="item.persontag" v-model="chooseItem">
           <div class="bgc" :class="{showme:index==whichBgc}" style="color:white">
             <img src="../../assets/checked.png" height="25" width="25">
           </div>
-          <img :src="item.headImage" alt="">
-          <p v-text="item.name">name</p>
+          <img :src="'data:image/png;base64,'+item.headImage" alt="">
+          <p v-text="item.userName">name</p>
         </div>
-        <div v-show="dataList.length==0" class="emptyBox" :class="{emptyShow:emptyShow}">
+        <div v-show="dataList.length===0" class="emptyBox" :class="{emptyShow:emptyShow}">
           <p>查询结果为空！！</p>
         </div>
       </div>
@@ -40,33 +40,44 @@
 <script>
 // import $ from 'jquery'
 import Axios from 'axios'
-import config from '@/config.js'
+import config from '@/config'
 import INTERFACE from '@/interface'
 export default {
   name: 'intellAnalyse',
   data () {
     return {
       intellNotShow: true,
-      emptyShow: false,
       dataList: [],
       personData: null,
       whichBgc: null,
       chooseItem: null,
       intellParams: {
-        userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
-        facetrackId: null,
-        deviceId: config.deviceId
+        facetracks: null,
       }
     }
   },
   props: ['viewWhich', 'toIntellAnalyse'],
+  computed: {
+    emptyShow: function(){
+      if(this.dataList.length ===0){
+        return true
+      }else{
+        return false
+      }
+    }
+  },
   methods: {
+    get_image: function(personId){
+      return config.get_image(personId)
+    },
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     close: function () {
       // $('#intellAnalyse').css('display', 'none')
       this.intellNotShow = true
       this.whichBgc = null
-      this.dataList = null
-      this.whichBgc = null
+      this.dataList = []
       // console.log(this.dataList)
       this.$emit('popState', '0')
     },
@@ -84,16 +95,22 @@ export default {
       this.chooseItem = item
     },
     getDataList: function () {
-      Axios.get(INTERFACE.STRANGER_ANALYSE, {params: this.intellParams}).then(
+      Axios.get(INTERFACE.GET_STRANGER_ANALYSE, {params: this.intellParams}).then(
         (res) => {
-          this.dataList = res.data.results.matchs || []
-          console.log(this.dataList)
+            console.log(res)
+            if(res.data.status === 200){
+              this.dataList = res.data.results.batchVo.list || []
+            }else{
+              this.dataList.length = 0
+              console.log(this.dataList.length === 0)
+            }
+          // console.log(this.dataList)
         }, (err) => {
         console.log(err)
       })
     },
     returnHistory: function () {
-      this.dataList = null
+      this.dataList = []
       this.$emit('popState', 'intell')
     },
     addFacetrackToPerson: function () {
@@ -106,18 +123,18 @@ export default {
       }
       // return
       let dataForm = new FormData()
-      dataForm.append('userkey', config.userkey)
-      dataForm.append('deviceId', config.deviceId)
-      dataForm.append('persontag', this.chooseItem)
-      dataForm.append('facetrackId', this.intellParams.facetrackId)
+      let facetracks = new Array()
+      facetracks.push(this.intellParams.facetrackId)
+      dataForm.append('personId', this.chooseItem)
+      dataForm.append('facetrackIds', facetracks)
       Axios({
         method: 'POST',
-        url: INTERFACE. STRANGER_ANALYSE_UPDATE,
+        url: INTERFACE.PUT_STRANGER2PERSON,
         data: dataForm
       }).then((res) => {
         console.log(res)
-        if (res.data.code === res.data.succ_code) {
-          this.$Message.success({content: '添加成功'})
+        if (res.data.status === 200) {
+          this.$Message.success({content: res.data.message})
           this.close()
           this.$emit('update')
           return

@@ -6,8 +6,8 @@
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
-          <img :src="item.facetrackImage" alt="">
-          <div class="time">{{item.createTime.split(' ')[1]}}</div>
+          <img :src="get_facetrackimage(item.facetrackId)" alt="">
+          <div class="time">创建时间{{item.facetrackCreateTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
       </div>
@@ -16,7 +16,7 @@
         <p>{{index}}</p>
       </div> -->
       <div class="pageBox">
-      <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total></Page>
       </div>
       <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
       <!-- stranger -->
@@ -35,6 +35,8 @@
 // import config from '@/config'
 // import Fill from '@/fill'
 // import pagenation from '@/components/modules/pagenation'
+import INTERFACE from '@/interface'
+import config from '@/config'
 import Intell from '@/components/popups/intell'
 import createUser from '@/components/popups/createUser'
 import intellAnalyse from '@/components/popups/intellAnalyse'
@@ -58,7 +60,7 @@ export default {
       viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错
       pageInfo: {
-        totalRecord: 0,
+        totalNum: 0,
         pageNo: 1,
         limit: 20
       },
@@ -90,6 +92,12 @@ export default {
     Intell, createUser, intellAnalyse, userInfos, history, leaveMessage, empty
   },
   methods: {
+    get_image: function (personId){
+      return config.get_image(personId)
+    },
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     viewItem: function (data) {
       console.log(data)
       switch (data.matchStatus) {
@@ -114,8 +122,8 @@ export default {
       }
       console.log(this.viewWhich)
     },
-    changePage: function (msg) {
-      this.$emit('pageOne', msg, 1)
+    changePage: function (pageNo) {
+      this.$emit('pageOne', pageNo, 1)
     },
     changeState: function (msg) {
       this.viewWhich = msg
@@ -160,7 +168,10 @@ export default {
         return
       }
       this.list = val
-      console.log(this.list)
+      for (let item in this.list){
+        console.log(this.list[item].matchStatus)
+      }
+      // console.log(this.list[i].matchStatus)
     },
     pageOne: function (val, old) {
       console.log(val)
@@ -177,7 +188,7 @@ export default {
       }
     },
     list: function (val, old) {
-      if (val != null) {
+      if (val.length != 0) {
         this.emptyPage.isShow = false
       }
     }
@@ -194,11 +205,11 @@ export default {
   	/*border: 1px solid red;*/
     background-color: white;
     min-height: 500px;
-    width: 100%
+    width: 100%;
+    padding-top: 10px
   }
   .itemList{
     text-align: left;
-    padding-top: 10px
   }
   .show{
     display: block

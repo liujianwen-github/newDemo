@@ -4,7 +4,7 @@
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
-        <img :src="personData.headimage" alt="">
+        <img :src="get_image(personData.personId)" alt="">
       </div>
       <div class="addUser">
         <p class="headInfo">
@@ -31,9 +31,9 @@
          <p>查询结果为空！！</p>
        </div>
        <div class="item" v-for="(item,index) in historyList">
-         <img :src="item.facetrackImage"  alt="">
-         <p><span v-text="item.createTime.split(' ')[0]"></span> <span v-text="item.createTime.split(' ')[1]"></span></p>
-         <p>{{index}}</p>
+         <img :src="get_facetrackimage(item.facetrackId)"  alt="">
+         <p><span v-text="item.facetrackCreateTime.split(' ')[0]"></span></p>
+         <p><span v-text="item.facetrackCreateTime.split(' ')[1]"></span></p>
          <p>
            <button class="btn" @click="confirmFacetrack(item.facetrackId)">确定</button>
          </p>
@@ -63,6 +63,12 @@ export default {
   },
   props: ['viewWhich', 'toHistory'],
   methods: {
+    get_image: function(personId){
+      return config.get_image(personId)
+    },
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
@@ -78,10 +84,12 @@ export default {
       // dataList.append('facetrackId', facetrackId)
       // dataList.append('personId', this.personData.personId)
       // dataList.append('userkey', config.userkey)
+      const facetrackIds = new Array()
+      facetrackIds.push(facetrackId)
+      console.log(facetrackIds.__proto__ ===Array.prototype)
       let data = {
-        facetrackId: facetrackId,
+        facetrackIds: facetrackIds,
         personId:this.personData.personId,
-        userkey:config.userkey
       }
       let dataList = new FormData()
       for(let key in data){
@@ -89,19 +97,21 @@ export default {
       }
       Axios({
         method: 'post',
-        url: INTERFACE.USER_CONFIRM,
+        url: INTERFACE.PUT_STRANGER2PERSON,
         data: dataList,
         headers: {
           'Content-Type': 'application/json'
         }
       }).then((res) => {
         console.log(res)
-        if (res.data.msg === 'SUCC') {
+        if (res.data.status === 200) {
          this.$Message.success('添加成功')
          this.searchNoMatchedList()
+        }else{
+          this.$Message.error(res.data.message)
         }
       }, (err) => {
-        this.$Message.error(err.data.msg)
+        this.$Message.error(err.data.message)
       })
     },
     resetPersonSetTime: function () {
@@ -111,17 +121,16 @@ export default {
       console.log(this.personData)
       Axios({
         methods: 'GET',
-        url: INTERFACE. USER_UNMATCHEDHISTORY,
+        url: INTERFACE.GET_USER_UNMATCHED,
         params: {
           beginTime: new Date().getTime() - this.chooseTime * 3600000,
           endTime: new Date().getTime(),
-          userkey: config.userkey,
-          deviceId: config.deviceId,
           personId: this.personData.personId
         }
       }).then((res) => {
-        this.historyList = res.data.results.list
-        console.log(this.historyList)
+        console.log(res)
+        this.historyList = res.data.results.batchVo.list
+        // console.log(this.historyList)
       }, (err) => {
         console.log(err)
       })

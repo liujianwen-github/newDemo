@@ -42,23 +42,6 @@
       <!-- </div> -->
     </Col>   
   </Row>
-  <!-- <br> -->
-  <!-- <Row>
-    <Col>1</Col>
-    <Col>2</Col>
-    <Col>3</Col>
-  </Row> -->
-  <!-- <Row class="userinfo">
-    <Col class="user" span="8" align="left">
-      <span>userinfo</span>
-    </Col>
-    <Col class="personData" span="8">
-      <span>personData</span>
-    </Col>
-    <Col class="logout" span="8" align="right">
-      <span>退出</span>
-    </Col>
-  </Row> -->
   </div>
 </template>
 

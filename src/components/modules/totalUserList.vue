@@ -7,10 +7,10 @@
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
-          <div>
-            <img :src="item.headimage" alt="">
+          <div class="imgbox">
+            <img :src="'data:image/png;base64,' +item.headImage" alt="">
           </div>
-          <div class="name" v-html="item.name"></div>
+          <div class="name" v-html="item.userName"></div>
           <div class="foot">
             <button class="btn" @click="goEdit(item,index)">编辑</button>
           </div>
@@ -36,16 +36,17 @@ export default {
       list: null,
       viewWhich: '0',
       personData: {
-        imgUrl: '',
+        headImage: '',
         imgs: [],
-        name: null,
+        userName: null,
         sex: 1,
         time: null,
         cardId: '',
         birthDay: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
-        personId: null
+        personId: '',
+        images:[]
       },
       pageInfo: {
         totalRecord: 0,
@@ -120,9 +121,10 @@ export default {
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
           console.log(res)
-          if (res.data.code != 0) return
-          this.list = res.data.results.list
-          this.pageInfo = res.data.results.pageInfo
+          if (res.data.message != '成功！') return
+          this.list = res.data.results.batchVo.list
+          this.pageInfo.pageNo = res.data.results.pageNo
+          this.pageInfo.totalRecord = res.data.results.totalNum
           console.log(this.list)
         }, (err) => {
         console.log(err)
@@ -199,12 +201,13 @@ export default {
     },
     viewWhich: function (val, old) {
       if (val === 'addNewUser') {
-        this.personData.imgUrl = ''
-        this.personData.name = ''
+        this.personData.headImage = ''
+        this.personData.userName = ''
         this.personData.cardId = ''
         this.personData.birthDay = null
         this.personData.time = new Date().getTime()
         this.personData.imgs = []
+        this.personData.images = []
         this.title = '新建'
       } else if (val === 'editUser') {
         console.log(this.personData)
@@ -230,7 +233,7 @@ export default {
     padding: 10px 15px;
     min-height: 500px;
     background-color: white;
-    margin-top: 10px;
+    margin-top: 2px;
     position: relative;
   }
   .show{
@@ -261,12 +264,18 @@ export default {
     height: 140px;
     overflow: hidden;
   }
-  .item>div img{
+  .item .imgbox{
     /*margin-top: 20px;*/
+    display: inline-block;
+    text-align: center;
     margin-bottom: 10px;
-    /*width: 60%;*/
-    height: 100%;
+    width: 140px;
+    height:140px;
     background-color: blue
+  }
+  .item .imgbox img{
+    width: 100%;
+    height:100%;
   }
   .item .name{
     /*position: absolute;
@@ -307,7 +316,7 @@ export default {
     }
     .item>div>div:first-child{
       /*background-color: red*/
-      height: 14vw;
+      /*height: 14vw;*/
     }
   }
 

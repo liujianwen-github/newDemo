@@ -26,7 +26,7 @@ export default {
       pageInfo2: null,
       pageInfo3: null,
       getParams: {
-        'userkey': config.userkey, 'deviceId': config.deviceId, 'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
+        matchStatus:null,'beginTime': 0, 'endTime': new Date().getTime(), 'pageNo': 1
       }
     }
   },
@@ -37,12 +37,17 @@ export default {
   methods: {
     getTotal: function () {
       // 今日到访
-      // this.getParams.pageNo = this.pagination1
+      this.getParams.matchStatus = null
       if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
-      Axios.get(INTERFACE.TODAY_TOTALPERSON, {params: this.getParams}).then((res) => {
-        if (res.data.code != res.data.succ_code) return
-        this.modelOne = res.data.results.list
-        this.pageInfo1 = res.data.results.pageInfo
+      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+        console.log(res)
+        // if (res.data.status != res.data.succ_code) return
+        this.modelOne = res.data.results.batchVo.list
+        this.pageInfo1 = {
+          pageNo:res.data.results.batchVo.pageNo,
+          pageSize:20,
+          totalNum:res.data.results.batchVo.totalNum,
+        }
       }, (err) => {
         this.$Message.error('请求超时')
         console.log(err)
@@ -55,11 +60,18 @@ export default {
     },
     getStranger: function () {
       // 陌生人
+      this.getParams.matchStatus = 0
       if (this.pageInfo2 !== null) this.getParams.pageNo = this.pageInfo2.pageNo
-      Axios.get(INTERFACE.TODAY_STRANGER, {params: this.getParams}).then((res) => {
-        if (res.data.code != res.data.succ_code) return
-        this.modelTwo = res.data.results.list
-        this.pageInfo2 = res.data.results.pageInfo
+      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+        console.log(res)
+        // if (res.data.code != res.data.succ_code) return
+        this.modelTwo = res.data.results.batchVo.list
+        this.pageInfo2 = {
+          pageNo:res.data.results.batchVo.pageNo,
+          pageSize:20,
+          totalNum:res.data.results.batchVo.totalNum,
+        }
+        // this.pageInfo2 = res.data.results.pageInfo
         // console.log(res)
       }, (err) => {
         this.$Message.error('请求超时')
@@ -67,29 +79,34 @@ export default {
     },
     getUser: function () {
       // 注册用户
+      this.getParams.matchStatus = 1
       if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
-      Axios.get(INTERFACE.TODAY_USER, {params: this.getParams}).then((res) => {
-        if (res.data.code != res.data.succ_code) return
-        this.modelThree = res.data.results.list
-        this.pageInfo3 = res.data.results.pageInfo
+      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+        // if (res.data.code != res.data.succ_code) return
+        this.modelThree = res.data.results.batchVo.list
+        this.pageInfo3 = {
+          pageNo:res.data.results.batchVo.pageNo,
+          pageSize:20,
+          totalNum:res.data.results.batchVo.totalNum,
+        }
         // console.log(res)
       }, (err) => {
         this.$Message.error('请求超时')
       })
     },
-    model_Change: function (msg, which) {
+    model_Change: function (pageNo, which) {
       console.log(typeof which)
       switch (which) {
         case 1:
-          this.pageInfo1.pageNo = msg
+          this.pageInfo1.pageNo = pageNo
           this.getTotal()
           break
         case 2:
-          this.pageInfo2.pageNo = msg
+          this.pageInfo2.pageNo = pageNo
           this.getStranger()
           break
         case 3:
-          this.pageInfo3.pageNo = msg
+          this.pageInfo3.pageNo = pageNo
           this.getUser()
           break
       }

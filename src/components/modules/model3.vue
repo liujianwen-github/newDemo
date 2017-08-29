@@ -6,7 +6,7 @@
       <div class="item" v-for="item in list" :class="{vague: vagueModel}">
         <div class="content">
           <div>
-            <img :src="item.headimage" alt="" @click="viewUserInfos(item)">
+            <img :src="get_image(item.personId)" alt="" @click="viewUserInfos(item)">
           </div>
           <div>
             <div class="name">
@@ -16,7 +16,7 @@
               <p>最后到访时间：</p>
             </div>
             <div class="time">
-              <p v-text="item.latestMatchTime">
+              <p v-text="item.recordUpdatedTime">
                 <!-- <span v-text="item.latestMatchTime"></span> -->
               </p>
             </div>
@@ -31,7 +31,7 @@
       <leaveMessage :viewWhich="viewWhich" @popState="changeState" :toMessage="personData"></leaveMessage>
       <!-- <registerUser></registerUser> -->
       <div class="pageBox">
-        <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>   
+        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total></Page>  
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@ import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
+import config from '@/config'
 // import registerUser from '@/components/popups/registerUser'
 export default {
   name: 'model3',
@@ -71,6 +72,9 @@ export default {
   },
   props: ['toThird', 'pageThree'],
   methods: {
+    get_image: function (personId){
+      return config.get_image(personId)
+    },
     setMessage: function (data) {
       this.viewWhich = 'leaveMessage'
       this.personData = data
@@ -97,6 +101,7 @@ export default {
         return
       }
       this.list = val
+      console.log(this.list)
     },
     pageThree: function (val, old) {
       if (typeof val === 'undefined') {
@@ -112,7 +117,7 @@ export default {
       }
     },
     list: function (val, old) {
-      if (val != null) {
+      if (val.length != 0) {
         this.emptyPage.isShow = false
       }
     }
