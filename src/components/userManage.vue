@@ -28,6 +28,7 @@ export default {
     },
     changeState: function (msg) {
       this.viewWhich = msg
+      console.log(msg)
     }
   }
 }

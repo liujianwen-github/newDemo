@@ -69,7 +69,7 @@ export default {
   props: ['toUserList', 'fromFa', 'searchPerson'],
   computed: {
     itemVague: function(){
-      console.log(this.viewWhich ==='0')
+      console.log('不显示遮罩？:'+(this.viewWhich ==='0').toString())
       return this.viewWhich === '0'?false : true
     }
   },
@@ -123,8 +123,10 @@ export default {
           console.log(res)
           if (res.data.message != '成功！') return
           this.list = res.data.results.batchVo.list
-          this.pageInfo.pageNo = res.data.results.pageNo
-          this.pageInfo.totalRecord = res.data.results.totalNum
+          this.pageInfo = {
+            pageNo: res.data.results.batchVo.pageNo,
+            totalRecord: res.data.results.batchVo.totalNum
+          }
           console.log(this.list)
         }, (err) => {
         console.log(err)
@@ -143,6 +145,7 @@ export default {
       this.personData = config.deepCopy(data)
       this.personData.index = index
       this.personData.time = new Date().getTime()
+      console.log('编辑用户personData数据')
       console.log(this.personData)
     },
     // 修改状态
@@ -150,10 +153,11 @@ export default {
       // console.log(msg)   
       if (msg === 'update') {
         // 更新数据
+        console.log(msg)
         this.getAllUser()
       }else {
         this.viewWhich = msg
-        console.log(msg)
+        console.log('当前弹窗状态'+msg)
       }
       this.$emit('popState', '0')
     },
@@ -179,27 +183,29 @@ export default {
       }
       Axios({
         method: 'get',
-        url: INTERFACE.USER_SEARCH,
+        url: INTERFACE.GET_ALL_REGISTERUSER,
         params: {
-          userkey: config.userkey,
-          deviceId: config.deviceId,
-          name: val
+          userNameFilter: val
         }
       }).then((res) => {
         console.log(res)
-        if (res.data.results.list.length < 1) {
+        if (res.data.results.batchVo.list.length < 1) {
           alert('查询结果为空')
           this.emptyPage.isShow = true
           // return
         }
         this.emptyPage.isShow = false
-        this.list = res.data.results.list
-        this.pageInfo = res.data.results.pageInfo
+        this.list = res.data.results.batchVo.list
+        this.pageInfo= {
+            pageNo: res.data.results.batchVo.pageNo,
+            totalRecord: res.data.results.batchVo.totalNum
+          }
       }, (err) => {
         console.log(err)
       })
     },
     viewWhich: function (val, old) {
+      console.log('totaluser')
       if (val === 'addNewUser') {
         this.personData.headImage = ''
         this.personData.userName = ''
@@ -209,8 +215,7 @@ export default {
         this.personData.imgs = []
         this.personData.images = []
         this.title = '新建'
-      } else if (val === 'editUser') {
-        console.log(this.personData)
+        console.log('前往新建用户，personData值初始化')
       }
     },
     list: function (val, old) {

@@ -10,6 +10,7 @@ export default{
   PUT_CONFIG: '/config/updateConfigs',
   // GET
   GET_FACRTRACKLIST: '/facetrack/getFacetrackList',
+  GET_USER_LASTVISIT: '/facetrack/getLastUserVistInfo',
   GET_ALL_REGISTERUSER: '/user/getUserList',
   GET_STRANGER_ANALYSE: '/facetrack/getSimilarPerson',
   GET_PERSONHEADIMAGE: '/user/getPersonHeadImage',

@@ -79,13 +79,14 @@ export default {
                                   //     content: `姓名：`
                                   // })
                                   // console.log(_this)
-                                  // console.log(params)
+                                  console.log(params)
                                   _this.modal1 = true
                                   _this.modelContent= {
                                     id: params.row.id,
                                     recordUpdatedTime:params.row.recordUpdatedTime,
                                     configName: params.row.configName,
-                                    configValue: params.row.configValue
+                                    configValue: params.row.configValue,
+                                    index:params.index
                                   }
                                   // console.log(_this.model1)
                                 }
@@ -99,23 +100,45 @@ export default {
   },
   methods: {
     ok () {
-        this.$http({
-          methods: 'POST',
-          url: INTERFACE.PUT_CONFIG, 
-          data: {
-
-          }
-        }).then((res)=>{
-          console.log(res)
-        }).catch((err)=>{
-          console.log(err)
-        })
-    },
+      console.log(this.modelContent)
+      this.list[this.modelContent.index] = this.modelContent
+      console.log(this.list)
+      this.$forceUpdate()
+      // let data = new FormData()
+      // let key = this.modelContent.configName
+      // let value = this.modelContent.configValue
+      // let str = "data.append('"+ key +"','"+ value+ "')"
+      // eval(str)
+      // // console.log(data.get('userKey'))
+      // this.$http({
+      //   method: 'POST',
+      //   url: INTERFACE.PUT_CONFIG, 
+      //   data: data,
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   }
+      // }).then((res)=>{
+      //   if(res.data.status ===200){
+      //     this.$Message.success({content:res.daat.message,duration: 5})
+      //   }else{
+      //     this.$Message.error({content:res.data.message,duration: 5})
+      //   }
+      // }).catch((err)=>{
+      //   this.$Message.error({content:res.data.message,duration: 5})
+      // })
+    }
   },
   watch: {
     modelContent: function(val, old){
       // alert('1')
       console.log(val)
+    },
+    list:{
+      handler(val,old){
+        console.log(val)
+        this.$forceUpdate()
+      },
+      deep:true
     }
   },
   created(){

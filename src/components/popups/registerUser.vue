@@ -21,18 +21,18 @@
             <img :src="'data:image/png;base64,'+personData.headImage" v-if="title==='编辑'">
           </div>
           <!-- 已选中待上传的图片序列 -->
-          <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index">
+          <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index" v-if="title==='新建'">
             <img :src="'data:image/png;base64,' + item" alt=""><!-- {{item}} -->
           </div>
           <!-- 添加图片序列的按钮 -->
-          <div class="changePic">
+          <div class="changePic" v-if="title==='新建'">
             <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
             <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType"> -->
             <img src="../../assets/inputImg.png" alt="">
           </div>
         </div>    
       </div>
-      <p style="display:inline-block;width:25%;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:25%;text-align:center"><span>上传用户照片</span></p>
+      <p style="display:inline-block;width:144px;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:25%;text-align:center"><span v-if="title==='新建'">上传用户照片</span></p>
       
     </header>
     <article>
@@ -190,6 +190,7 @@ export default {
       this.processHide = true
       this.cardHide = true,
       this.$forceUpdate()
+      console.log('register组件显示状态：'+(this.isShow).toString())
     },
     // 更新头像
     updateHead: function () {
@@ -222,8 +223,6 @@ export default {
       // console.log(this.$refs.fileInputOne.files)
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-
-        this.personData.images.push(file) //上传的图片文件
         let isTrue = file.type ==='image/png' || file.type==='image/jpeg' || file.type==='image/jpeg'
         console.log(isTrue)
         if(!isTrue){
@@ -233,11 +232,14 @@ export default {
           })
             return
         }
+        this.personData.images.push(file) //上传的图片文件
         let reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = (e) => {
           this.personData.imgs.push(e.target.result.split(',')[1])
           this.$forceUpdate()
+          console.log(this.personData.imgs)
+          console.log(this.personData.images)
         }
       }
     },
@@ -291,16 +293,19 @@ export default {
         console.log(this.personData)
         personData.append('personId', this.personData.personId)
         personData.append('headImage', this.personData.headImage)
-        personData.append('images', this.personData.images)
         personData.append('userName', this.personData.userName)
         personData.append('sex', Number(this.personData.sex))
         personData.append('birthDay', this.personData.birthDay)
+        for(let i = 0;i< this.personData.images.length;i++){
+          personData.append('images', this.personData.images[i])
+        }
         // personData.append('userkey', config.userkey)
         // personData.append('deviceId', config.deviceId)
         personData.append('vip', this.vip)
         if (this.vip === '1') {
           personData.append('cardId', this.personData.cardId)
         }
+        console.log(personData.get('images'))
         let _this = this
         if (this.title === '新建') {
           Axios({
@@ -423,11 +428,14 @@ export default {
         this.title = '编辑'
         // console.log(this.toRegisterUser)
       } else if (val === 'addNewUser') {
+        this.isShow = true
         this.title = '新建'
       }
     },
     toRegisterUser: {
       handler (val, old) {
+        console.log('元数据改变')
+        console.log(val)
         // 获取元数据一份,edit的信息深拷贝一份，防止编辑用户信息的时候影响到item的显示
         this.itemInfo = val 
         this.personData = config.deepCopy(this.itemInfo)
@@ -438,13 +446,14 @@ export default {
           this.personData.images = []
           this.vip = '0'
           this.cardHide = true
+          console.log('register状态为新建，初始数据如下:')
           console.log(this.personData)
           return
         }
         // 默认不显示进度条
         this.personData.headImage = val.headImage
         this.vip = String(this.personData.vip)
-        console.log(this.personData)
+        // console.log(this.personData)
       },
       deep: true
     },

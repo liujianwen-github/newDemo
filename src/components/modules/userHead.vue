@@ -89,7 +89,6 @@ export default {
       this.$emit('searchPerson', this.searchText)
     },
     reloadPage: function () {
-      alert('111')
       window.location.reload()
     },
     reSearch: function () {

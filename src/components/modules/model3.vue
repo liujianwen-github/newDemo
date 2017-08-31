@@ -183,8 +183,8 @@ export default {
     width: 49%;
     clear: both;
     position: relative;
-    /*height: 80%;*/
-    /*overflow:hidden;*/
+    height: 80%;
+    overflow:hidden;
     /*text-align: left;*/
   }
   .item>.content>div>.name,.item>.content>div>.time{

@@ -55,7 +55,7 @@ export default {
       pageSize: 5,
       emptyPage: {
         size: 'large',
-        isShow: true
+        isShow: false
       },
       viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错

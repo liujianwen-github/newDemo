@@ -26,7 +26,7 @@ export default {
       pageInfo2: null,
       pageInfo3: null,
       getParams: {
-        matchStatus:null,'beginTime': 0, 'endTime': new Date().getTime(), 'pageNo': 1
+        matchStatus:null,'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
       }
     }
   },
@@ -54,9 +54,6 @@ export default {
         // console.log(err.join(''))
         // document.write(err)
       })
-      Axios.spread(function (msg) {
-        alert(msg)
-      })
     },
     getStranger: function () {
       // 陌生人
@@ -81,7 +78,7 @@ export default {
       // 注册用户
       this.getParams.matchStatus = 1
       if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
-      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.GET_USER_LASTVISIT, {params: this.getParams}).then((res) => {
         // if (res.data.code != res.data.succ_code) return
         this.modelThree = res.data.results.batchVo.list
         this.pageInfo3 = {
@@ -95,7 +92,7 @@ export default {
       })
     },
     model_Change: function (pageNo, which) {
-      console.log(typeof which)
+      console.log(which)
       switch (which) {
         case 1:
           this.pageInfo1.pageNo = pageNo
