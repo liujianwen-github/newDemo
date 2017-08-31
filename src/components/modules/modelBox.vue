@@ -38,7 +38,7 @@ export default {
     getTotal: function () {
       // 今日到访
       this.getParams.matchStatus = null
-      if (this.pageInfo1 !== null) this.getParams.pageNo = this.pageInfo1.pageNo
+      this.getParams.pageNo = this.pageInfo1 != null? this.pageInfo1.pageNo:'1'
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
         console.log(res)
         // if (res.data.status != res.data.succ_code) return
@@ -58,7 +58,9 @@ export default {
     getStranger: function () {
       // 陌生人
       this.getParams.matchStatus = 0
-      if (this.pageInfo2 !== null) this.getParams.pageNo = this.pageInfo2.pageNo
+      console.log(this.pageInfo2)
+      // return
+      this.getParams.pageNo = this.pageInfo2 != null? this.pageInfo2.pageNo: '1'
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
         console.log(res)
         // if (res.data.code != res.data.succ_code) return
@@ -70,6 +72,8 @@ export default {
         }
         // this.pageInfo2 = res.data.results.pageInfo
         // console.log(res)
+        console.log(this.pageInfo2)
+        
       }, (err) => {
         this.$Message.error('请求超时')
       })
@@ -77,7 +81,7 @@ export default {
     getUser: function () {
       // 注册用户
       this.getParams.matchStatus = 1
-      if (this.pageInfo3 !== null) this.getParams.pageNo = this.pageInfo3.pageNo
+      this.getParams.pageNo = this.pageInfo3 != null? this.pageInfo3.pageNo:'1'
       Axios.get(INTERFACE.GET_USER_LASTVISIT, {params: this.getParams}).then((res) => {
         // if (res.data.code != res.data.succ_code) return
         this.modelThree = res.data.results.batchVo.list
@@ -86,13 +90,16 @@ export default {
           pageSize:20,
           totalNum:res.data.results.batchVo.totalNum,
         }
-        // console.log(res)
+        console.log(this.pageInfo3)
       }, (err) => {
         this.$Message.error('请求超时')
       })
     },
     model_Change: function (pageNo, which) {
-      console.log(which)
+      // console.log(which)
+      //     console.log(this.pageInfo1.pageNo)
+      //     console.log(this.pageInfo2.pageNo)
+      //     console.log(this.pageInfo3.pageNo)
       switch (which) {
         case 1:
           this.pageInfo1.pageNo = pageNo

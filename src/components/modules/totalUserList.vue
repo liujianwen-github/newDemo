@@ -234,11 +234,11 @@ export default {
 .container{
     box-sizing: border-box;
     /*border: 1px solid #005BAB;*/
-    border-radius: 5px;
+    /*border-radius: 5px;*/
     padding: 10px 15px;
     min-height: 500px;
     background-color: white;
-    margin-top: 2px;
+    /*margin-top: 2px;*/
     position: relative;
   }
   .show{
@@ -250,7 +250,7 @@ export default {
   .item{
     border: 1px solid lightgrey;
     background-color: #f1f1f1;
-    border-radius: 5%;
+    /*border-radius: 5%;*/
     overflow: hidden;
     box-sizing: border-box;
     position: relative;

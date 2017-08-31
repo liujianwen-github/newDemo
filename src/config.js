@@ -50,7 +50,7 @@ export default{
   },
   axiosCon: function () {
     axios.defaults.baseURL = this.HOST
-    axios.defaults.timeout = 5000
+    // axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'

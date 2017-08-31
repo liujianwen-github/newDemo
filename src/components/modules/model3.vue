@@ -6,7 +6,7 @@
       <div class="item" v-for="item in list" :class="{vague: vagueModel}">
         <div class="content">
           <div>
-            <img :src="get_image(item.personId)" alt="" @click="viewUserInfos(item)">
+            <img :src="get_image(item.personId)" :style="{background:imgBack}" alt="" @click="viewUserInfos(item)">
           </div>
           <div>
             <div class="name">
@@ -44,12 +44,15 @@ import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
 import config from '@/config'
+import imgBack from '@/assets/userHeader.png'
+
 // import registerUser from '@/components/popups/registerUser'
 export default {
   name: 'model3',
   data () {
     return {
       vagueModel: false,
+      imgBack: 'url('+imgBack+')',
       list: null,
       viewWhich: '0',
       pageInfo: {

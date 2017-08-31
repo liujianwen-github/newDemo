@@ -8,7 +8,7 @@
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
           <div class="imgbox">
-            <img :src="get_facetrackimage(item.facetrackId)" alt="">
+            <img :src="get_facetrackimage(item.facetrackId)" :style="{background:imgBack}" alt="">
           </div>
           <div class="time">{{item.facetrackCreateTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
@@ -31,12 +31,15 @@ import createUser from '@/components/popups/createUser'
 import intellAnalyse from '@/components/popups/intellAnalyse'
 import empty from '@/components/popups/empty'
 import config from '@/config'
+import imgBack from '@/assets/userHeader.png'
+
 // import Axios from 'axios'
 export default {
   name: 'model2',
   data () {
     return {
       vagueModel: false,
+      imgBack: 'url('+imgBack+')',
       list: null,
       viewWhich: '0',
       pageInfo: {

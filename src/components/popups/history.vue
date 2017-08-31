@@ -27,8 +27,8 @@
     </header>
     <article>
      <div class="content">
-       <div v-show="historyList.length==0" class="emptyBox">
-         <p>查询结果为空！！</p>
+       <div :class="{emptyBox:emptyHide}">
+         <p style="width: 100%;text-align:center;line-height: 40px">查询结果为空！！</p>
        </div>
        <div class="item" v-for="(item,index) in historyList">
          <img :src="get_facetrackimage(item.facetrackId)"  alt="">
@@ -58,7 +58,8 @@ export default {
       chooseTime: '0.5',
       personData: null,
       searchImgList: null, // 查找未成功识别记录数据
-      historyList: []
+      historyList: [],
+      emptyHide:true
     }
   },
   props: ['viewWhich', 'toHistory'],
@@ -72,6 +73,7 @@ export default {
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
+      this.emptyHide = true
       // this.
     },
     toZero: function () {
@@ -96,7 +98,7 @@ export default {
         dataList.append(key,data[key])
       }
       Axios({
-        method: 'post',
+        method: 'POST',
         url: INTERFACE.PUT_STRANGER2PERSON,
         data: dataList,
         headers: {
@@ -130,6 +132,8 @@ export default {
       }).then((res) => {
         console.log(res)
         this.historyList = res.data.results.batchVo.list
+
+        this.emptyHide = this.historyList.length === 0 ? false : true
         // console.log(this.historyList)
       }, (err) => {
         console.log(err)
@@ -138,6 +142,7 @@ export default {
     returnUserInfos: function () {
       this.$emit('popState', 'userInfos')
       this.isShow = false
+      this.emptyHide = true
     }
   },
   watch: {
@@ -222,13 +227,7 @@ input[type="text"]{
   display: none
 }
 .emptyBox{
-  height: 40px
-}
-.emptyBox p{
-  position: relative;
-  width: 100%;
-  text-align:center;
-  line-height: 40px
+  display: none
 }
 
 </style>

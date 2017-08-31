@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <!-- <div class="container"> -->
   <Row class="container" type="flex" justify="center" align="middle">
     <Col :sm="10" :md="10" :lg="10" :xs="18" class="leftHead">
       <!-- <div > -->
@@ -17,7 +17,7 @@
         <!-- <router-link to="//model1" exact>1</router-link> -->
       <!-- </div> -->
     </Col>
-    <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
+    <!-- <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
       <Dropdown trigger="click"  @on-click="dowhat">
         <a href="javascript:void(0)">
             <Icon type="drag" size="30"></Icon>
@@ -30,7 +30,7 @@
         </Dropdown-menu>
       </Dropdown>
       
-    </Col>
+    </Col> -->
     <Col span="6" class="toUser">
       <!-- <div > -->
         <router-link to="/userManage" exact>
@@ -42,7 +42,7 @@
       <!-- </div> -->
     </Col>   
   </Row>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -81,9 +81,9 @@ export default {
 <style scoped>
   .container{
     /*width: 100%;*/
-    /*height: 40px;*/
+    height: 40px;
     position: relative;
-    padding: 0;
+    padding: 0 15px;
     border:1px solid transparent;
     /*margin: 0 auto*/
     /*text-align: left;*/

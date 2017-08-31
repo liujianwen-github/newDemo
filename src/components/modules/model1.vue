@@ -2,11 +2,11 @@
   <div class="container" id="model1">
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
-      <div class="item" v-for="item in list"  @click="viewItem(item)" :class="{vague: vagueModel}">
+      <div class="item" v-for="item in list"  @click="viewItem(item)" :class="{vague: vagueModel}" >
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
-          <img :src="get_facetrackimage(item.facetrackId)" alt="">
+          <img :src="get_facetrackimage(item.facetrackId)" :style="{background:imgBack}" alt="">
           <div class="time">创建时间{{item.facetrackCreateTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
         </div>
@@ -44,6 +44,7 @@ import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
+import imgBack from '@/assets/userHeader.png'
 // import store from '@/store/store'
 export default {
   name: 'model1',
@@ -51,11 +52,12 @@ export default {
     return {
       list: null,
       total: 100,
+      imgBack: 'url('+imgBack+')',
       vagueModel: false,
       pageSize: 5,
       emptyPage: {
         size: 'large',
-        isShow: false
+        isShow: true
       },
       viewWhich: '0',
       // 先给pageInfo里的内容赋值，防止空值报错
@@ -168,9 +170,9 @@ export default {
         return
       }
       this.list = val
-      for (let item in this.list){
-        console.log(this.list[item].matchStatus)
-      }
+      // for (let item in this.list){
+      //   console.log(this.list[item].matchStatus)
+      // }
       // console.log(this.list[i].matchStatus)
     },
     pageOne: function (val, old) {
@@ -181,6 +183,7 @@ export default {
       this.pageInfo = val
     },
     viewWhich: function (val, old) {
+      console.log(this.imgBack)
       if (val !== '0') {
         this.vagueModel = true
       } else {
@@ -240,8 +243,8 @@ export default {
     margin-top: 20px;
     margin-bottom: 10px;
     width:120px;
+    min-height: 120px;
     height: 120px;
-    background-color: blue
   }
   .item .name{
     position: absolute;

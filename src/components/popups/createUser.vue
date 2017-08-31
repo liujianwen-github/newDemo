@@ -82,6 +82,7 @@ export default {
       intellNotShow: true,
       cardHide: true,
       name: null,
+      img:'',
       vip: 0,
       sex: 0,
       cardId: null,
@@ -92,11 +93,11 @@ export default {
   },
   props: ['viewWhich', 'toCreateUser'],
   components: {VueCropper},
-  computed:{
-    img: function(){
-      return config.get_facetrackimage(this.facetrackId)
-    }
-  },
+  // computed:{
+  //   img: function(){
+  //     return config.get_facetrackimage(this.facetrackId)
+  //   }
+  // },
   methods: {
     // 关闭窗口
     close: function () {
@@ -167,12 +168,14 @@ export default {
           // 头像是用facetrackid获取的，实现截图功能的话返回base64地址，直接给base编码，或者不要截图（更换头像）
           // ********************************************************************************************************
           // 确定裁剪的图片，输出
+          // console.log(this.img)
           this.img = data
+          // console.log(data)
           // 裁剪窗口消失
           this.cropShow = false
           // 提示信息消失
           this.msg()
-          console.log(this.msg)
+          // console.log(this.img)
           //按钮恢复可用
           $("input[type='file']").attr('disabled',false)
         })
@@ -180,15 +183,21 @@ export default {
     },
     // 创建用户
     createUser: function (isVip) {
-      // if (this.img.match(/base64/g)) this.img = this.img.split(',')[1]
-      this.img = this.get_facetrackimage(this.facetrackId)
+
       // 数据格式化
       let dataList = new FormData()
       // 修改日期格式
       this.birthDay = typeof this.birthDay === 'undefined' ? '' : new Date(this.birthDay).Format('yyyy-MM-dd')
       dataList.append('facetrackId', this.facetrackId)
       dataList.append('sex', this.sex)
-      dataList.append('headImage', this.img)//TODO图片格式的问题
+      // 
+      if (this.img.match(/base64/g)) {
+        dataList.append('headImage',this.img.split(',')[1])
+        // console.log(this.img)
+        // return 
+      }else{
+         dataList.append('headImageUrl', this.img)
+      }
       dataList.append('userName', this.name)
       // 如果不是vip，加上卡号信息
       if (!isVip)  dataList.append('cardId', this.cardId)
@@ -244,6 +253,7 @@ export default {
       this.facetrackId = val.facetrackId
       // this.facetrackId = val.facetrackId
       this.intellNotShow = false
+      this.img = config.get_facetrackimage(this.facetrackId)
     },
     // 根据是否为vip判断cardId是否展示
     vip: function (val, old) {
