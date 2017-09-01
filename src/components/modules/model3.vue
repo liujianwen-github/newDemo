@@ -2,6 +2,8 @@
   <div class="container" id="model3">
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
+    <!-- <Loading :show=loadingShow></Loading> -->
+
     <div class="itemList">
       <div class="item" v-for="item in list" :class="{vague: vagueModel}">
         <div class="content">
@@ -44,6 +46,8 @@ import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
 import config from '@/config'
+import Loading from '@/components/modules/Loading'
+
 import imgBack from '@/assets/userHeader.png'
 
 // import registerUser from '@/components/popups/registerUser'
@@ -74,6 +78,12 @@ export default {
     }
   },
   props: ['toThird', 'pageThree'],
+  components: {userInfos, history, leaveMessage, empty, Loading},
+  computed: {
+    loadingShow :function(){
+      return this.list === null ? 'block' : 'none'
+    }
+  },
   methods: {
     get_image: function (personId){
       return config.get_image(personId)
@@ -97,7 +107,6 @@ export default {
       this.$emit('pageThree', msg, 3)
     }
   },
-  components: {userInfos, history, leaveMessage, empty},
   watch: {
     toThird: function (val, old) {
       if (typeof val === 'undefined') {

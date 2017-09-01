@@ -3,7 +3,14 @@ import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  HOST: 'http://172.16.1.98:8080/deeppassterminate',
+  // HOST: 'http://172.16.1.98:8080/deeppassterminate',
+  HOST:'',
+  /**
+   * [对应的java项目名称]
+   * @type {String}
+   */
+  projectName: '../deeppassterminate/',
+  // projectName: '',
   // HOST: 'http://192.168.2.71:8080',
   // HOST: 'localshot:8080/',
   // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
@@ -12,12 +19,20 @@ export default{
   minImageCount: 3,
   maxImageCount: 5,
   pageShow: 5,
+  /**
+   * [veevalidate插件筛选条件参数]
+   * @type {Object}
+   */
   dayBefore: {
     // 筛选规则，不能选择今天之后的时间
     disabledDate(date) {
           return date > Date.now()
         }
   },
+  /**
+   * [cropimg插件参数]
+   * @type {Object}
+   */
   cropImg: {
     img: '',
     info: true,
@@ -32,6 +47,12 @@ export default{
     fixed: true,
     fixedNumber: [1,1]
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [规范日期格式，不足两位补0]
+   * @param     {[string]}      date [日期值参数]
+   */
   addDate: function (date) {
     if (Number(date) <= 10) {
       return '0' + date
@@ -39,23 +60,38 @@ export default{
       return date
     }
   },
-  dayBefor: function (date) {
-    let daybefore = new Date(date)
-    return daybefore
-  },
-  // yyyy-mm-dd格式转换为毫秒
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [yyyy-mm-dd格式转换为毫秒]
+   * @param     {[String]}      msg [日期]
+   * @return    {[Number]}      date    [毫秒]
+   */
   changeDateType: function (msg) {
     let date = new Date(msg).getTime()
     return date
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [axios配置]
+   * @return    {[void]}
+   */
   axiosCon: function () {
-    axios.defaults.baseURL = this.HOST
-    // axios.defaults.timeout = 5000
+    // axios.defaults.baseURL = this.HOST
+    axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [深拷贝]
+   * @param     {[object]}      source [description]
+   * @return    {[object]}             [description]
+   */
   deepCopy: function (source) {
     let result = {}
     for (var key in source) {
@@ -63,12 +99,33 @@ export default{
     }
     return result
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [获取服务器person图片资源]
+   * @param     {[type]}      personId [description]
+   * @return    {[type]}               [description]
+   */
   get_image: function (personId){
     return this.HOST + INTERFACE.GET_PERSONHEADIMAGE+'?personId='+ personId
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [获取服务器facetrack图片资源]
+   * @param     {[type]}      personId [description]
+   * @return    {[type]}               [description]
+   */
   get_facetrackimage :function(facetrackId){
     return this.HOST + INTERFACE.GET_FACETRACKIMAGE + '?facetrackId=' + facetrackId
   },
+  /**
+   * @Author    liujianwen
+   * @DateTime  2017-09-01
+   * @copyright [获取服务器场景图片资源]
+   * @param     {[type]}      personId [description]
+   * @return    {[type]}               [description]
+   */
   get_sceneimg: function(facetrackId){
      return this.HOST + INTERFACE.GET_SCENEIMG + '?facetrackId=' + facetrackId
   },
@@ -94,6 +151,7 @@ export default{
    /**
     * @Author    liujianwen
     * @DateTime  2017-08-10
+    * @copyright [视频截取图片]
     * @param     {[String]}      source [视频base64编码]
     * @return    {[Array]}             [图片数组]
     */

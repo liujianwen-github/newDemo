@@ -25,6 +25,11 @@ export default {
       pageInfo1: null,
       pageInfo2: null,
       pageInfo3: null,
+      //三个分类数据的取消请求方法
+      //this.cancel1.cancel(msg)
+      cancel1:Axios.CancelToken.source(),
+      cancel2:Axios.CancelToken.source(),
+      cancel3:Axios.CancelToken.source(),
       getParams: {
         matchStatus:null,'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
       }
@@ -36,34 +41,57 @@ export default {
   },
   methods: {
     getTotal: function () {
+      this.$Loading.start()
       // 今日到访
       this.getParams.matchStatus = null
+
+      // console.log(this)
+      // return
       this.getParams.pageNo = this.pageInfo1 != null? this.pageInfo1.pageNo:'1'
-      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+      // let cancelToken = Axios.CancelToken
+      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel1.token})
+      .then((res) => {
         console.log(res)
         // if (res.data.status != res.data.succ_code) return
+        this.$Loading.finish()
         this.modelOne = res.data.results.batchVo.list
         this.pageInfo1 = {
           pageNo:res.data.results.batchVo.pageNo,
           pageSize:20,
           totalNum:res.data.results.batchVo.totalNum,
         }
-      }, (err) => {
-        this.$Message.error('请求超时')
-        console.log(err)
+      })
+      .catch((err) => {
+        // this.$Message.error('请求超时')
+        // 匹配到error字段说明发生错误，未匹配有可能是中断了请求
+        if(err.toString().split(' ')[0].match(/error/g)){
+          this.$Message.error(err.toString().split(' ')[1] + ' Error')
+          this.$Loading.error()
+        }else{
+          console.log(err)
+        }
         // console.log(err.join(''))
         // document.write(err)
+      })
+      .catch(function(thrown){
+        if(Axios.isCancel(thrown)){
+          console.log('Request canceled',thrown.message);
+        }else {
+          //handle error
+        }
       })
     },
     getStranger: function () {
       // 陌生人
+      this.$Loading.start()
       this.getParams.matchStatus = 0
       console.log(this.pageInfo2)
       // return
       this.getParams.pageNo = this.pageInfo2 != null? this.pageInfo2.pageNo: '1'
-      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel2.token}).then((res) => {
         console.log(res)
         // if (res.data.code != res.data.succ_code) return
+        this.$Loading.finish()
         this.modelTwo = res.data.results.batchVo.list
         this.pageInfo2 = {
           pageNo:res.data.results.batchVo.pageNo,
@@ -74,16 +102,26 @@ export default {
         // console.log(res)
         console.log(this.pageInfo2)
         
-      }, (err) => {
-        this.$Message.error('请求超时')
+      })
+      .catch((err) => {
+        // 匹配到error字段说明发生错误，未匹配有可能是中断了请求
+        if(err.toString().split(' ')[0].match(/error/g)){
+          this.$Message.error(err.toString().split(' ')[1] + ' Error')
+          this.$Loading.error()
+        }else{
+          console.log(err)
+        }
       })
     },
     getUser: function () {
       // 注册用户
+      this.$Loading.start()
       this.getParams.matchStatus = 1
       this.getParams.pageNo = this.pageInfo3 != null? this.pageInfo3.pageNo:'1'
-      Axios.get(INTERFACE.GET_USER_LASTVISIT, {params: this.getParams}).then((res) => {
+      Axios.get(INTERFACE.GET_USER_LASTVISIT, {params: this.getParams,cancelToken: this.cancel3.token}).then((res) => {
         // if (res.data.code != res.data.succ_code) return
+        this.$Loading.finish()
+        
         this.modelThree = res.data.results.batchVo.list
         this.pageInfo3 = {
           pageNo:res.data.results.batchVo.pageNo,
@@ -91,8 +129,16 @@ export default {
           totalNum:res.data.results.batchVo.totalNum,
         }
         console.log(this.pageInfo3)
-      }, (err) => {
-        this.$Message.error('请求超时')
+      })
+      .catch((err) => {
+        // this.$Message.error('请求超时')
+        // 匹配到error字段说明发生错误，未匹配有可能是中断了请求
+        if(err.toString().split(' ')[0].match(/error/g)){
+          this.$Message.error(err.toString().split(' ')[1] + ' Error')
+          this.$Loading.error()
+        }else{
+          console.log(err)
+        }
       })
     },
     model_Change: function (pageNo, which) {
@@ -133,7 +179,10 @@ export default {
   },
   watch: {
     notice: function (val, old) {
-      console.log(this.notice)
+      console.log(this)
+      //切换选项卡，终止请求
+      // console.log(this.cancel.cance('abort'))
+      this.$Loading.finish()
       if (this.notice === '0') {
         this.getTotal()
       } else if (this.notice === '1') {
@@ -148,6 +197,9 @@ export default {
   created () {
     // console.log(this.notice)
     console.log('created mmodelbox')
+    console.log(window.location.host)
+    console.log(window.location)
+
     this.getTotal()
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="container" id="model1">
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
+    <!-- <Loading :show=loadingShow></Loading> -->
     <div class="itemList">
       <div class="item" v-for="item in list"  @click="viewItem(item)" :class="{vague: vagueModel}" >
         <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
@@ -44,6 +45,7 @@ import userInfos from '@/components/popups/userInfos'
 import history from '@/components/popups/history'
 import leaveMessage from '@/components/popups/leaveMessage'
 import empty from '@/components/popups/empty'
+import Loading from '@/components/modules/Loading'
 import imgBack from '@/assets/userHeader.png'
 // import store from '@/store/store'
 export default {
@@ -51,6 +53,7 @@ export default {
   data () {
     return {
       list: null,
+      // loadingShow: 'block',
       total: 100,
       imgBack: 'url('+imgBack+')',
       vagueModel: false,
@@ -91,7 +94,12 @@ export default {
   },
   props: ['toFirst', 'pageOne'],
   components: {
-    Intell, createUser, intellAnalyse, userInfos, history, leaveMessage, empty
+    Intell, createUser, intellAnalyse, userInfos, history, leaveMessage, empty, Loading
+  },
+  computed: {
+    loadingShow :function(){
+      return this.list === null ? 'block' : 'none'
+    }
   },
   methods: {
     get_image: function (personId){

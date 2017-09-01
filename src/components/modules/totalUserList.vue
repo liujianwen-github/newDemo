@@ -118,6 +118,7 @@ export default {
      * @return    void
      */
     getAllUser: function () {
+      this.$Loading.start()
       Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
         (res) => {
           console.log(res)
@@ -128,8 +129,11 @@ export default {
             totalRecord: res.data.results.batchVo.totalNum
           }
           console.log(this.list)
-        }, (err) => {
-        console.log(err)
+        this.$Loading.finish()
+        })
+      .catch((err) => {
+        this.$Message.error(err.toString().split(' ')[1] + ' Error')
+        this.$Loading.error()
       })
     },
     /**

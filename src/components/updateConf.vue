@@ -100,32 +100,45 @@ export default {
   },
   methods: {
     ok () {
-      console.log(this.modelContent)
-      this.list[this.modelContent.index] = this.modelContent
-      console.log(this.list)
-      this.$forceUpdate()
-      // let data = new FormData()
-      // let key = this.modelContent.configName
-      // let value = this.modelContent.configValue
-      // let str = "data.append('"+ key +"','"+ value+ "')"
-      // eval(str)
-      // // console.log(data.get('userKey'))
-      // this.$http({
-      //   method: 'POST',
-      //   url: INTERFACE.PUT_CONFIG, 
-      //   data: data,
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded'
-      //   }
-      // }).then((res)=>{
-      //   if(res.data.status ===200){
-      //     this.$Message.success({content:res.daat.message,duration: 5})
-      //   }else{
-      //     this.$Message.error({content:res.data.message,duration: 5})
-      //   }
-      // }).catch((err)=>{
-      //   this.$Message.error({content:res.data.message,duration: 5})
-      // })
+      let data = new FormData()
+      let key = this.modelContent.configName
+      let value = this.modelContent.configValue
+      let str = "data.append('"+ key +"','"+ value+ "')"
+      eval(str)
+      // console.log(data.get('userKey'))
+      this.$http({
+        method: 'POST',
+        url: INTERFACE.PUT_CONFIG, 
+        data: data,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then((res)=>{
+        console.log(res)
+        if(res.data.status ===200){
+          console.log(this)
+          this.$Message.success({content:res.data.message,duration: 5})
+          this.getConf()
+        }else{
+          this.$Message.error({content:res.data.message,duration: 5})
+        }
+      }).catch((err)=>{
+        // this.$Message.error({content:err.data.message,duration: 5})
+        console.log(err)
+      })
+    },
+    getConf: function(){
+      this.$http({
+        method: 'GET',
+        url: INTERFACE.GET_CONFIG
+      }).then((res)=>{
+        console.log(res)
+        if(res.data.status ===200){
+          this.list = res.data.results.configs
+        }
+      }).catch((err)=>{
+        console.log(err)
+      })
     }
   },
   watch: {
@@ -144,17 +157,7 @@ export default {
   created(){
     console.log(this)
     console.log(this.$http ===Axios)
-    this.$http({
-      method: 'GET',
-      url: INTERFACE.GET_CONFIG
-    }).then((res)=>{
-      console.log(res)
-      if(res.data.status ===200){
-        this.list = res.data.results.configs
-      }
-    }).catch((err)=>{
-      console.log(err)
-    })
+    this.getConf()
   }
   
 }

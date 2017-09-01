@@ -22,7 +22,7 @@
           <img :src="'data:image/png;base64,'+item.headImage" alt="">
           <p v-text="item.userName">name</p>
         </div>
-        <div v-show="dataList.length===0" class="emptyBox" :class="{emptyShow:emptyShow}">
+        <div class="emptyBox" :class="{emptyShow:emptyShow}">
           <p>查询结果为空！！</p>
         </div>
       </div>
@@ -49,6 +49,7 @@ export default {
       intellNotShow: true,
       dataList: [],
       personData: null,
+      emptyShow:false,
       whichBgc: null,
       chooseItem: null,
       intellParams: {
@@ -57,15 +58,15 @@ export default {
     }
   },
   props: ['viewWhich', 'toIntellAnalyse'],
-  computed: {
-    emptyShow: function(){
-      if(this.dataList.length ===0){
-        return true
-      }else{
-        return false
-      }
-    }
-  },
+  // computed: {
+  //   emptyShow: function(){
+  //     if(this.dataList.length <1){
+  //       return true
+  //     }else{
+  //       return false
+  //     }
+  //   }
+  // },
   methods: {
     get_image: function(personId){
       return config.get_image(personId)
@@ -78,6 +79,8 @@ export default {
       this.intellNotShow = true
       this.whichBgc = null
       this.dataList = []
+      this.emptyShow = false
+      // this.chooseItem = null
       // console.log(this.dataList)
       this.$emit('popState', '0')
     },
@@ -100,9 +103,12 @@ export default {
             console.log(res)
             if(res.data.status === 200){
               this.dataList = res.data.results.batchVo.list || []
+              //返回数组长度为0时显示查询结果为空
+              this.emptyShow = this.dataList.length ===0 ? true : false
             }else{
               this.dataList.length = 0
               console.log(this.dataList.length === 0)
+              this.emptyShow = true
             }
           // console.log(this.dataList)
         }, (err) => {
@@ -110,6 +116,7 @@ export default {
       })
     },
     returnHistory: function () {
+      this.whichBgc = null
       this.dataList = []
       this.$emit('popState', 'intell')
     },
@@ -254,7 +261,7 @@ export default {
   text-align: center;
   width: 100%;
   position: absolute;
-  bottom:30px
+  bottom:0
 }
 .popup article .foot>div{
   width: 200px;

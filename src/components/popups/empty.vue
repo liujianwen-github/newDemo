@@ -26,7 +26,7 @@ export default {
 .emptyBox{
   /*background-color: red;*/
   display: none;
-  height: 450px;
+  height: 600px;
   width: 100%;
   /*position: absolute;*/
   /*background-color: white;*/

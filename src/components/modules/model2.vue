@@ -2,6 +2,8 @@
   <div class="container" id="model2">
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
+    <!-- <Loading :show=loadingShow></Loading> -->
+
     <div class="itemList">
       <div class="item" v-for="item in list" @click="getIntell(item)" :class="{vague: vagueModel}">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
@@ -31,6 +33,8 @@ import createUser from '@/components/popups/createUser'
 import intellAnalyse from '@/components/popups/intellAnalyse'
 import empty from '@/components/popups/empty'
 import config from '@/config'
+import Loading from '@/components/modules/Loading'
+
 import imgBack from '@/assets/userHeader.png'
 
 // import Axios from 'axios'
@@ -65,6 +69,12 @@ export default {
     }
   },
   props: ['toSecond', 'pageTwo'],
+  components: {Intell, createUser, intellAnalyse, empty, Loading},
+  computed: {
+    loadingShow :function(){
+      return this.list === null ? 'block' : 'none'
+    }
+  },
   methods: {
     get_facetrackimage: function(facetrackId){
       return config.get_facetrackimage(facetrackId)
@@ -98,7 +108,6 @@ export default {
       this.$emit('update',2)
     }
   },
-  components: {Intell, createUser, intellAnalyse, empty},
   watch: {
     // 从modulebox接收到的数据、分页信息
     toSecond: function (val, old) {
