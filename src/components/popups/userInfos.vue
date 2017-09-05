@@ -8,8 +8,8 @@
         <!-- {{personData}} -->
       </div>
       <div class="addUser whiteText">
-        <p class="headInfo" v-text="personData.name">name</p>
-        <!-- <p class="headInfo">最后到访时间：<span v-text="personData.latestMatchTime"></span></p> -->
+        <p class="headInfo">姓名：<span v-text="personData.userName"></span></p>
+        <p class="headInfo">最后到访时间：<br/><span v-text="personData.recordUpdatedTime"></span></p>
         <!-- <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p> -->
         <div class="btn" style="position:absolute;bottom: 0" @click="setMessage">设置留言</div>
       </div>
@@ -238,11 +238,9 @@ export default {
   height: 200px;
   padding: 20px;
 }
-.popup header>div{
-  /*display: inline-block;*/
+.popup header>div:not(.closeWindow){
   float:left;
   height: 160px;
-  /*background-color: green*/
 }
 .popup header .setHead{
   width: 160px;
