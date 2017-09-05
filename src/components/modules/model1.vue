@@ -8,8 +8,8 @@
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user">
         <div class="content">
           <img :src="get_facetrackimage(item.facetrackId)" :style="{background:imgBack}" alt="">
-          <div class="time">创建时间{{item.facetrackCreateTime.split(' ')[1]}}</div>
-          <div class="name" v-html="item.personName">&nbsp;</div>
+          <div class="name">&nbsp;{{item.userName}}</div>
+          <div class="time">到访时间{{item.facetrackCreateTime.split(' ')[1]}}</div>
         </div>
       </div>
       <!-- <div v-for="(key,index) in list">
@@ -255,8 +255,6 @@ export default {
     height: 120px;
   }
   .item .name{
-    position: absolute;
-    bottom: 10px;
     width: 100%;
     text-align: center;
   }

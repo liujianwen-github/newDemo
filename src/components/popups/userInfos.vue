@@ -247,7 +247,8 @@ export default {
 .popup header .setHead{
   width: 160px;
   height: 160px;
-  background-color: white
+  background-color: white;
+  overflow: hidden;
 }
 .popup header .setHead img{
   width: 100%;  

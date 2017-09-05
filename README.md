@@ -24,6 +24,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 今日到访跳转陌生人、用户
 上传照片进度条
 
+
 [项目记录](http://www.cnblogs.com/insight0912/p/7018122.html)
 项目文件 【src】
 	|——components: 组件
@@ -45,4 +46,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 	|——interface.js：API
 	|
 	|——validate.js：veevalidate配置文件
+
+	
+
 

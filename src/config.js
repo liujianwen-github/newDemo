@@ -3,18 +3,19 @@ import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  // HOST: 'http://172.16.1.98:8080/deeppassterminate',
-  HOST:'',
+  HOST: 'http://172.16.1.98:8080/deeppassterminate',
+  // HOST:'',
   /**
    * [对应的java项目名称]
    * @type {String}
    */
-  projectName: '../deeppassterminate',
-  // projectName: '',
+  // projectName: '../deeppassterminate',
+  projectName: '',
   // HOST: 'http://192.168.2.71:8080',
   // HOST: 'localshot:8080/',
   // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
-  projectpath:window.location.origin + window.location.pathname,
+  // projectpath:window.location.origin + window.location.pathname,
+  projectpath:'http://172.16.1.98:8080/deeppassterminate',
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
   /**
@@ -83,7 +84,7 @@ export default{
    * @return    {[void]}
    */
   axiosCon: function () {
-    // axios.defaults.baseURL = this.HOST
+    axios.defaults.baseURL = this.HOST
     axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'

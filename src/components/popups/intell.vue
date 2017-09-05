@@ -15,7 +15,7 @@
     </header>
     <article>
       <div class="content">
-        <img v-bind:src="toIntell.sourceImg" alt="">
+        <img v-bind:src="sourceImg" alt="">
       </div>
     </article>
    </div>
@@ -33,6 +33,11 @@ export default {
     }
   },
   props: ['toIntell', 'viewWhich'],
+  computed:{
+    sourceImg:function(){
+      return config.get_sceneimg(this.toIntell.facetrackId)
+    }
+  },
   methods: {
     get_image: function(personId){
       return config.get_image(personId)
