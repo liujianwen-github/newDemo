@@ -42,7 +42,7 @@ export default {
         sex: 1,
         time: null,
         cardId: '',
-        birthDay: null,
+        birthday: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: '',
@@ -214,7 +214,7 @@ export default {
         this.personData.headImage = ''
         this.personData.userName = ''
         this.personData.cardId = ''
-        this.personData.birthDay = null
+        this.personData.birthday = null
         this.personData.time = new Date().getTime()
         this.personData.imgs = []
         this.personData.images = []

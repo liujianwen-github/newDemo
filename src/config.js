@@ -9,13 +9,18 @@ export default{
    * [对应的java项目名称]
    * @type {String}
    */
-  projectName: '../deeppassterminate/',
+  projectName: '../deeppassterminate',
   // projectName: '',
   // HOST: 'http://192.168.2.71:8080',
   // HOST: 'localshot:8080/',
   // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
+  projectpath:window.location.origin + window.location.pathname,
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
+  /**
+   * [图片新建用户要求图片序列的数量]
+   * @type {Number}
+   */
   minImageCount: 3,
   maxImageCount: 5,
   pageShow: 5,
@@ -107,7 +112,7 @@ export default{
    * @return    {[type]}               [description]
    */
   get_image: function (personId){
-    return this.HOST + INTERFACE.GET_PERSONHEADIMAGE+'?personId='+ personId
+    return this.projectpath + INTERFACE.GET_PERSONHEADIMAGE+'?personId='+ personId
   },
   /**
    * @Author    liujianwen
@@ -117,7 +122,7 @@ export default{
    * @return    {[type]}               [description]
    */
   get_facetrackimage :function(facetrackId){
-    return this.HOST + INTERFACE.GET_FACETRACKIMAGE + '?facetrackId=' + facetrackId
+    return this.projectpath + INTERFACE.GET_FACETRACKIMAGE + '?facetrackId=' + facetrackId
   },
   /**
    * @Author    liujianwen
@@ -127,7 +132,7 @@ export default{
    * @return    {[type]}               [description]
    */
   get_sceneimg: function(facetrackId){
-     return this.HOST + INTERFACE.GET_SCENEIMG + '?facetrackId=' + facetrackId
+     return this.projectpath + INTERFACE.GET_SCENEIMG + '?facetrackId=' + facetrackId
   },
   /**
     * @Author    liujianwen

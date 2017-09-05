@@ -64,8 +64,8 @@
           
           <Col span="12" class="addMessage long">
             <label>生日</label>
-            <!-- <input type="date" name="" v-model="personData.birthDay"> -->
-            <Date-picker name="birthday" v-model="personData.birthDay" class="input" :options="birthdayOPT"></Date-picker>
+            <!-- <input type="date" name="" v-model="personData.birthday"> -->
+            <Date-picker name="birthday" v-model="personData.birthday" class="input" :options="birthdayOPT"></Date-picker>
             <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
           </Col>
         </Row> 
@@ -163,7 +163,7 @@ export default {
         sex: null,
         time: null,
         cardId: '',
-        birthDay: null,
+        birthday: null,
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: '',
@@ -289,16 +289,14 @@ export default {
         this.processHide = false
         let personData = new FormData()
         // 修改日期格式
-        this.personData.birthDay = typeof this.personData.birthDay === 'undefined' ? '' : new Date(this.personData.birthDay).Format('yyyy-MM-dd')
+        this.personData.birthday = typeof this.personData.birthday === 'undefined' ? '' : new Date(this.personData.birthday).Format('yyyy-MM-dd')
         console.log(this.personData)
         personData.append('personId', this.personData.personId)
         personData.append('headImage', this.personData.headImage)
         personData.append('userName', this.personData.userName)
         personData.append('sex', Number(this.personData.sex))
-        personData.append('birthDay', this.personData.birthDay)
-        for(let i = 0;i< this.personData.images.length;i++){
-          personData.append('images', this.personData.images[i])
-        }
+        personData.append('birthday', this.personData.birthday)
+        
         // personData.append('userkey', config.userkey)
         // personData.append('deviceId', config.deviceId)
         personData.append('vip', this.vip)
@@ -308,6 +306,9 @@ export default {
         console.log(personData.get('images'))
         let _this = this
         if (this.title === '新建') {
+          for(let i = 0;i< this.personData.images.length;i++){
+            personData.append('images', this.personData.images[i])
+          }
           Axios({
             method: 'POST',
             url: INTERFACE.POST_USER_IMAGE,

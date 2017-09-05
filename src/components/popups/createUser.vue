@@ -25,12 +25,12 @@
         </div>
         <div class="addMessage long">
           <label class="whiteText">生日</label>
-          <Date-picker v-model="birthDay" class="input" :options="birthdayOPT"></Date-picker>
-          <!-- <input type="date" name="" v-model="birthDay"> -->
+          <Date-picker v-model="birthday" class="input" :options="birthdayOPT"></Date-picker>
+          <!-- <input type="date" name="" v-model="birthday"> -->
         </div>
         <div class="addMessage short">
           <label class="whiteText">VIP</label>
-          <!-- <Date-picker v-model="birthDay" class="input"></Date-picker> -->
+          <!-- <Date-picker v-model="birthday" class="input"></Date-picker> -->
           <input type="radio" name="isVip" value='0' v-model="vip">是
           <input type="radio" name="isVip" value='1' v-model="vip">否
         </div>
@@ -86,7 +86,7 @@ export default {
       vip: 0,
       sex: 0,
       cardId: null,
-      birthDay: null,
+      birthday: null,
       facetrackId: null,
       update: true
     }
@@ -187,7 +187,7 @@ export default {
       // 数据格式化
       let dataList = new FormData()
       // 修改日期格式
-      this.birthDay = typeof this.birthDay === 'undefined' ? '' : new Date(this.birthDay).Format('yyyy-MM-dd')
+      this.birthday = typeof this.birthday === 'undefined' ? '' : new Date(this.birthday).Format('yyyy-MM-dd')
       dataList.append('facetrackId', this.facetrackId)
       dataList.append('sex', this.sex)
       // 
@@ -201,7 +201,7 @@ export default {
       dataList.append('userName', this.name)
       // 如果不是vip，加上卡号信息
       if (!isVip)  dataList.append('cardId', this.cardId)
-      dataList.append('birthDay', this.birthDay)
+      dataList.append('birthday', this.birthday)
       dataList.append('vip', this.vip)
       // for(let item of dataList.values()){
       //   console.log(item)
