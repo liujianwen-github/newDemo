@@ -32,7 +32,7 @@
           </div>
         </div>    
       </div>
-      <p style="display:inline-block;width:144px;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:25%;text-align:center"><span v-if="title==='新建'">上传用户照片</span></p>
+      <p style="display:inline-block;width:144px;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:144px;text-align:center"><span v-if="title==='新建'">上传用户照片</span></p>
       
     </header>
     <article>
@@ -97,6 +97,7 @@
       </div>   
       </div>
     </div>
+    
     <VueCropper
       :class="{cropShow:cropShow}"
       class="cropBox"
@@ -109,7 +110,11 @@
       :autoCropHeight="cropImg.autoCropHeight"
       :fixed="cropImg.fixed"
       :fixedNumber="cropImg.fixedNumber"
-    ></VueCropper>
+    >
+    </VueCropper>
+    <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
+      <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
+    </div>
    <!--  <VueCropper
       :class="{cropShow:cropShow}"
       class="cropBox"
@@ -324,15 +329,16 @@ export default {
             console.log(res)
             this.processHide = true
             this.percent = 0
+            $("button").attr('disabled',false)
+
             if (res.data.status ===200) {
               this.$Message.success({content:'创建成功',duration: 5})
               this.$emit('popState','update')
               this.close()
-              $("button").attr('disabled',false)
               return
             }else{
               // alert(res.data.msg)
-              this.$Message.error(res.data.message)
+              this.$Message.error(res.data.reference)
               $("button").attr('disabled',false)
             } 
           }, (err) => {
@@ -355,15 +361,15 @@ export default {
             console.log(res)
             this.processHide = true
             this.percent = 0
+            $("button").attr('disabled',false)
             if (res.data.status === 200) {
               // this.$emit('popState', '0')
               this.$Message.success(res.data.reference)
               this.$emit('popState','update')
               this.close()
-              $("button").attr('disabled',false)
               return
             }
-            this.$emit('modalMessage','error',res.data.message)
+            this.$emit('modalMessage','error',res.data.reference)
           }, (err) => {
             console.log(err)
             $("button").attr('disabled',false)
@@ -417,7 +423,19 @@ export default {
           $("input[type='file']").attr('disabled',false)
         })
       }
-      //
+    },
+    touchCrop: function(){
+      this.$refs.cropper.startCrop() 
+        this.$refs.cropper.stopCrop()
+        this.$refs.cropper.getCropData((data) => {
+          // 确定裁剪的图片，输出
+          this.personData.headImage = data.split(',')[1]
+          //裁剪窗口消失
+          this.cropShow = false
+          // 提示消息消失
+          this.msg()
+          $("input[type='file']").attr('disabled',false)
+        })
     }
   },
   watch: {
@@ -498,6 +516,9 @@ export default {
 <style scoped>
 .popup{
   display: none;
+}
+.btnhid{
+  display: none
 }
 .cropShow{
   display: block

@@ -8,7 +8,7 @@
       </div>
       <div class="addUser">
         <p class="headInfo">
-          <span v-text="personData.name" class="whiteText"></span>
+          <span v-text="personData.userName" class="whiteText"></span>
         </p>
         <p class="headInfo whiteText">留言设置</p>
         <div class="headInfo">
@@ -25,7 +25,7 @@
         </div>
         <div class="headInfo" :class="{notShow:messageForm.timeLine === 'long'}">
         <!-- 开始时间结束时间限制条件一样 -->
-          <span class="whiteText">留言时间段:</span>
+          <span class="whiteText">留言时段:</span>
           <Time-picker confirm type="timerange"
           hide-disabled-options
           v-model="stime"
@@ -278,16 +278,19 @@ export default {
 .popup header .setHead{
   width: 160px;
   height: 160px;
-  background-color: white
+  max-width: 38%;
+  background-color: white;
+  overflow: hidden;
 }
 .popup header .setHead img{
   width: 100%;  
 }
 .popup header .addUser{
-  padding-left:10px
+  padding-left:10px;
+  max-width: 60%
 }
-.popup header .addUser .headInfo{
-  margin-bottom: 5px
+.popup header .addUser p{
+  margin: 0
 }
 .popup header .addUser .headInfo>div{
   display: inline-block;

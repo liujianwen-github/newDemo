@@ -209,17 +209,23 @@ export default {
       })
     },
     viewWhich: function (val, old) {
-      console.log('totaluser')
-      if (val === 'addNewUser') {
-        this.personData.headImage = ''
-        this.personData.userName = ''
-        this.personData.cardId = ''
-        this.personData.birthday = null
-        this.personData.time = new Date().getTime()
-        this.personData.imgs = []
-        this.personData.images = []
-        this.title = '新建'
-        console.log('前往新建用户，personData值初始化')
+      console.log(val)
+      if(val ==='0'){
+        // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
+      }else {
+        // this.$el.addEventListener('touchmove',config.bodyEvent,false)
+
+        if (val === 'addNewUser') {
+          this.personData.headImage = ''
+          this.personData.userName = ''
+          this.personData.cardId = ''
+          this.personData.birthday = null
+          this.personData.time = new Date().getTime()
+          this.personData.imgs = []
+          this.personData.images = []
+          this.title = '新建'
+          console.log('前往新建用户，personData值初始化')
+        }
       }
     },
     list: function (val, old) {

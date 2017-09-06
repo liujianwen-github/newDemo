@@ -7,8 +7,8 @@
         <img :src="get_facetrackimage(personData.facetrackId)" alt="">
       </div>
       <div class="addUser whiteText">
-        <p class="headInfo">来访时间:<span v-text="personData.createTime"></span></p>
-        <p class="headInfo">采集地点:<span v-text="personData.sourceDes"></span></p>
+        <p class="headInfo">来访时间:<span v-text="personData.facetrackCreateTime"></span></p>
+        <!-- <p class="headInfo">采集地点:<span v-text="personData.sourceDes"></span></p> -->
         <p>以下是智能分析找到最接近的三名注册用户</p>
       </div>
     </header>
@@ -203,7 +203,8 @@ export default {
   width: 100%;  
 }
 .popup header .addUser{
-  padding-left:10px
+  padding-left:10px;
+  max-width: 60%
 }
 .popup header .btn{
   border:1px solid white;
@@ -283,10 +284,10 @@ input[type="radio"]{
 }
 .emptyBox{
   height: 40px;
-  visibility: hidden;
+  display: none
 }
 .emptyShow{
-  visibility: visible;
+  display: block
 }
 .emptyBox p{
   position: relative;

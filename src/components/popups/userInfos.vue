@@ -207,6 +207,17 @@ export default {
       console.log('createUser->viewWhich:' + val)
       if (val === 'userInfos') {
         this.isShow = true
+        console.log(this.$el)
+        // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
+        // this.$el.addEventListener('touchmove',function(e){
+        //   e = e || window.event
+        //   if(e.stopPropagation) { //W3C阻止冒泡方法 
+        //     e.stopPropagation()
+        //   } else { 
+        //       // window.event.cancelBubble = true; //IE阻止冒泡方法 
+        //       e.cancelBubble = true;
+        //   } 
+        // })
       } else{
         this.isShow = false
       }
@@ -237,6 +248,7 @@ export default {
   width: 100%;
   height: 200px;
   padding: 20px;
+  overflow: auto
 }
 .popup header>div:not(.closeWindow){
   float:left;
@@ -265,7 +277,7 @@ export default {
   margin-top: 20px
 }
 header .searchHistory{
-  width: 35%;
+  /*width: 35%;*/
   cursor: pointer;
   text-align: center;
   padding-top: 60px;  

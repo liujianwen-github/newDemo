@@ -3,19 +3,21 @@ import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  HOST: 'http://172.16.1.98:8080/deeppassterminate',
-  // HOST:'',
+  // HOST: 'http://172.16.1.99:8080/deeppassterminate',
+  HOST:'',
   /**
-   * [对应的java项目名称]
+   * [对应的java项目名称,用于ajax请求前缀]
    * @type {String}
    */
-  // projectName: '../deeppassterminate',
-  projectName: '',
-  // HOST: 'http://192.168.2.71:8080',
-  // HOST: 'localshot:8080/',
-  // userkey: '5f84bb25_4ea8_42c2_a6bf_744b0bb574a9',
-  // projectpath:window.location.origin + window.location.pathname,
-  projectpath:'http://172.16.1.98:8080/deeppassterminate',
+  projectName: '../deeppassterminate',
+  // projectName: '',
+  /**
+   * [获取项目域名以及文件路径，用于获取图片服务器的路径]
+   * @type {[String]}
+   */
+  projectpath:window.location.origin + window.location.pathname,
+  // projectpath:'http://172.16.1.99:8080/deeppassterminate',
+  // 
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
   /**
@@ -55,6 +57,14 @@ export default{
   },
   /**
    * @Author    liujianwen
+   * @DateTime  2017-09-05
+   * @copyright [弹窗时取消默认滚动事件]
+   */
+  bodyEvent: function(e){
+    e.preventDefault()
+  },
+  /**
+   * @Author    liujianwen
    * @DateTime  2017-09-01
    * @copyright [规范日期格式，不足两位补0]
    * @param     {[string]}      date [日期值参数]
@@ -84,7 +94,7 @@ export default{
    * @return    {[void]}
    */
   axiosCon: function () {
-    axios.defaults.baseURL = this.HOST
+    // axios.defaults.baseURL = this.HOST
     axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'

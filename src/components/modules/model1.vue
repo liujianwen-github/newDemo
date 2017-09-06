@@ -102,6 +102,9 @@ export default {
     }
   },
   methods: {
+    dontMove:function(e){
+        e.preventDefault()
+    },
     get_image: function (personId){
       return config.get_image(personId)
     },
@@ -191,11 +194,13 @@ export default {
       this.pageInfo = val
     },
     viewWhich: function (val, old) {
-      console.log(this.imgBack)
+
       if (val !== '0') {
         this.vagueModel = true
+        // this.$el.addEventListener('touchmove',config.bodyEvent,false)
       } else {
         this.vagueModel = false
+        // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
       }
     },
     list: function (val, old) {

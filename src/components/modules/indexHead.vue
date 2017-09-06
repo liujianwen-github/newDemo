@@ -17,7 +17,7 @@
         <!-- <router-link to="//model1" exact>1</router-link> -->
       <!-- </div> -->
     </Col>
-    <!-- <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
+    <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
       <Dropdown trigger="click"  @on-click="dowhat">
         <a href="javascript:void(0)">
             <Icon type="drag" size="30"></Icon>
@@ -30,7 +30,7 @@
         </Dropdown-menu>
       </Dropdown>
       
-    </Col> -->
+    </Col>
     <Col span="6" class="toUser">
       <!-- <div > -->
         <router-link to="/userManage" exact>

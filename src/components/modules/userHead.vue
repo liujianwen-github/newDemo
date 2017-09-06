@@ -229,9 +229,9 @@ export default {
     background-color: #005BAB!important
   }
 
-  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+ /* @media only screen and (min-width: 768px) and (max-width: 1200px) {
     
-  }
+  }*/
   @media only screen and (max-width: 768px){
     *{
       font-size: 12px

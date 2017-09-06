@@ -12,7 +12,7 @@
           </div>
           <div>
             <div class="name">
-              <p v-text="item.name"></p>
+              <p v-text="item.userName"></p>
             </div>
             <div class="name">
               <p>最后到访时间：</p>
@@ -124,8 +124,10 @@ export default {
     viewWhich: function (val, old) {
       if (val !== '0') {
         this.vagueModel = true
+        // this.$el.addEventListener('touchmove',config.bodyEvent,false)
       } else {
         this.vagueModel = false
+        // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
       }
     },
     list: function (val, old) {

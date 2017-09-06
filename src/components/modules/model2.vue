@@ -127,8 +127,10 @@ export default {
     viewWhich: function (val, old) {
       if (val !== '0') {
         this.vagueModel = true
+        // this.$el.addEventListener('touchmove',config.bodyEvent,false)
       } else {
         this.vagueModel = false
+        // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
       }
     },
     list: function (val, old) {

@@ -12,11 +12,11 @@
           <span class="whiteText">智能分析查找</span>
         </p>
         <p class="headInfo">
-            <input type="radio" name="chooseTime" value="0.5" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">半小时</span>
-            <input type="radio" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">4小时</span>
-            <input type="radio" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">12小时</span>
-            <input type="radio" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime"><span class="whiteText">24小时</span>
-            <input type="radio" name="chooseTime" value="personSet" v-model="personSetTime" @click="toZero"><span class="whiteText">自定义</span>
+            <input type="radio" id="radio1" name="chooseTime" value="0.5" v-model="chooseTime" @click="resetPersonSetTime"><label for="radio1" class="whiteText">半小时</label>
+            <input type="radio" id="radio2" name="chooseTime" value="4" v-model="chooseTime" @click="resetPersonSetTime"><label for="radio2" class="whiteText">4小时</label>
+            <input type="radio" id="radio3" name="chooseTime" value="12" v-model="chooseTime" @click="resetPersonSetTime"><label for="radio3" class="whiteText">12小时</label>
+            <input type="radio" id="radio4" name="chooseTime" value="24" v-model="chooseTime" @click="resetPersonSetTime"><label for="radio4" class="whiteText">24小时</label>
+            <input type="radio" id="radio5" name="chooseTime" value="personSet" v-model="personSetTime" @click="toZero"><label for="radio5" class="whiteText">自定义</label>
             <input type="text" name="" value="" v-model="chooseTime" autofocus :class="{isShow:personSetTime=='personSet'}">
         </p>
         <div>
@@ -182,7 +182,8 @@ export default {
   padding: 20px;
   border-bottom: 1px solid black
 }
-.popup header>div{
+
+.popup header>div:not(.closeWindow){
   /*display: inline-block;*/
   float:left;
   height: 160px;
@@ -191,17 +192,23 @@ export default {
 .popup header .setHead{
   width: 160px;
   height: 160px;
-  background-color: white
+  background-color: white;
+  overflow: hidden;
 }
 .popup header .setHead img{
   width: 100%;  
 }
 .popup header .addUser{
-  padding-left:10px
+  padding-left:10px;
+  width: 60%
+}
+.popup header .addUser>div{
+  display: inline-block;
 }
 .popup .btn{
   background-color: #6AA0E2;
   width: 120px;
+  max-width: 45%;
   height: 30px;
   color: white;
   font-weight: 800;
