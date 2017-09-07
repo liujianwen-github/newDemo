@@ -5,7 +5,7 @@
    <!-- <img id='nini'  alt=""> -->
     <header>
       <h3><span v-text="title"></span>用户</h3>
-      <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于4张</p>
+      <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于2张</p>
       <div class="closeWindow" @click="close">&times;</div>
       <!-- 上传头像 -->
       <div class="setHead" >      
@@ -92,8 +92,10 @@
       <div>
       <div>
         <p>是否删除用户?</p>
-        <button class="btn" @click="dontDelete">取消</button>
-        <button class="btn" @click="mksureDelete">确认</button>
+        <p class="btnGroup">
+          <button class="btn whiteText" @click="dontDelete">取消</button>
+          <button class="btn whiteText" @click="mksureDelete">确认</button>
+        </p>
       </div>   
       </div>
     </div>
@@ -136,7 +138,7 @@
 <script>
 import $ from 'jquery'
 import Axios from 'axios'
-import config from '../../../static/js/config'
+import config from '@/config'
 import INTERFACE from '@/interface'
 import userHead from '../../assets/userHeader.png'
 import VueCropper from 'vue-cropper'
@@ -275,20 +277,23 @@ export default {
     pushFormat: function () {
         $("button").attr('disabled',true)
         // 新建用户验证图片数量
-        if (this.title === '新建' && this.personData.imgs.length >= 0) {
-          if (this.personData.imgs.length < config.minImageCount) {
+        if (this.title === '新建' && this.personData.images.length >= 0) {
+          // alert(this.personData.images.length)
+          // alert(config.minImageCount)
+          if (this.personData.images.length < config.minImageCount) {
            // this.$Message.error('照片太少，不能上传')
-           this.$emit('modalMessage','warning','图片数量不足4张，请添加后再进行操作')
-           console.log(this.$Store)
-           this.personData.headImage = ''
-           this.personData.imgs = []
+           this.$emit('modalMessage','warning','图片数量不足，请添加后再进行操作')
+           // console.log(this.$Store)
+           // this.personData.headImage = ''
+           // this.personData.imgs = []
+            $("button").attr('disabled',false)
            this.update = false
           } else {
             this.update = true
           }
         }
-        if (typeof this.personData.imgs === 'undefined') {
-          this.personData.imgs = []
+        if (typeof this.personData.images === 'undefined') {
+          this.personData.images = []
         }
         if (this.update === false) return false
         this.processHide = false
@@ -314,6 +319,31 @@ export default {
           for(let i = 0;i< this.personData.images.length;i++){
             personData.append('images', this.personData.images[i])
           }
+          // var xmlhttp;
+          // if (window.XMLHttpRequest)
+          // {
+          //   //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+          //   xmlhttp=new XMLHttpRequest();
+          // }
+          // else
+          // {
+          //   // IE6, IE5 浏览器执行代码
+          //   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+          // }
+          // xmlhttp.onreadystatechange=function()
+          // {
+          //   if (xmlhttp.readyState==4 && xmlhttp.status==200)
+          //   {
+          //     alert('200')
+          //   }else{
+          //     alert('err')
+          //   }
+          // }
+          // xmlhttp.open("POST",INTERFACE.POST_USER_IMAGE,true);
+          // xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+          // xmlhttp.send(personData);
+
           Axios({
             method: 'POST',
             url: INTERFACE.POST_USER_IMAGE,
@@ -326,7 +356,7 @@ export default {
               'Content-Type': 'application/x-www-form-urlencoded'
             }
           }).then((res) =>{
-            console.log(res)
+            // alert(res.data.status)
             this.processHide = true
             this.percent = 0
             $("button").attr('disabled',false)
@@ -341,8 +371,10 @@ export default {
               this.$Message.error(res.data.reference)
               $("button").attr('disabled',false)
             } 
-          }, (err) => {
-            console.log(err)
+          })
+          .catch((err) => {
+            // alert('err')
+            this.$Message.error(err.toString())
             $("button").attr('disabled',false)
           })
         } else if (this.title === '编辑') {
@@ -371,7 +403,7 @@ export default {
             }
             this.$emit('modalMessage','error',res.data.reference)
           }, (err) => {
-            console.log(err)
+            this.$Message.error(err.data.reference)
             $("button").attr('disabled',false)
           })
         }
@@ -655,16 +687,21 @@ article>div .foot button{
   left: -50%;
   top: -40%;
   background-color: white;
+  /*width: 100%;*/
   /*box-sizing: content-box;*/
   /*background-color: red;*/
   /*border:1px solid red;*/
   letter-spacing: 1em;
   /*display: table-cell;*/
   text-align: center;
-  padding:60px 60px;
+  padding:60px 0;
 }
 .deleteUser>div>div p{
-  letter-spacing: 1px
+  letter-spacing: 1px;
+  width: 100%
+}
+.deleteUser .btnGroup>button{
+  background-color: #2B77D5;
 }
 input[type="file"]{
   position: absolute;

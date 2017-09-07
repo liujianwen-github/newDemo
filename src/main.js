@@ -13,6 +13,8 @@ import VeeValidate from 'vee-validate'
 import '@/validate'
 import date from '@/date'
 import Axios from 'axios'
+import promise from 'es6-promise';
+promise.polyfill();
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
 // Vue.use(VueResource)

@@ -84,16 +84,17 @@ export default {
       // console.log(this.dataList)
       this.$emit('popState', '0')
     },
-    findItem: function (findme) {
-      if (this.chooseItem.length <= 0) return
-      for (let i = 0; i < this.chooseItem.length; i++) {
-        if (findme === this.chooseItem(i)) {
-          return true
-        }
-      }
-      return false
-    },
+    // findItem: function (findme) {
+    //   if (this.chooseItem.length <= 0) return
+    //   for (let i = 0; i < this.chooseItem.length; i++) {
+    //     if (findme === this.chooseItem(i)) {
+    //       return true
+    //     }
+    //   }
+    //   return false
+    // },
     chooseMe: function (msg, item) {
+      // alert(item)
       this.whichBgc = msg
       this.chooseItem = item
     },
@@ -120,7 +121,8 @@ export default {
       this.dataList = []
       this.$emit('popState', 'intell')
     },
-    addFacetrackToPerson: function () {
+    addFacetrackToPerson() {
+      const _this = this
       console.log(this.chooseItem)
       console.log(this.intellParams.facetrackId)
       if (this.chooseItem === null) {
@@ -131,13 +133,18 @@ export default {
       // return
       let dataForm = new FormData()
       let facetracks = new Array()
+      // WTF personId从数组里可以取值，chooseItem取不到（安卓pad）
       facetracks.push(this.intellParams.facetrackId)
-      dataForm.append('personId', this.chooseItem)
+      dataForm.append('personId', this.dataList[this.whichBgc].personId)
       dataForm.append('facetrackIds', facetracks)
+      // alert(dataForm.get('personId'))
       Axios({
         method: 'POST',
         url: INTERFACE.PUT_STRANGER2PERSON,
-        data: dataForm
+        data: dataForm,
+        headers: {
+          'Content-Type': ' application/x-www-form-urlencoded'
+        }
       }).then((res) => {
         console.log(res)
         if (res.data.status === 200) {
@@ -146,7 +153,7 @@ export default {
           this.$emit('update')
           return
         }
-        this.$Message.error({content: res.data.msg})
+        this.$Message.error({content: res.data.reference})
       }, (err) => {
         // alert(err)
         console.log(err)

@@ -3,7 +3,7 @@ import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  // HOST: 'http://172.16.1.99:8080/deeppassterminate',
+  // HOST: 'http://172.16.1.98:8080/deeppassterminate',
   HOST:'',
   /**
    * [对应的java项目名称,用于ajax请求前缀]
@@ -16,7 +16,7 @@ export default{
    * @type {[String]}
    */
   projectpath:window.location.origin + window.location.pathname,
-  // projectpath:'http://172.16.1.99:8080/deeppassterminate',
+  // projectpath:'http://172.16.1.98:8080/deeppassterminate',
   // 
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
@@ -24,8 +24,8 @@ export default{
    * [图片新建用户要求图片序列的数量]
    * @type {Number}
    */
-  minImageCount: 3,
-  maxImageCount: 5,
+  minImageCount: 1,
+  maxImageCount: 1,
   pageShow: 5,
   /**
    * [veevalidate插件筛选条件参数]
