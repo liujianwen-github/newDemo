@@ -198,7 +198,7 @@ export default {
     clear: both;
     position: relative;
     height: 80%;
-    overflow:hidden;
+    /*overflow:hidden;*/
     /*text-align: left;*/
   }
   .item>.content>div>.name,.item>.content>div>.time{

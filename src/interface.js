@@ -20,5 +20,8 @@ export default{
   GET_SCENEIMG:config.projectName +  '/facetrack/getFacetrackSceneImg',
   GET_FACETRACKIMAGES:config.projectName + '/facetrack/getFacetrackImages',
   GET_USER_UNMATCHED:config.projectName +  '/user/getUserSimilarFacetrack',
-  GET_CONFIG:config.projectName + '/config/getAllconfig'
+  GET_CONFIG:config.projectName + '/config/getAllconfig',
+
+  //OS
+  SHUTDOWN: '/poweroff'
 }

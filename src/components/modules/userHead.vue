@@ -50,7 +50,7 @@
           <span class="glyphicon glyphicon-user"></span>
           <p>返回主页</p>
         </div> 
-      </router-link>    
+      </router-link>
     </Col>
   </Row>
   <Modal

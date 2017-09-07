@@ -9,13 +9,13 @@
       <div class="addUser whiteText">
         <p class="headInfo">来访时间:<span v-text="personData.facetrackCreateTime"></span></p>
         <!-- <p class="headInfo">采集地点:<span v-text="personData.sourceDes"></span></p> -->
-        <p>以下是智能分析找到最接近的三名注册用户</p>
+        <p>以下是智能分析找到最接近的注册用户</p>
       </div>
     </header>
     <article>
       <div class="content">
         <div class="item" v-for="(item,index) in dataList" @click="chooseMe(index,item.personId)">
-          <input type="radio" name="chooseItem" :value="item.persontag" v-model="chooseItem">
+          <!-- <input type="radio" name="chooseItem" :value="item.persontag" v-model="chooseItem"> -->
           <div class="bgc" :class="{showme:index==whichBgc}" style="color:white">
             <img src="../../assets/checked.png" height="25" width="25">
           </div>
@@ -104,6 +104,13 @@ export default {
             console.log(res)
             if(res.data.status === 200){
               this.dataList = res.data.results.batchVo.list || []
+              for(let i in this.dataList){
+                //删除其中为空的数据
+                if(this.dataList[i]===null){
+                  this.dataList.splice(i,1)
+                }
+              }
+              console.log(this.dataList)
               //返回数组长度为0时显示查询结果为空
               this.emptyShow = this.dataList.length ===0 ? true : false
             }else{

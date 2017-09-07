@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="container"> -->
   <Row class="container" type="flex" justify="center" align="middle">
-    <Col :sm="10" :md="10" :lg="10" :xs="18" class="leftHead">
+    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead">
       <!-- <div > -->
         <img src="../../assets/logo.png">
         <span>未来门禁演示系统 1.0</span>
@@ -17,7 +17,7 @@
         <!-- <router-link to="//model1" exact>1</router-link> -->
       <!-- </div> -->
     </Col>
-    <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="4">
+    <Col  class="smallDevice" :sm="12" :md="12" :lg="12" :xs="8">
       <Dropdown trigger="click"  @on-click="dowhat">
         <a href="javascript:void(0)">
             <Icon type="drag" size="30"></Icon>
@@ -29,16 +29,25 @@
             <Dropdown-item class="listItem" name="toUser" >用户管理</Dropdown-item>
         </Dropdown-menu>
       </Dropdown>
-      
+      <a @click="shutDown">
+        <img src="../../assets/shutdown.png" alt="">
+      </a>    
     </Col>
     <Col span="6" class="toUser">
       <!-- <div > -->
+        <div style="float:right">
+          <a @click="shutDown">
+            <img src="../../assets/shutdown.png" height="48" width="48" alt="">
+          </a>
+          <!-- <a href=""></a> -->
+        </div>    
         <router-link to="/userManage" exact>
           <div>
             <span class="glyphicon glyphicon-user"></span>
             <p>用户管理</p>
           </div>    
-        </router-link>     
+        </router-link>   
+
       <!-- </div> -->
     </Col>   
   </Row>
@@ -47,6 +56,7 @@
 
 <script>
 // import Store from '@/Store.js'
+import INTERFACE from '@/interface'
 import $ from 'jquery'
 export default {
   name: 'indexHead',
@@ -72,6 +82,37 @@ export default {
         this.$router.push('/usermanage')
       } else {
         this.viewContent(msg)
+      }
+    },
+    shutDown(){
+      console.log(this.$http)
+      const _this = this
+      if(confirm("确定关机？")){
+        this.$http({
+          method: 'GET',
+          url: INTERFACE.SHUTDOWN
+        })
+        .then((res)=>{
+          if(res.data.status ===200){
+            _this.$Message.info({
+              content:'操作成功',
+              duration: 3
+            })
+          }else{
+            _this.$Message.error({
+              content:res.data.reference,
+              duration: 0,
+              closable: true
+            })
+          }
+        })
+        .catch((err)=>{
+          _this.$Message.error({
+            content:'发生错误，联系管理员！',
+            duration: 0,
+            closable: true
+          })
+        })
       }
     }
   }
@@ -155,6 +196,17 @@ export default {
   }
   .userinfo span{
     line-height: 40px
+  }
+  .smallDevice a,.toUser>div a{
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    vertical-align: top;
+    margin-left: 1em
+  }
+  .smallDevice a img,.toUser a img{
+    width:100%;
+    height: 100%
   }
 
 
