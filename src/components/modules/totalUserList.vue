@@ -18,7 +18,7 @@
       </div>
       <registerUser :viewWhich="viewWhich" :toRegisterUser="personData" @popState="changeState" @modalMessage="modalMessage" @deleteItem="deleteItem"></registerUser>
     </div>
-    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total></Page>
+    <Page :total="pageInfo.totalRecord" :current="pageInfo.pageNo" :page-size="pageInfo.limit" @on-change="changePage" show-total show-elevator></Page>
   </div>
 </template>
 

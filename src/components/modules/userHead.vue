@@ -1,8 +1,8 @@
 <template>
   <div class="container">
   <Row>
-    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" >
-      <img src="../../assets/logo.png" @click="reloadPage">
+    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" onclick="window.location.reload()">
+      <img src="../../assets/logo.png" >
       <span>未来门禁演示系统 1.0</span>
     </Col>
     <Col class="contentBtnList" span="5">
@@ -89,14 +89,14 @@ export default {
       this.$emit('searchPerson', this.searchText)
     },
     reloadPage: function () {
-      window.location.reload()
+      // alert('1')
+      window.location.href = window.location.href
     },
     reSearch: function () {
-      // alert('111')
       if (this.searchText !== '') {
         this.searchText = ''
       } else {
-        this.reloadPage()
+        window.location.reload()
       }
     },
     startSearch: function () {

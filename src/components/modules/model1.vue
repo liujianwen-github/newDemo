@@ -17,7 +17,7 @@
         <p>{{index}}</p>
       </div> -->
       <div class="pageBox">
-        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total></Page>
+        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total show-elevator></Page>
       </div>
       <!-- <page :total="pageInfo.totalRecord" :current="1" @on-change="changePage"></page> -->
       <!-- stranger -->

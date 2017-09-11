@@ -1,136 +1,151 @@
 <template>
   <div class="popup" id="registerUser" :class="{show:isShow}">
-   <div>
+    <div>
    <!-- <video src="" id="video1" style="position: absolute;background-color:blue;"></video> -->
    <!-- <img id='nini'  alt=""> -->
-    <header>
-      <h3><span v-text="title"></span>用户</h3>
-      <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于2张</p>
-      <div class="closeWindow" @click="close">&times;</div>
-      <!-- 上传头像 -->
-      <div class="setHead" >      
-        <div>
-          <!-- 显示用户头像，新建用户时显示默认头像 -->
-          <div class="changePic">
-            <!-- <img :src="personData.headImage" alt="1"> -->
-            <div v-if="title==='新建'">
-              <img src="../../assets/userHeader.png" alt="" v-if="personData.headImage===''">
-              <img :src="'data:image/png;base64,'+personData.headImage" v-else>
+      <header>
+        <h3><span v-text="title"></span>用户</h3>
+        <p v-if="title=='新建'" style="font-size: 12px">新建用户上传的图片，第一张将作为头像，上传图片不得少于2张</p>
+        <div class="closeWindow" @click="close">&times;</div>
+        <!-- 上传头像 -->
+        <div class="setHead" >      
+          <div>
+            <!-- 显示用户头像，新建用户时显示默认头像 -->
+            <div class="changePic">
+              <!-- <img :src="personData.headImage" alt="1"> -->
+              <div v-if="title==='新建'">
+                <img src="../../assets/userHeader.png" alt="" v-if="personData.headImage===''">
+                <img :src="'data:image/png;base64,'+personData.headImage" v-else>
+              </div>
+              <input type="file"  name="" ref="fileUpdateHead" @change="updateHead"  accept="image/png,image/jpg,image/jpeg">
+              <img :src="'data:image/png;base64,'+personData.headImage" v-if="title==='编辑'">
             </div>
-            <input type="file"  name="" ref="fileUpdateHead" @change="updateHead"  accept="image/png,image/jpg,image/jpeg">
-            <img :src="'data:image/png;base64,'+personData.headImage" v-if="title==='编辑'">
+            <!-- 已选中待上传的图片序列 -->
+            <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index" v-if="title==='新建'">
+              <img :src="'data:image/png;base64,' + item" alt=""><!-- {{item}} -->
+            </div>
+            <!-- 添加图片序列的按钮 -->
+            <div class="changePic" v-if="title==='新建'">
+              <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
+              <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType"> -->
+              <img src="../../assets/inputImg.png" alt="">
+            </div>
+            <div class="changePic" v-if="title ==='编辑'"   @click="getUserInfos()">
+              <div style="padding:20% 0">
+                <img src="../../assets/search_800px.png" style="width:50px;height:50px;vertical-align: middle" alt="">
+                <p>查找过往识别记录</p>
+              </div> 
+            </div>
+          </div>    
+        </div>
+        <p style="display:inline-block;width:144px;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:144px;text-align:center"><span v-if="title==='新建'">上传用户照片</span></p>
+        
+      </header>
+      <UserInfos :isHidden = "userInfoIsHidden" :personId="personData.personId" @back="userInfoIsHidden=true"></UserInfos>
+      <article>
+        <div class="content">
+        <!-- 编辑信息 -->
+        <div class="addUser">
+          <br>
+          <Row>
+            <Col span="12" class="addMessage long">
+                <label>姓名</label>
+                <input type="text" name="name" v-model="personData.userName" v-validate="'required|name'">
+                <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
+            </Col>
+            <Col span="12" class="addMessage short">
+              <label>性别</label>
+              <div>
+                <input type="radio" id="userMan" name="sex" value="0"  v-model="personData.sex" v-validate="'required'">
+                <label for="userMan">男</label>
+                <input type="radio" id="userWoman" name="sex" value="1" v-model="personData.sex" v-validate="'required'">
+                <label for="userWoman">女</label>
+              </div>
+              <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
+            </Col>
+          </Row> 
+          <!-- <br> -->
+          <Row>
+            <Col span="12" class="addMessage short">
+              <label>VIP</label>
+              <div>
+                <input type="radio" id="isVip" name="isVip" v-validate="'required'" value="0" v-model="vip" >
+                <label for="isVip">是</label>
+                <input type="radio" id="notVip" name="isVip" v-validate="'required'" value="1" v-model="vip">
+                <label for="notVip">否</label>
+              </div>
+              <p v-show="errors.has('isVip')">&nbsp;{{ errors.first('isVip') }}</p>
+            </Col>
+            
+            <Col span="12" class="addMessage long">
+              <label>生日</label>
+              <!-- <input type="date" name="" v-model="personData.birthday"> -->
+              <Date-picker name="birthday" v-model="personData.birthday" class="input" :options="birthdayOPT"></Date-picker>
+              <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
+            </Col>
+          </Row> 
+          <Row> 
+            <Col span="12" class="addMessage long" id="cardBox" :class="{processHide: cardHide}">
+              <label>卡号</label>
+              <input type="text" name="cardId"  v-model="personData.cardId">
+              <!-- <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p> -->
+            </Col>
+          </Row> 
           </div>
-          <!-- 已选中待上传的图片序列 -->
-          <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index" v-if="title==='新建'">
-            <img :src="'data:image/png;base64,' + item" alt=""><!-- {{item}} -->
+          <Progress :percent="percent" :class="{processHide: processHide}"></Progress>
+          <div class="foot">
+            <button class="btn" @click="close">取消</button>
+            <button class="btn" @click="checkForm">确定</button>
           </div>
-          <!-- 添加图片序列的按钮 -->
-          <div class="changePic" v-if="title==='新建'">
-            <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" accept="image/png,image/jpg,image/jpeg">
-            <!-- <input type="file" name="" ref="fileInputOne" @change="chooseImg" multiple="multiple" :accept="accepyType"> -->
-            <img src="../../assets/inputImg.png" alt="">
-          </div>
-        </div>    
+        </div>
+      </article>
+      <div class="goDelete" v-if="title=='编辑'">
+        <span class="btn" @click="godelete">删除用户</span>
       </div>
-      <p style="display:inline-block;width:144px;text-align:center"><span>上传用户头像</span></p><p style="display:inline-block;width:144px;text-align:center"><span v-if="title==='新建'">上传用户照片</span></p>
+      <!-- 删除用户弹窗 -->
+      <div class="deleteUser">
+        <div>
+        <div>
+          <p>是否删除用户?</p>
+          <p class="btnGroup">
+            <button class="btn whiteText" @click="dontDelete">取消</button>
+            <button class="btn whiteText" @click="mksureDelete">确认</button>
+          </p>
+        </div>   
+        </div>
+      </div>
       
-    </header>
-    <article>
-      <div class="content">
-      <!-- 编辑信息 -->
-      <div class="addUser">
-        <br>
-        <Row>
-          <Col span="12" class="addMessage long">
-              <label>姓名</label>
-              <input type="text" name="name" v-model="personData.userName" v-validate="'required|name'">
-              <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
-          </Col>
-          <Col span="12" class="addMessage short">
-            <label>性别</label>
-            <input type="radio" name="sex" value="0"  v-model="personData.sex" v-validate="'required'">男
-            <input type="radio" name="sex" value="1" v-model="personData.sex" v-validate="'required'">女
-            <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
-          </Col>
-        </Row> 
-        <!-- <br> -->
-        <Row>
-          <Col span="12" class="addMessage short">
-            <label>VIP</label>
-            <input type="radio" name="isVip" v-validate="'required'" value="0" v-model="vip" >&nbsp;是
-            <input type="radio" name="isVip" v-validate="'required'" value="1" v-model="vip">&nbsp;否
-            <p v-show="errors.has('isVip')">&nbsp;{{ errors.first('isVip') }}</p>
-          </Col>
-          
-          <Col span="12" class="addMessage long">
-            <label>生日</label>
-            <!-- <input type="date" name="" v-model="personData.birthday"> -->
-            <Date-picker name="birthday" v-model="personData.birthday" class="input" :options="birthdayOPT"></Date-picker>
-            <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
-          </Col>
-        </Row> 
-        <Row> 
-          <Col span="12" class="addMessage long" id="cardBox" :class="{processHide: cardHide}">
-            <label>卡号</label>
-            <input type="text" name="cardId"  v-model="personData.cardId">
-            <!-- <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p> -->
-          </Col>
-        </Row> 
-        </div>
-        <Progress :percent="percent" :class="{processHide: processHide}"></Progress>
-        <div class="foot">
-          <button class="btn" @click="close">取消</button>
-          <button class="btn" @click="checkForm">确定</button>
-        </div>
+      <VueCropper
+        :class="{cropShow:cropShow}"
+        class="cropBox"
+        ref="cropper"
+        :img="cropImg.img"
+        :info="cropImg.info"
+        :canScale="cropImg.canScale"
+        :autoCrop="cropImg.autoCrop"
+        :autoCropWidth="cropImg.autoCropWidth"
+        :autoCropHeight="cropImg.autoCropHeight"
+        :fixed="cropImg.fixed"
+        :fixedNumber="cropImg.fixedNumber"
+      >
+      </VueCropper>
+      <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
+        <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
       </div>
-    </article>
-    <div class="goDelete" v-if="title=='编辑'">
-      <span class="btn" @click="godelete">删除用户</span>
+     <!--  <VueCropper
+        :class="{cropShow:cropShow}"
+        class="cropBox"
+        ref="cropper"
+        :img="cropImg.img"
+        :info="cropImg.info"
+        :canScale="cropImg.canScale"
+        :autoCrop="cropImg.autoCrop"
+        :autoCropWidth="cropImg.autoCropWidth"
+        :autoCropHeight="cropImg.autoCropHeight"
+        :fixed="cropImg.fixed"
+        :fixedNumber="cropImg.fixedNumber"
+      ></VueCropper> -->
     </div>
-    <!-- 删除用户弹窗 -->
-    <div class="deleteUser">
-      <div>
-      <div>
-        <p>是否删除用户?</p>
-        <p class="btnGroup">
-          <button class="btn whiteText" @click="dontDelete">取消</button>
-          <button class="btn whiteText" @click="mksureDelete">确认</button>
-        </p>
-      </div>   
-      </div>
-    </div>
-    
-    <VueCropper
-      :class="{cropShow:cropShow}"
-      class="cropBox"
-      ref="cropper"
-      :img="cropImg.img"
-      :info="cropImg.info"
-      :canScale="cropImg.canScale"
-      :autoCrop="cropImg.autoCrop"
-      :autoCropWidth="cropImg.autoCropWidth"
-      :autoCropHeight="cropImg.autoCropHeight"
-      :fixed="cropImg.fixed"
-      :fixedNumber="cropImg.fixedNumber"
-    >
-    </VueCropper>
-    <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
-      <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
-    </div>
-   <!--  <VueCropper
-      :class="{cropShow:cropShow}"
-      class="cropBox"
-      ref="cropper"
-      :img="cropImg.img"
-      :info="cropImg.info"
-      :canScale="cropImg.canScale"
-      :autoCrop="cropImg.autoCrop"
-      :autoCropWidth="cropImg.autoCropWidth"
-      :autoCropHeight="cropImg.autoCropHeight"
-      :fixed="cropImg.fixed"
-      :fixedNumber="cropImg.fixedNumber"
-    ></VueCropper> -->
-   </div>
   </div>
 </template>
 <!-- 新建用户组件 -->
@@ -142,11 +157,13 @@ import config from '@/config'
 import INTERFACE from '@/interface'
 import userHead from '../../assets/userHeader.png'
 import VueCropper from 'vue-cropper'
+import UserInfos from './searchUserInfos.vue'
 export default {
   name: 'registerUser',
   data () {
     return {
       msg: null,
+      userinfoList:[],
       percent: 0,
       userHead: userHead,
       itemInfo:null,
@@ -156,6 +173,7 @@ export default {
       accepyType:"video/mp4",
       // cardHide: true,
       processHide: true,
+      userInfoIsHidden: true,
       cropImg: config.cropImg,
       // accepyType:"image/png,image/jpg,image/jpeg",
       accepyType:"video/mp4",
@@ -179,7 +197,7 @@ export default {
     }
   },
   props: ['viewWhich', 'toRegisterUser'],
-  components: {VueCropper},
+  components: {VueCropper, UserInfos},
   computed: {
     // 根据person是否具有vip属性，来判断cardId输入框是否显示
     cardHide: function () {
@@ -191,11 +209,15 @@ export default {
     }
   },
   methods: {
+    get_facetrackimage: function(facetrackId){
+      return config.get_facetrackimage(facetrackId)
+    },
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
       this.processHide = true
-      this.cardHide = true,
+      this.userInfoIsHidden = true
+      this.cardHide = true
       this.$forceUpdate()
       console.log('register组件显示状态：'+(this.isShow).toString())
     },
@@ -283,9 +305,6 @@ export default {
           if (this.personData.images.length < config.minImageCount) {
            // this.$Message.error('照片太少，不能上传')
            this.$emit('modalMessage','warning','图片数量不足，请添加后再进行操作')
-           // console.log(this.$Store)
-           // this.personData.headImage = ''
-           // this.personData.imgs = []
             $("button").attr('disabled',false)
            this.update = false
           } else {
@@ -319,31 +338,6 @@ export default {
           for(let i = 0;i< this.personData.images.length;i++){
             personData.append('images', this.personData.images[i])
           }
-          // var xmlhttp;
-          // if (window.XMLHttpRequest)
-          // {
-          //   //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-          //   xmlhttp=new XMLHttpRequest();
-          // }
-          // else
-          // {
-          //   // IE6, IE5 浏览器执行代码
-          //   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-          // }
-          // xmlhttp.onreadystatechange=function()
-          // {
-          //   if (xmlhttp.readyState==4 && xmlhttp.status==200)
-          //   {
-          //     alert('200')
-          //   }else{
-          //     alert('err')
-          //   }
-          // }
-          // xmlhttp.open("POST",INTERFACE.POST_USER_IMAGE,true);
-          // xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-
-          // xmlhttp.send(personData);
-
           Axios({
             method: 'POST',
             url: INTERFACE.POST_USER_IMAGE,
@@ -468,6 +462,9 @@ export default {
           this.msg()
           $("input[type='file']").attr('disabled',false)
         })
+    },
+    getUserInfos: function(){
+      this.userInfoIsHidden = false
     }
   },
   watch: {
@@ -632,11 +629,10 @@ article .addUser{
   margin-top:10px
 }
 article .addUser .addMessage{
-  min-height: 50px
+  min-height: 50px;
+  display: flex!impotant;
 }
-article .addMessage label{
-  width:20%;
-}
+
 article .addMessage.long>input,.addMessage.long>.input{
   width: 65%;
   max-width: 160px;
@@ -644,8 +640,16 @@ article .addMessage.long>input,.addMessage.long>.input{
   margin-left: 10%;
   display: inline-block;
 }
-article .addMessage.short>input{
-  margin-left:20%
+article .addMessage.short>div{
+  margin-left: 10%;
+  text-align: left;
+  display: inline-block;
+  width: 160px;
+  text-indent: 5px
+}
+article .addMessage.short>div>label{
+  width: 35%;
+  text-align: center;
 }
 article>div .foot{
   letter-spacing: 20px
@@ -712,4 +716,5 @@ input[type="file"]{
   /*background-color: red;*/
   opacity: 0
 }
+
 </style>

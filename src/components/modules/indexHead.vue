@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="container"> -->
   <Row class="container" type="flex" justify="center" align="middle">
-    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead">
+    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" onclick="window.location.reload()">
       <!-- <div > -->
         <img src="../../assets/logo.png">
         <span>未来门禁演示系统 1.0</span>

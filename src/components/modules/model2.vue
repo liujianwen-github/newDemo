@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="pageBox">
-        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total></Page>
+        <Page :total="pageInfo.totalNum" :current="pageInfo.pageNo" :page-size="pageInfo.pageSize" @on-change="changePage" show-total show-elevator></Page>
       </div>
       <Intell :toIntell="intellValue" :viewWhich="viewWhich" @popState="changeState"></Intell>
       <createUser :viewWhich="viewWhich" @popState="changeState" :toCreateUser="createUserData"></createUser>

@@ -19,8 +19,12 @@
         </div>
         <div class="addMessage short">
           <label class="whiteText">性别</label>
-          <input type="radio" name="sex" value="0" checked="checked" v-model="sex" v-validate="'required'">男
-          <input type="radio" name="sex" value="1" v-model="sex" v-validate="'required'">女
+          <div>
+            <input type="radio" id="fkman" name="sex" value="0" checked="checked" v-model="sex" v-validate="'required'">
+            <label for="fkman" class="whiteText">男</label>
+            <input type="radio" id="fkwoman" name="sex" value="1" v-model="sex" v-validate="'required'">
+            <label for="fkwoman" class="whiteText">女</label>
+          </div>
           <span v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</span>
         </div>
         <div class="addMessage long">
@@ -31,8 +35,12 @@
         <div class="addMessage short">
           <label class="whiteText">VIP</label>
           <!-- <Date-picker v-model="birthday" class="input"></Date-picker> -->
-          <input type="radio" name="isVip" value='0' v-model="vip">是
-          <input type="radio" name="isVip" value='1' v-model="vip">否
+          <div>
+            <input type="radio" id="isVip" name="isVip" value='0' v-model="vip">
+            <label for="isVip" class="whiteText">是</label>
+            <input type="radio" id="notVip" name="isVip" value='1' v-model="vip">
+            <label for="notVip" class="whiteText">否</label>
+          </div>
         </div>
         <div class="addMessage long" :class="{itemHide:cardHide}">
           <label class="whiteText">卡号</label>
@@ -298,13 +306,22 @@ header>div:not(.closeWindow){
 }
 header .addUser{
   padding-left: 10px;
-  width: 60%
+  width: 60%;
+  position: relative;
 }
 header .addUser .addMessage{
   margin-bottom: 10px;
 }
-.addMessage.short>input{
-  margin-left:20%
+.addMessage>label{
+  width: 20%
+}
+.addMessage.short>div{
+  display: inline-block;
+  width: 160px
+}
+.addMessage.short>div label{
+  width: 35%;
+  text-align: center;
 }
 .itemHide{
   visibility: hidden;
@@ -358,10 +375,9 @@ input[type="file"]{
   cursor: pointer;
 }
 .input{
-  width: 40;
-  /*max-width: 160px;*/
+  /*width: 40%;*/
+  max-width: 160px;
   height: 30px;
-  margin-left: 10%;
   display: inline-block;
 }
 .cropShow{

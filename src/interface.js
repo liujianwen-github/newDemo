@@ -23,5 +23,5 @@ export default{
   GET_CONFIG:config.projectName + '/config/getAllconfig',
 
   //OS
-  SHUTDOWN: '/poweroff'
+  SHUTDOWN: config.projectName + '/poweroff'
 }
