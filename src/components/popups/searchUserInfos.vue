@@ -2,8 +2,8 @@
 	<div id="searchUserInfos" :class="{notshow:isHidden}">
 		<p align="center">
 			<span style="color:rgb(100,100,100);font-size: 12px">搜索的识别记录最多为当前时间以前的20条</span>
-			<span @click="back" style="position:absolute;right:0;top:0;display:table-cell;width:50px;height:50px;margin-right:1em;vertical-align:middle;text-align:center">
-				<img src="../../assets/return_351px_1157313_easyicon.net.png" style="vertical-align:middle" width="30" height="30" alt="">	
+			<span @click="back" style="position:absolute;right:0;top:0;display:table-cell;width:70px;height:50px;margin-right:1em;vertical-align:middle;text-align:center">
+				<img src="../../assets/arrow_back_533px_1143264_easyicon.net.png" style="vertical-align:middle" width="30" height="30" alt="">返回
 			</span>
 		</p>
 		<p class="emptyMsg" :class="{show:emptyRes}">

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
   <Row>
-    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" onclick="window.location.reload()">
+    <Col :sm="10" :md="10" :lg="10" :xs="16" class="leftHead" onclick="window.location.reload()onratechange(model3.vue)">
       <img src="../../assets/logo.png" >
       <span>未来门禁演示系统 1.0</span>
     </Col>

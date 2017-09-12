@@ -211,10 +211,10 @@ export default {
         // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
         // this.$el.addEventListener('touchmove',function(e){
         //   e = e || window.event
-        //   if(e.stopPropagation) { //W3C阻止冒泡方法 
+        //   if(e.stopPropagation) {
         //     e.stopPropagation()
         //   } else { 
-        //       // window.event.cancelBubble = true; //IE阻止冒泡方法 
+        //       // window.event.cancelBubble = true;
         //       e.cancelBubble = true;
         //   } 
         // })
