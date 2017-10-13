@@ -21,7 +21,7 @@
               <img :src="'data:image/png;base64,'+personData.headImage" v-if="title==='编辑'">
             </div>
             <!-- 已选中待上传的图片序列 -->
-            <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index" v-if="title==='新建'">
+            <div class="changePic"  v-for="(item,index) in personData.imgs" track-by="index" :key="item" v-if="title==='新建'">
               <img :src="'data:image/png;base64,' + item" alt=""><!-- {{item}} -->
             </div>
             <!-- 添加图片序列的按钮 -->
@@ -33,7 +33,7 @@
             <div class="changePic" v-if="title ==='编辑'"   @click="getUserInfos()">
               <div style="padding:20% 0">
                 <img src="../../assets/search_800px.png" style="width:50px;height:50px;vertical-align: middle" alt="">
-                <p>查找过往识别记录</p>
+                <p>查看历史识别记录</p>
               </div> 
             </div>
           </div>    
@@ -114,6 +114,9 @@
         </div>   
         </div>
       </div>
+      <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
+        <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
+      </div>
       
       <VueCropper
         :class="{cropShow:cropShow}"
@@ -129,9 +132,7 @@
         :fixedNumber="cropImg.fixedNumber"
       >
       </VueCropper>
-      <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
-        <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
-      </div>
+      
      <!--  <VueCropper
         :class="{cropShow:cropShow}"
         class="cropBox"
@@ -321,11 +322,13 @@ export default {
         this.personData.birthday = typeof this.personData.birthday === 'undefined' ? '' : new Date(this.personData.birthday).Format('yyyy-MM-dd')
         console.log(this.personData)
         personData.append('personId', this.personData.personId)
-        personData.append('headImage', this.personData.headImage)
         personData.append('userName', this.personData.userName)
         personData.append('sex', Number(this.personData.sex))
         personData.append('birthday', this.personData.birthday)
-        
+        //如果用户上传的头像为空，表单中不加headImage
+        if(this.personData.headImage !=''){
+          personData.append('headImage', this.personData.headImage)
+        }
         // personData.append('userkey', config.userkey)
         // personData.append('deviceId', config.deviceId)
         personData.append('vip', this.vip)
@@ -394,8 +397,10 @@ export default {
               this.$emit('popState','update')
               this.close()
               return
+            }else{
+              this.$Message.error(res.data.reference)
+              $("button").attr('disabled',false)
             }
-            this.$emit('modalMessage','error',res.data.reference)
           }, (err) => {
             this.$Message.error(err.data.reference)
             $("button").attr('disabled',false)

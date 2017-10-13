@@ -19,7 +19,7 @@ promise.polyfill();
 // Vue.use(Axios)
 // Vue.use(VueResource)
 import Vuex from 'vuex'
-// import ''
+import globalBus from './global.js'
 Vue.use(router)
 Vue.use(iView)
 Vue.use(VeeValidate)
@@ -37,5 +37,6 @@ new Vue({
   components: { App },
   created: function (argument) {
     config.axiosCon()
+    window.GLOBALBUS = globalBus
   }
 })

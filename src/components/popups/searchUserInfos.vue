@@ -47,7 +47,7 @@ export default{
   data(){
     return {
       userinfoList: [],
-      meptyRes: false,
+      emptyRes: false,
       scene: {
         isShow: false,
         img: ''

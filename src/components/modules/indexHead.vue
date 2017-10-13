@@ -29,6 +29,7 @@
             <Dropdown-item class="listItem" name="toUser" >用户管理</Dropdown-item>
         </Dropdown-menu>
       </Dropdown>
+      <a @click="reload">重新加载</a>
       <a @click="shutDown">
         <img src="../../assets/shutdown.png" alt="">
       </a>    
@@ -36,6 +37,9 @@
     <Col span="6" class="toUser">
       <!-- <div > -->
         <div style="float:right">
+          <a @click="reload">
+            重新加载
+          </a>
           <a @click="shutDown">
             <img src="../../assets/shutdown.png" height="48" width="48" alt="">
           </a>
@@ -70,11 +74,13 @@ export default {
   },
   methods: {
     viewContent: function (arg) {
+      console.log(window)
       // $('.contentBtnList>button').eq(arg)
       this.currentTab = arg
       $('.contentBtnList>button').eq(arg).addClass('isActive')
       $('.contentBtnList>button').eq(arg).siblings().removeClass('isActive')
       // 向index中传递当前选择的类别
+      // localStorage.setItem('viewType',arg)
       this.$emit('currentContent', arg)
     },
     dowhat: function (msg) {
@@ -83,6 +89,15 @@ export default {
       } else {
         this.viewContent(msg)
       }
+    },
+    reload(){
+      let arg = this.currentTab
+      console.log(arg)
+      // console.log(localStorage.getItem('viewType'))
+      // this.$emit('currentContent', 0)
+      // 触发全局eventbus，刷新单项数据列表
+      GLOBALBUS.$emit('reload',arg)
+      // console.log(localStorage)
     },
     shutDown(){
       console.log(this.$http)

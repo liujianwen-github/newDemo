@@ -1,3 +1,6 @@
+/**
+ * 这个是为了方便看的，实际使用的是src目录下的config,如有需要可以把config依赖替换为当前文件（需要更新）
+ */
 import axios from 'axios'
 export default{
   // HOST: 'http://192.168.1.239:8080/',

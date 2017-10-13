@@ -18,6 +18,7 @@
   position: fixed;
   top:50%;
   left: 50%;
+  z-index: 2;
 }
 .popup header{
   background-color: #2B77D5;

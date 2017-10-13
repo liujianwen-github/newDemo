@@ -83,7 +83,7 @@ export default {
      * @return    void
      */
     modalMessage: function (type, content) {
-      const title = type
+      let title = type
       switch (type) {
           case 'info':
               this.$Modal.info({

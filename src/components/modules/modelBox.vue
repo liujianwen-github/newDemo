@@ -68,7 +68,8 @@ export default {
           this.$Message.error(err.toString().split(' ')[1] + ' Error')
           this.$Loading.error()
         }else{
-          console.log(err)
+          this.$Message.error(err.message)
+          this.$Loading.error()
         }
         // console.log(err.join(''))
         // document.write(err)
@@ -85,8 +86,6 @@ export default {
       // 陌生人
       this.$Loading.start()
       this.getParams.matchStatus = 0
-      console.log(this.pageInfo2)
-      // return
       this.getParams.pageNo = this.pageInfo2 != null? this.pageInfo2.pageNo: '1'
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel2.token}).then((res) => {
         console.log(res)
@@ -98,8 +97,6 @@ export default {
           pageSize:20,
           totalNum:res.data.results.batchVo.totalNum,
         }
-        // this.pageInfo2 = res.data.results.pageInfo
-        // console.log(res)
         console.log(this.pageInfo2)
         
       })
@@ -109,7 +106,8 @@ export default {
           this.$Message.error(err.toString().split(' ')[1] + ' Error')
           this.$Loading.error()
         }else{
-          console.log(err)
+          this.$Message.error(err.message)
+          this.$Loading.error()
         }
       })
     },
@@ -137,7 +135,8 @@ export default {
           this.$Message.error(err.toString().split(' ')[1] + ' Error')
           this.$Loading.error()
         }else{
-          console.log(err)
+          this.$Message.error(err.message)
+          this.$Loading.error()
         }
       })
     },
@@ -179,7 +178,7 @@ export default {
   },
   watch: {
     notice: function (val, old) {
-      console.log(this)
+      // console.log(val)
       //切换选项卡，终止请求
       // console.log(this.cancel.cance('abort'))
       this.$Loading.finish()
@@ -190,7 +189,7 @@ export default {
       } else if (this.notice === '2') {
         this.getUser()
       } else {
-        this.$Message.error('意料之外的错误')
+        this.$Message.error('请求类型错误')
       }
     }
   },
@@ -201,6 +200,23 @@ export default {
     console.log(window.location)
 
     this.getTotal()
+    // 全局eventbus监听，刷新单项数据列表
+    GLOBALBUS.$on('reload',(target)=>{
+      //更新当前时间
+      this.getParams.endTime = new Date().getTime()
+      const type = Number(target)
+      switch(type) {
+        case 0:
+          this.getTotal()
+          break;
+        case 1:
+          this.getStranger()
+          break;
+        case 2:
+          this.getUser()
+          break;
+      }
+    })
   }
 }
 </script>

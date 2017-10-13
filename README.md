@@ -32,20 +32,14 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 	|	|——popups:弹窗组件
 	|
 	|——lib:第三方插件
-	|
 	|——assets:图片、css
-	|
 	|——router: 路由文件
-	|
 	|——store: vuex
-	|
 	|——config.js:配置文件
-	|
 	|——date.js：处理日期格式
-	|
 	|——interface.js：API
-	|
 	|——validate.js：veevalidate配置文件
+	|——global.js 全局eventbus监听，刷新单项数据列表
 
 	
 
