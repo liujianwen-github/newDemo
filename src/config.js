@@ -3,8 +3,8 @@ import INTERFACE from './interface'
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  // HOST: 'http://172.16.1.98:8080/',
-  HOST:'',
+  HOST: 'http://172.16.1.101:8080/',
+  // HOST:'',
   /**
    * [对应的java项目名称,用于ajax请求前缀]
    * @type {String}
@@ -15,8 +15,8 @@ export default{
    * [获取项目域名以及文件路径，用于获取图片服务器的路径]
    * @type {[String]}
    */
-  projectpath:window.location.origin + window.location.pathname,
-  // projectpath:'http://172.16.1.98:8080/',
+  // projectpath:window.location.origin + window.location.pathname,
+  projectpath:'http://172.16.1.101:8080/',
   // 
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
@@ -94,7 +94,7 @@ export default{
    * @return    {[void]}
    */
   axiosCon: function () {
-    // axios.defaults.baseURL = this.HOST
+    axios.defaults.baseURL = this.HOST
     axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'

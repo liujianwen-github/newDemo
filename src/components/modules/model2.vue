@@ -14,6 +14,16 @@
           </div>
           <div class="time">{{item.facetrackCreateTime.split(' ')[1]}}</div>
           <div class="name" v-html="item.personName">&nbsp;</div>
+          <div class="detail">
+            <span v-text="item.age"></span>岁
+            <span v-if="item.sex===0">男</span>
+            <span v-if="item.sex===1">女</span>
+            <!-- <span v-if="item.glasses===2">没有</span> -->
+            <span v-if="item.glasses===1">
+              <img src="../../assets/glass.png" height="12" alt="">
+            </span>
+            
+          </div>
         </div>
       </div>
       <div class="pageBox">
@@ -173,7 +183,7 @@ export default {
     box-sizing: border-box;
     position: relative;
     width: 18%;
-    height: 200px;
+    height: 220px;
     display: inline-block;
     margin:0 1% 5px 1%
   }

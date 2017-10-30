@@ -1,29 +1,7 @@
 <template>
   <div>
-  	<!-- <div>father</div> -->
-  	<!-- <son @fromson="bibi" :page="mimi"></son> -->
-    <!-- <div @click="mimi">111</div> -->
-    <!-- <crop :crop-type="'png'" :crop-size="0.1" crop-img="img"></crop> -->
-    <input type="file" accept="image/jpg,image/jpeg,image/png" @change="go"  ref="image" name="">
-    <!-- <img src="../assets/listSide.png" ref="img1" alt=""> -->
-   <div class="crop">
-      <vueCropper
-        ref="cropper"
-        :img="cropImg.img"
-        :outputSize="cropImg.size"
-        :outputType="cropImg.outputType"
-        :info="cropImg.info"
-        :canScale="cropImg.canScale"
-        :autoCrop="cropImg.autoCrop"
-        :autoCropWidth="cropImg.autoCropWidth"
-        :autoCropHeight="cropImg.autoCropHeight"
-        :fixed="cropImg.fixed"
-        :fixedNumber="cropImg.fixedNumber"
-      ></vueCropper>
-      <test1></test1>
-   </div>
-   <button @click="start">start</button>
-    <!-- <input type="text" v-model="lili" name=""> -->
+    <video></video>
+    <button @click="requestFullScreen()">full</button>
   </div>
 </template>
 <script>
@@ -35,48 +13,43 @@ export default {
   components: {VueCropper,test1},
   data: function () {
     return {
-      cropImg: {
-        img: '',
-        info: true,
-        size: 1,
-        outputType: 'jpeg',
-        canScale: false,
-        autoCrop: true,
-        // 只有自动截图开启 宽度高度才生效
-        autoCropWidth: 300,
-        autoCropHeight: 300,
-        // 开启宽度和高度比例
-        fixed: true,
-        fixedNumber: [1,1]
-      }
+      
     }
   },
   methods: {
-    go: function () {
-      const file = this.$refs.image.files[0]
-      console.log(file)
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = (e) => {
-        this.cropImg.img = e.target.result
-        // this.$refs.cropper.startCrop() 
-      }
-    },
-    start: function () {
-      this.$refs.cropper.startCrop() 
-      console.log(VueCropper)
-      console.log(this)
-      console.log(this.$refs.cropper)
-      this.$refs.cropper.stopCrop()
-      this.$refs.cropper.getCropData((data) => {
-        let img = new Image()
-        img.src = data
-        document.body.append(img)
-      })
+    requestFullScreen(element) {
+    var de = document.querySelector(element) || document.documentElement;
+    if (de.requestFullscreen) {
+        de.requestFullscreen();
+    } else if (de.mozRequestFullScreen) {
+        de.mozRequestFullScreen();
+    } else if (de.webkitRequestFullScreen) {
+        de.webkitRequestFullScreen();
     }
+}
   },
   created() {
-    console.log(this.autoCropWidth)
+    navigator.getUserMedia = navigator.getUserMedia ||
+                             navigator.webkitGetUserMedia ||
+                             navigator.mozGetUserMedia;
+
+
+
+    if (navigator.mediaDevices.getUserMedia) {
+       navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 640, height: 360,facingMode: "user" } }).then(function(stream) {
+             var video = document.querySelector('video');
+             video.srcObject = stream;
+             video.onloadedmetadata = function(e) {
+               video.play();
+             };
+          })
+        .catch(function(err) {
+            console.log(err)
+             alert("The following error occurred: " + err.name);
+          })
+    } else {
+       alert("getUserMedia not supported");
+    }
   }
 }
 </script>
