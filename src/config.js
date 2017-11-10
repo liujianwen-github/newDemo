@@ -1,22 +1,36 @@
 import axios from 'axios'
 import INTERFACE from './interface'
+
+const pro = {
+  HOST:'',
+  projectName: '../deeppassterminate',
+  projectpath:window.location.origin + window.location.pathname,
+}
+const dev = {
+  HOST: 'http://172.16.1.50:8080/',
+  projectName: '../deeppassterminate',
+  projectpath:'http://172.16.1.50:8080/'
+}
+const base = dev
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
-  HOST: 'http://172.16.1.101:8080/',
-  // HOST:'',
+  // * {TODO}
+  // HOST: 'http://172.16.1.98:8080/',
+  HOST:base.HOST,
   /**
    * [对应的java项目名称,用于ajax请求前缀]
    * @type {String}
+   * * {TODO}
    */
-  projectName: '../deeppassterminate',
+  projectName: base.projectName,
   // projectName: '',
   /**
    * [获取项目域名以及文件路径，用于获取图片服务器的路径]
    * @type {[String]}
+   * {TODO}
    */
-  // projectpath:window.location.origin + window.location.pathname,
-  projectpath:'http://172.16.1.101:8080/',
+  projectpath:base.projectpath,
   // 
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
@@ -92,6 +106,7 @@ export default{
    * @DateTime  2017-09-01
    * @copyright [axios配置]
    * @return    {[void]}
+   * * {TODO}
    */
   axiosCon: function () {
     axios.defaults.baseURL = this.HOST

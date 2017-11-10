@@ -30,6 +30,7 @@ export default {
       cancel1:Axios.CancelToken.source(),
       cancel2:Axios.CancelToken.source(),
       cancel3:Axios.CancelToken.source(),
+      pushStatus:null,
       getParams: {
         matchStatus:null,'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
       }
@@ -52,8 +53,13 @@ export default {
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel1.token})
       .then((res) => {
         console.log(res)
-        // if (res.data.status != res.data.succ_code) return
         this.$Loading.finish()
+
+        // if (res.data.status != res.data.succ_code) return
+        if(res.data.status!=200){
+          this.$Message.error(res.data.msg)
+          return
+        }
         this.modelOne = res.data.results.batchVo.list
         this.pageInfo1 = {
           pageNo:res.data.results.batchVo.pageNo,
@@ -89,8 +95,12 @@ export default {
       this.getParams.pageNo = this.pageInfo2 != null? this.pageInfo2.pageNo: '1'
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel2.token}).then((res) => {
         console.log(res)
-        // if (res.data.code != res.data.succ_code) return
         this.$Loading.finish()
+
+        if(res.data.status!=200){
+          this.$Message.error(res.data.msg)
+          return
+        }
         this.modelTwo = res.data.results.batchVo.list
         this.pageInfo2 = {
           pageNo:res.data.results.batchVo.pageNo,
@@ -117,8 +127,12 @@ export default {
       this.getParams.matchStatus = 1
       this.getParams.pageNo = this.pageInfo3 != null? this.pageInfo3.pageNo:'1'
       Axios.get(INTERFACE.GET_USER_LASTVISIT, {params: this.getParams,cancelToken: this.cancel3.token}).then((res) => {
-        // if (res.data.code != res.data.succ_code) return
         this.$Loading.finish()
+
+        if(res.data.status!=200){
+          this.$Message.error(res.data.msg)
+          return
+        }
         
         this.modelThree = res.data.results.batchVo.list
         this.pageInfo3 = {
@@ -174,23 +188,34 @@ export default {
           this.getUser()
           break
       }
+    },
+    //一秒查询一次
+    pushlet(timeout){
+      console.log('开始');
+      this.getParams.endTime = new Date().getTime()
+      this.update(Number(this.notice)+1)
+      console.log('请求一次');
+      // 
+      this.pushStatus=setTimeout(()=>{
+        console.log('timeout再一次')
+        this.pushlet(timeout)
+      },timeout)
     }
   },
   watch: {
     notice: function (val, old) {
-      // console.log(val)
       //切换选项卡，终止请求
       // console.log(this.cancel.cance('abort'))
       this.$Loading.finish()
-      if (this.notice === '0') {
-        this.getTotal()
-      } else if (this.notice === '1') {
-        this.getStranger()
-      } else if (this.notice === '2') {
-        this.getUser()
-      } else {
-        this.$Message.error('请求类型错误')
-      }
+      // if (this.notice === '0') {
+      //   this.getTotal()
+      // } else if (this.notice === '1') {
+      //   this.getStranger()
+      // } else if (this.notice === '2') {
+      //   this.getUser()
+      // } else {
+      //   this.$Message.error('请求类型错误')
+      // }
     }
   },
   created () {
@@ -198,8 +223,13 @@ export default {
     console.log('created mmodelbox')
     console.log(window.location.host)
     console.log(window.location)
-
-    this.getTotal()
+    console.log(Object.prototype.toString.call(this.notice))
+    // this.getTotal()
+    // setInterval(()=>{
+    //   console.log(this.notice)
+      
+    // },1000)
+    this.pushlet(1000)
     // 全局eventbus监听，刷新单项数据列表
     GLOBALBUS.$on('reload',(target)=>{
       //更新当前时间

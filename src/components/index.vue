@@ -57,6 +57,7 @@ a {
 }
 .container {
   /*background-color: red;*/
+  padding:0!important;
   max-width: 1200px;
   width: 100%;
   position: relative;

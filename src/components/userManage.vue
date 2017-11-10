@@ -54,6 +54,7 @@ a {
   color: #42b983;
 }
 .container {
+  padding:0!important;
   max-width: 1200px;
   width: 100%;
   position: relative;
