@@ -33,7 +33,8 @@ export default {
       pushStatus:null,
       getParams: {
         matchStatus:null,'beginTime': new Date().setHours(0,0,0,0), 'endTime': new Date().getTime(), 'pageNo': 1
-      }
+      },
+      errorNo:0
     }
   },
   props: ['notice', 'toModels'],
@@ -57,7 +58,8 @@ export default {
 
         // if (res.data.status != res.data.succ_code) return
         if(res.data.status!=200){
-          this.$Message.error(res.data.msg)
+          this.$Message.error(res.data.reference)
+          this.errorNo+=1
           return
         }
         this.modelOne = res.data.results.batchVo.list
@@ -68,6 +70,7 @@ export default {
         }
       })
       .catch((err) => {
+        this.errorNo+=1
         // this.$Message.error('请求超时')
         // 匹配到error字段说明发生错误，未匹配有可能是中断了请求
         if(err.toString().split(' ')[0].match(/error/g)){
@@ -98,7 +101,7 @@ export default {
         this.$Loading.finish()
 
         if(res.data.status!=200){
-          this.$Message.error(res.data.msg)
+          this.$Message.error(res.data.message)
           return
         }
         this.modelTwo = res.data.results.batchVo.list
@@ -130,7 +133,7 @@ export default {
         this.$Loading.finish()
 
         if(res.data.status!=200){
-          this.$Message.error(res.data.msg)
+          this.$Message.error(res.data.message)
           return
         }
         
@@ -198,7 +201,16 @@ export default {
       // 
       this.pushStatus=setTimeout(()=>{
         console.log('timeout再一次')
-        this.pushlet(timeout)
+        if(this.errorNo<10){
+          this.pushlet(timeout)
+        }else{
+          clearTimeout(this.pushStatus)
+          this.$Message.info({
+            content:"请联系管理员修正错误，然后重启",
+            duration:10,
+            closable: true
+          })
+        }
       },timeout)
     }
   },
