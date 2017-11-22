@@ -7,9 +7,9 @@ const pro = {
   projectpath:window.location.origin + window.location.pathname,
 }
 const dev = {
-  HOST: 'http://172.16.1.50:8080/',
+  HOST: 'http://172.16.1.115:8080/',
   projectName: '../deeppassterminate',
-  projectpath:'http://172.16.1.50:8080/'
+  projectpath:'http://172.16.1.115:8080/'
 }
 const base = dev
 export default{
