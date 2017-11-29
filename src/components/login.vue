@@ -1,18 +1,18 @@
 <template>
 	<Row class="container">
     <Col span="24" class="logo">
-      <img src="../../assets/logo.png" alt="">
+      <img src="../assets/logo.png" alt="">
     </Col>
     <Col span="24" class="content">
       <div class="loginBox">
-        <div class="customName">
+        <!-- <div class="customName">
           <label for="login_user">用户名</label>
           <input id="login_user" type="text" v-model="userinfo.customName" name="">
         </div>
         <div class="password">
           <label for="login_psd">密码</label>
           <input id="login_psd" type="password" v-model="userinfo.password" name="">
-        </div>
+        </div> -->
         <div class="server_address">
           <label for="login_server">服务器地址</label>
           <Input id="login_server" autocomplete="on" type="text" v-model="serverAddress"  placeholder="例:192.168.1.1:8080/" name="">
@@ -31,14 +31,39 @@
 </template>
 
 <script>
+import config from '../config.js'
+import Axios from 'axios'
 	export default{
-		
+		data(){
+      return{
+        // serverAddress:"192.168.1.1:8080"
+      }
+		},
+		methods:{
+			login(){
+        console.log(config);
+        console.log(this.$cookie)
+        //存cookie,预备下次登录使用
+        this.$cookie.set("server_address",this.serverAddress)
+        Axios.defaults.baseURL = `//${this.serverAddress}`
+        config.projectpath = this.serverAddress
+        this.$router.push('/index')
+
+			}
+		},
+    created(){
+      let info = this.$cookie.get('server_address')
+      // cookie为空，给定一个默认值
+      this.serverAddress = info ===null?"192.168.1.1:8080":info
+    }
 	}
 </script>
 
 <style scoped>
 	.container{
   margin-top:100px;
+  width: 100%;
+  text-align: center;
 }
 .logo{
   /* background-color: blue; */

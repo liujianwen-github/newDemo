@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@/components/index'
 import userManage from '@/components/userManage'
 import updateConf from '@/components/updateConf'
+import login from '@/components/login'
 import test from '@/components/test'
 import test01 from '@/components/test01'
 // import test from '@/components/test'
@@ -14,16 +15,14 @@ import test01 from '@/components/test01'
 Vue.use(Router)
 // Vue.use(Vuex)
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: '/',
+      redirect:{name:'login'}
+    },
+    {
+      path: '/index',
       name: 'index',
       component: Index
-      // children: [
-      //   {path: '/model1', components: model1},
-      //   {path: '/model2', components: model2},
-      //   {path: '/model3', components: model3}
-      // ]
     }, {
       path: '/userManage',
       name: 'userManage',
@@ -36,6 +35,13 @@ export default new Router({
       path: '/config',
       name: 'config',
       component: updateConf
+    },{
+      path: '/login',
+      name: 'login',
+      component: login
+    },{
+      path:'*',
+      redirect: "/"
     }
   ],
   computed: {

@@ -15,6 +15,7 @@ import VeeValidate from 'vee-validate'
 import '@/validate'
 import date from '@/date'
 import Axios from 'axios'
+import Cookie from 'vue-cookie'
 
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
@@ -28,6 +29,7 @@ Vue.use(VeeValidate)
 Vue.use(Vuex)
 Vue.config.productionTip = false
 Vue.prototype.$http = Axios
+Vue.prototype.$cookie = Cookie
 
 /* eslint-disable no-new */
 new Vue({

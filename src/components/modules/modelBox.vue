@@ -51,6 +51,8 @@ export default {
       // return
       this.getParams.pageNo = this.pageInfo1 != null? this.pageInfo1.pageNo:'1'
       // let cancelToken = Axios.CancelToken
+      console.log(Axios)
+      console.log(INTERFACE.GET_FACRTRACKLIST)
       Axios.get(INTERFACE.GET_FACRTRACKLIST, {params: this.getParams,cancelToken: this.cancel1.token})
       .then((res) => {
         console.log(res)
@@ -59,6 +61,7 @@ export default {
         // if (res.data.status != res.data.succ_code) return
         if(res.data.status!=200){
           this.$Message.error(res.data.reference)
+          //请求失败次数+1
           this.errorNo+=1
           return
         }
@@ -201,6 +204,7 @@ export default {
       // 
       this.pushStatus=setTimeout(()=>{
         console.log('timeout再一次')
+        // 请求失败次数10次时，中断轮询
         if(this.errorNo<10){
           this.pushlet(timeout)
         }else{
