@@ -119,16 +119,19 @@ export default {
      */
     getAllUser: function () {
       this.$Loading.start()
-      Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams}).then(
-        (res) => {
+      Axios.get(INTERFACE.GET_ALL_REGISTERUSER, {params: this.getParams})
+      .then((res) => {
           console.log(res)
           if (res.data.message != '成功！') return
           this.list = res.data.results.batchVo.list
           this.pageInfo = {
             pageNo: res.data.results.batchVo.pageNo,
-            totalRecord: res.data.results.batchVo.totalNum
+            totalRecord: res.data.results.batchVo.totalNum,
+            limit:20
           }
           console.log(this.list)
+          console.log(this.pageInfo)
+
         this.$Loading.finish()
         })
       .catch((err) => {
@@ -196,13 +199,14 @@ export default {
         if (res.data.results.batchVo.list.length < 1) {
           alert('查询结果为空')
           this.emptyPage.isShow = true
-          // return
+          return
         }
         this.emptyPage.isShow = false
         this.list = res.data.results.batchVo.list
         this.pageInfo= {
             pageNo: res.data.results.batchVo.pageNo,
-            totalRecord: res.data.results.batchVo.totalNum
+            totalRecord: res.data.results.batchVo.totalNum,
+            limit:20
           }
       }, (err) => {
         console.log(err)
@@ -236,6 +240,7 @@ export default {
   },
   created () {
     this.getAllUser()
+    // console.log(this.pageInfo)
   }
 }
 </script>

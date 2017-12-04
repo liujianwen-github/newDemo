@@ -41,7 +41,7 @@
           <!-- <a @click="reload">
             重新加载
           </a> -->
-          <button onclick="window.jsInterface.openVideo('rtsp://172.16.1.50:8554/h.264')">查看视频</button>
+          <!-- <button onclick="window.jsInterface.openVideo('rtsp://172.16.1.50:8554/h.264')">查看视频</button> -->
           <a @click="shutDown">
             <img src="../../assets/shutdown.png" height="48" width="48" alt="">
           </a>

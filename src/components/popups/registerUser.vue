@@ -64,7 +64,6 @@
               <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
             </Col>
           </Row> 
-          <!-- <br> -->
           <Row>
             <Col span="12" class="addMessage short">
               <label>VIP</label>
@@ -114,7 +113,8 @@
         </div>   
         </div>
       </div>
-      <div class="btnhid" style="position:absolute;top:0;z-index:100" :class="{cropShow:cropShow}">
+      <!-- button的z-index要大于100（组件图层为100） -->
+      <div class="btnhid" style="position:absolute;top:0;z-index:200" :class="{cropShow:cropShow}">
         <button @click="touchCrop" style="width:100px;height:50px;background-color:lightblue;font-size:30px">确认</button>
       </div>
       
@@ -555,7 +555,7 @@ export default {
   display: none
 }
 .cropShow{
-  display: block
+  display: block!important
 }
 .processHide{
   visibility: hidden;

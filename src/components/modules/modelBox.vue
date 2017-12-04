@@ -85,7 +85,7 @@ export default {
       })
       .catch(function(thrown){
         if(Axios.isCancel(thrown)){
-          console.log('Request canceled',thrown.message);
+          this.$Message.error('Request canceled',thrown.message);
         }else {
           //handle error
         }
@@ -241,7 +241,7 @@ export default {
     //   console.log(this.notice)
       
     // },1000)
-    this.pushlet(1000)
+    // this.pushlet(1000)
     // 全局eventbus监听，刷新单项数据列表
     GLOBALBUS.$on('reload',(target)=>{
       //更新当前时间
