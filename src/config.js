@@ -7,11 +7,11 @@ const pro = {
   projectpath:window.location.origin + window.location.pathname,
 }
 const dev = {
-  HOST: 'http://172.16.1.115:8080/',
+  HOST: 'http://172.16.1.89:8080/',
   projectName: '../deeppassterminate',
-  projectpath:'http://172.16.1.115:8080/'
+  projectpath:'http://172.16.1.89:8080/'
 }
-const base = dev
+const base = pro
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
@@ -110,7 +110,7 @@ export default{
    */
   axiosCon: function () {
     axios.defaults.baseURL = this.HOST
-    // axios.defaults.timeout = 5000
+    axios.defaults.timeout = 10000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'

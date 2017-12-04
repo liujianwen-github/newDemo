@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     username: '',
     counter: 0,
-    prompt: '错误提示'
+    prompt: '错误提示',
+    refreshStatus:true
   },
   // 展示内容, 无法改变状态
   getters: {
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
     },
     getPrompt: state => {
       return state.prompt
+    },
+    getRefreshStatus: state =>{
+      return state.refreshStatus
     }
   },
   // 改变状态
@@ -27,6 +31,10 @@ const store = new Vuex.Store({
     },
     setPrompt: (state, message) => {
       state.prompy = message
+    },
+    //自动刷新状态
+    setRefreshStatus:(state, status)=>{
+      state.refreshStatus = status
     }
   },
   // 提交 mutation, 这是异步的

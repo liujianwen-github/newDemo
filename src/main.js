@@ -15,6 +15,7 @@ import VeeValidate from 'vee-validate'
 import '@/validate'
 import date from '@/date'
 import Axios from 'axios'
+import cookie from 'vue-cookie'
 
 // import VueResource from 'vue-resource'
 // Vue.use(Axios)
@@ -28,9 +29,10 @@ Vue.use(VeeValidate)
 Vue.use(Vuex)
 Vue.config.productionTip = false
 Vue.prototype.$http = Axios
+Vue.prototype.$cookie=cookie
 
 /* eslint-disable no-new */
-new Vue({
+const app=new Vue({
   el: '#app',
   router,
   store,
@@ -40,4 +42,14 @@ new Vue({
     config.axiosCon()
     window.GLOBALBUS = globalBus
   }
+})
+//路由切换关闭轮询按钮
+router.afterEach((to, from) => {
+  if(to.name!='index'){
+    // console.log()
+    app.$store.commit('setRefreshStatus',false)
+  }else{
+  	app.$store.commit('setRefreshStatus',true)
+  }
+  // GLOBALBUS.$emit('routeStatus',to,from)
 })

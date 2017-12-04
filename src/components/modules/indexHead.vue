@@ -42,6 +42,11 @@
             重新加载
           </a> -->
           <!-- <button onclick="window.jsInterface.openVideo('rtsp://172.16.1.50:8554/h.264')">查看视频</button> -->
+          <label>自动刷新</label>
+          <i-switch v-model="switch1" @on-change="change">
+            <span slot="open">开</span>
+            <span slot="close">关</span>
+          </i-switch>
           <a @click="shutDown">
             <img src="../../assets/shutdown.png" height="48" width="48" alt="">
           </a>
@@ -71,10 +76,20 @@ export default {
   data () {
     return {
       msg: 'indexHead',
-      currentTab: 0
+      currentTab: 0,
+    }
+  },
+  computed:{
+    switch1(){
+      return this.$store.getters.getRefreshStatus
     }
   },
   methods: {
+    change(status){
+      // alert(status)
+      this.$store.commit("setRefreshStatus",status)
+      // alert(this.$store.getters.getRefreshStatus)
+    },
     viewContent: function (arg) {
       console.log(window)
       // $('.contentBtnList>button').eq(arg)

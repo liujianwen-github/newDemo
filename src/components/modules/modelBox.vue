@@ -85,7 +85,7 @@ export default {
       })
       .catch(function(thrown){
         if(Axios.isCancel(thrown)){
-          this.$Message.error('Request canceled',thrown.message);
+          console.log('Request canceled',thrown.message);
         }else {
           //handle error
         }
@@ -199,35 +199,54 @@ export default {
       this.update(Number(this.notice)+1)
       console.log('请求一次');
       // 
-      this.pushStatus=setTimeout(()=>{
-        console.log('timeout再一次')
-        if(this.errorNo<10){
-          this.pushlet(timeout)
-        }else{
-          clearTimeout(this.pushStatus)
-          this.$Message.info({
-            content:"请联系管理员修正错误，然后重启",
-            duration:10,
-            closable: true
-          })
-        }
-      },timeout)
+      console.log(this.$store.getters.getRefreshStatus);
+      if(this.$store.getters.getRefreshStatus){
+          this.pushStatus=setTimeout(()=>{
+          console.log('timeout再一次')
+          if(this.errorNo<10){
+            this.pushlet(timeout)
+          }else{
+            clearTimeout(this.pushStatus)
+            this.$Message.info({
+              content:"请联系管理员修正错误，然后重启",
+              duration:10,
+              closable: true
+            })
+          }
+        },timeout)
+      }
+      
+    }
+  },
+  computed:{
+    refreshStatus(){
+      return this.$store.state.refreshStatus
     }
   },
   watch: {
     notice: function (val, old) {
-      //切换选项卡，终止请求
-      // console.log(this.cancel.cance('abort'))
       this.$Loading.finish()
-      // if (this.notice === '0') {
-      //   this.getTotal()
-      // } else if (this.notice === '1') {
-      //   this.getStranger()
-      // } else if (this.notice === '2') {
-      //   this.getUser()
-      // } else {
-      //   this.$Message.error('请求类型错误')
-      // }
+      // 判断刷新状态，如果不是自动刷新，请求一次
+      if(!this.$store.state.refreshStatus){
+        switch(Number(this.notice)) {
+          case 0:
+            this.getTotal()
+            break;
+          case 1:
+            this.getStranger()
+            break;
+          case 2:
+            this.getUser()
+            break;
+        }
+      }
+    },
+    refreshStatus(val,old){
+      if(val){
+        this.pushlet(1000)
+      }else{
+        clearTimeout(this.pushlet)
+      }
     }
   },
   created () {
@@ -236,13 +255,28 @@ export default {
     console.log(window.location.host)
     console.log(window.location)
     console.log(Object.prototype.toString.call(this.notice))
+    console.log(this.$store)
+    if(this.$store.getters.getRefreshStatus){
+      this.pushlet(1000)
+      // alert(this.$store.state.refreshStatus)
+    }
     // this.getTotal()
     // setInterval(()=>{
     //   console.log(this.notice)
       
-    // },1000)
-    // this.pushlet(1000)
-    // 全局eventbus监听，刷新单项数据列表
+    // // },1000)
+    // 开始轮询数据查询
+    
+    // 路由监听，index以外的route关闭轮询
+    // GLOBALBUS.$on('routeStatus',(val,old)=>{
+    //   console.log(`module响应,来自${old.name},目标${val.name}`)
+    //   if(val.name==="index"){
+    //     this.pushlet(1000)
+    //   }else{
+    //     clearTimeout(this.pushStatus)
+    //   }
+    // })
+    //手动刷新，刷新单项数据列表
     GLOBALBUS.$on('reload',(target)=>{
       //更新当前时间
       this.getParams.endTime = new Date().getTime()
