@@ -2,7 +2,7 @@ import axios from 'axios'
 import INTERFACE from './interface'
 
 const pro = {
-  HOST:'',
+  HOST:"",
   projectName: '../deeppassterminate',
   projectpath:window.location.origin + window.location.pathname,
 }
@@ -11,7 +11,7 @@ const dev = {
   projectName: '../deeppassterminate',
   projectpath:'http://172.16.1.115:8080/'
 }
-const base = dev
+const base = pro
 export default{
   // HOST: 'http://192.168.1.239:8080/',
   // HOST: 'http://demo.deepdot.cn/',
@@ -30,7 +30,7 @@ export default{
    * @type {[String]}
    * {TODO}
    */
-  projectpath:base.projectpath,
+  projectpath:base.projectName,
   // 
   userkey: '391cb26c_45f3_4817_86f8_644e293cce60',
   deviceId: 'aaa-a01-001',
@@ -69,6 +69,24 @@ export default{
     fixed: true,
     fixedNumber: [1,1]
   },
+  /**
+   * 获取cookie
+   */
+  getCookie(c_name)
+    {
+    if (document.cookie.length>0){
+      var c_start=document.cookie.indexOf(c_name + "=");
+      var c_end;
+      if (c_start!=-1)
+        { 
+        c_start=c_start + c_name.length+1 
+        c_end=document.cookie.indexOf(";",c_start)
+        if (c_end==-1) c_end=document.cookie.length
+        return unescape(document.cookie.substring(c_start,c_end))
+        } 
+      }
+    return ""
+    },
   /**
    * @Author    liujianwen
    * @DateTime  2017-09-05
@@ -109,12 +127,14 @@ export default{
    * * {TODO}
    */
   axiosCon: function () {
-    axios.defaults.baseURL = this.HOST
+
+    axios.defaults.baseURL = base.HOST ===""?this.getCookie('server_address')||localStorage.getItem('server_address'):base.HOST
     axios.defaults.timeout = 5000
     axios.defaults.responseType = 'json'
     axios.defaults.xsrfCookieName = '111'
     axios.defaults.xsrfHeaderName = 'demo'
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+    alert(axios.defaults.baseURL)
   },
   /**
    * @Author    liujianwen
