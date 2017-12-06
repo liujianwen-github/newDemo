@@ -22,9 +22,9 @@
                 <!-- <span v-text="item.latestMatchTime"></span> -->
               </p>
             </div>
-            <div>
+            <!-- <div>
               <button class="btn" @click="setMessage(item)">设置留言</button>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="popup" id="userInfos" :class="{show:isShow}">
-   <div v-if="viewWhich=='userInfos'">
+  <div class="popup" id="userInfos" :class="{show:isShow}" >
+   <div v-if="viewWhich=='userInfos'" @mousewheel="alert('1')">
     <header>
       <div class="closeWindow" @click="close">&times;</div>
       <div class="setHead">
@@ -11,7 +11,7 @@
         <p class="headInfo">姓名：<span v-text="personData.userName"></span></p>
         <p class="headInfo">最后到访时间：<br/><span v-text="personData.recordUpdatedTime"></span></p>
         <!-- <p class="headInfo">采集地点: <span v-text="personData.sourceDes">sourceId</span></p> -->
-        <div class="btn" style="position:absolute;bottom: 0" @click="setMessage">设置留言</div>
+        <!-- <div class="btn" style="position:absolute;bottom: 0" @click="setMessage">设置留言</div> -->
       </div>
       <div @click="searchHistory" class="searchHistory">
           <p align="center">

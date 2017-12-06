@@ -45,51 +45,69 @@
       <article>
         <div class="content">
         <!-- 编辑信息 -->
-        <div class="addUser">
-          <br>
-          <Row>
-            <Col span="12" class="addMessage long">
-                <label>姓名</label>
-                <input type="text" name="name" v-model="personData.userName" v-validate="'required|name'">
-                <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
-            </Col>
-            <Col span="12" class="addMessage short">
-              <label>性别</label>
-              <div>
-                <input type="radio" id="userMan" name="sex" value="0"  v-model="personData.sex" v-validate="'required'">
-                <label for="userMan">男</label>
-                <input type="radio" id="userWoman" name="sex" value="1" v-model="personData.sex" v-validate="'required'">
-                <label for="userWoman">女</label>
-              </div>
-              <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
-            </Col>
-          </Row> 
-          <Row>
-            <Col span="12" class="addMessage short">
-              <label>VIP</label>
-              <div>
-                <input type="radio" id="isVip" name="isVip" v-validate="'required'" value="0" v-model="vip" >
-                <label for="isVip">是</label>
-                <input type="radio" id="notVip" name="isVip" v-validate="'required'" value="1" v-model="vip">
-                <label for="notVip">否</label>
-              </div>
-              <p v-show="errors.has('isVip')">&nbsp;{{ errors.first('isVip') }}</p>
-            </Col>
-            
-            <Col span="12" class="addMessage long">
-              <label>生日</label>
-              <!-- <input type="date" name="" v-model="personData.birthday"> -->
-              <Date-picker name="birthday" v-model="personData.birthday" class="input" :options="birthdayOPT"></Date-picker>
-              <p v-show="errors.has('birthday')">&nbsp;{{ errors.first('birthday') }}</p>
-            </Col>
-          </Row> 
-          <Row> 
-            <Col span="12" class="addMessage long" id="cardBox" :class="{processHide: cardHide}">
-              <label>卡号</label>
-              <input type="text" name="cardId"  v-model="personData.cardId">
-              <!-- <p v-show="errors.has('cardId')">&nbsp;{{ errors.first('cardId') }}</p> -->
-            </Col>
-          </Row> 
+          <div class="addUser">
+            <br>
+            <Row style="min-height:35px">
+              <Col span="12" class="addMessage long">
+                  <label>姓名<span>*</span></label>
+                  <input type="text" name="name" v-model="personData.userName" v-validate="'required|name'">
+                  <p v-show="errors.has('name')">&nbsp;{{ errors.first('name') }}</p>
+              </Col>
+              <Col span="12" class="addMessage short">
+                <label>性别<span>*</span></label>
+                <div>
+                  <input type="radio" id="userMan" name="sex" value="0"  v-model="personData.sex" v-validate="'required'">
+                  <label for="userMan">男</label>
+                  <input type="radio" id="userWoman" name="sex" value="1" v-model="personData.sex" v-validate="'required'">
+                  <label for="userWoman">女</label>
+                </div>
+                <p v-show="errors.has('sex')">&nbsp;{{ errors.first('sex') }}</p>
+              </Col>
+            </Row> 
+            <Row class="notRequired">
+              <Col span="12" class="addMessage long">
+                <label>手机</label>
+                <input type="tel" v-model="department.tel" name="" id="">
+              </Col>
+              
+              <Col span="12" class="addMessage long">
+                <label>生日</label>
+                <!-- <input type="date" name="" v-model="personData.birthday"> -->
+                <Date-picker name="birthday" v-model="personData.birthday" class="input" :options="birthdayOPT"></Date-picker>
+              </Col>
+            </Row>  
+            <Row class="notRequired">
+              <Col span="12" class="addMessage long">
+                <label for="">公司</label>
+                <input type="text" v-model="department.company">
+              </Col>
+              <Col span="12" class="addMessage long">
+                <label for="">职务</label>
+                <input type="text" v-model="department.position">
+              </Col>
+            </Row>
+            <Row class="notRequired">
+              <Col span="12" class="addMessage long">
+                <label for="">喜好</label>
+                <input type="text" v-model="department.favorite">
+              </Col>
+              <Col span="12" class="addMessage long">
+                <label for="">忌讳</label>
+                <input type="text" v-model="department.hate">
+              </Col>
+            </Row>
+            <Row class="notRequired">
+              <Col span="12" class="addMessage long">
+                <label for="">客源</label>
+                <input type="text" v-model="department.from">
+              </Col>
+              <Col span="12" class="addMessage long">
+                <label for="" style="vertical-align:top">备注</label>
+                <!-- <input type="text" v-model="department.comment"> -->
+                <textarea class="input" maxlength="50" v-model="department.comment" name="" id="" rows="3" style="height:auto;max-height:90px;resize:none"></textarea>
+              </Col>
+            </Row>
+
           </div>
           <Progress :percent="percent" :class="{processHide: processHide}"></Progress>
           <div class="foot">
@@ -193,10 +211,22 @@ export default {
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: '',
-        images:[]
+        images:[],
+        department:{}//totaluserlist传入json
+      },
+      //非必填项json对象
+      department:{
+        tel:"",
+        from:"",
+        company:"",
+        position:"",
+        favorite:"",
+        hate:"",
+        comment:""
       }
     }
   },
+  
   props: ['viewWhich', 'toRegisterUser'],
   components: {VueCropper, UserInfos},
   computed: {
@@ -213,12 +243,22 @@ export default {
     get_facetrackimage: function(facetrackId){
       return config.get_facetrackimage(facetrackId)
     },
+    //数据恢复初始化，补充watch不能触发的问题
     close: function () {
       this.$emit('popState', '0')
       this.isShow = false
       this.processHide = true
       this.userInfoIsHidden = true
       this.cardHide = true
+      this.department={
+        tel:"",
+        from:"",
+        company:"",
+        position:"",
+        favorite:"",
+        hate:"",
+        comment:""
+      }
       this.$forceUpdate()
       console.log('register组件显示状态：'+(this.isShow).toString())
     },
@@ -283,16 +323,12 @@ export default {
     checkForm: function () {
       // 调用validator验证全部条件
       this.$validator.validateAll().then(result => {
-        const isVip = this.vip === '0' 
-        console.log(this.personData.cardId === '')
         if (!result) {
           // this.$Message.error('请按照提示完整填写')
           this.$emit('modalMessage','warning','请按照提示完整填写')
           console.log(this.$store)
           this.$emit('popState','registerUser')
-        } else if(!isVip &&this.personData.cardId === ''){
-          this.$Message.error({content:'非vip卡号不能为空',duration:5})
-        } else {
+        }else {
           this.pushFormat()
         }
       })
@@ -332,10 +368,11 @@ export default {
         // personData.append('userkey', config.userkey)
         // personData.append('deviceId', config.deviceId)
         personData.append('vip', this.vip)
-        if (this.vip === '1') {
-          personData.append('cardId', this.personData.cardId)
-        }
+        personData.append('department',JSON.stringify(this.department))//非必填项添加
+
         console.log(personData.get('images'))
+        console.log(personData.get('department'))
+        // return
         let _this = this
         if (this.title === '新建') {
           for(let i = 0;i< this.personData.images.length;i++){
@@ -499,6 +536,16 @@ export default {
           this.personData.images = []
           this.vip = '0'
           this.cardHide = true
+          // 预定义结构，避免对应model取值undefined
+          this.department={
+            tel:"",
+            from:"",
+            company:"",
+            position:"",
+            favorite:"",
+            hate:"",
+            comment:""
+          }
           console.log('register状态为新建，初始数据如下:')
           console.log(this.personData)
           return
@@ -506,7 +553,11 @@ export default {
         // 默认不显示进度条
         this.personData.headImage = val.headImage
         this.vip = String(this.personData.vip)
-        // console.log(this.personData)
+        console.log(this.personData.department)
+        //原始创建的用户没有department字段
+        this.department=typeof this.personData.department==='undefined'?{}:JSON.parse(this.personData.department)
+        console.log('编辑用户')        
+        console.log(this.personData)
       },
       deep: true
     },
@@ -579,7 +630,7 @@ h3>span{
 
 header .setHead{
   position: relative;
-  height: 150px;
+  height: 120px;
   width: 100%;
 }
 header .setHead>div{
@@ -605,7 +656,6 @@ header .setHead .changePic{
   color: white;
   /*float:left;*/
   display: inline-block;
-  margin-right: 20px;
   position: relative;
   overflow:hidden; 
 }
@@ -634,24 +684,32 @@ article .addUser{
   margin-top:10px
 }
 article .addUser .addMessage{
-  min-height: 50px;
+  min-height: 30px;
   display: flex!impotant;
 }
-
+article .addMessage>label{
+  /* color:red; */
+  display: inline-block;
+  width:30%;
+  text-align:left;
+}
+/* 必填选项的提示 */
+article .addMessage>label>span{
+  color:red
+}
 article .addMessage.long>input,.addMessage.long>.input{
   width: 65%;
   max-width: 160px;
   height: 30px;
-  margin-left: 10%;
   display: inline-block;
 }
 article .addMessage.short>div{
-  margin-left: 10%;
   text-align: left;
   display: inline-block;
   width: 160px;
   text-indent: 5px
 }
+/* 单选框选项 */
 article .addMessage.short>div>label{
   width: 35%;
   text-align: center;
@@ -670,6 +728,9 @@ article>div .foot button{
 }
 .goDelete{
   text-align: right
+}
+.notRequired{
+  height:35px!important;
 }
 
 /*确认删除弹窗*/

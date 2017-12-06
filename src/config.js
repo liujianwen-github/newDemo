@@ -3,13 +3,13 @@ import INTERFACE from './interface'
 
 const pro = {
   HOST:'',
-  projectName: '../deeppassterminate',
-  projectpath:window.location.origin + window.location.pathname,
+  projectName: '../deeppassterminate_hotel',//host+projectname拼接获得后端程序地址
+  projectpath:window.location.origin + window.location.pathname,//web项目路径+java相对路径获得资源路径地址
 }
 const dev = {
-  HOST: 'http://172.16.1.89:8080/',
-  projectName: '../deeppassterminate',
-  projectpath:'http://172.16.1.89:8080/'
+  HOST: 'http://172.16.1.50:8080/',
+  projectName: '../deeppassterminate_hotel/',
+  projectpath:'http://172.16.1.50:8080/deeppassterminate_hotel/'
 }
 const base = pro
 export default{

@@ -27,7 +27,7 @@
           <button class="btn" @click="search">search</button>
         </Col>
         <Col span="12">
-          <button class="btn" @click="addNewUser">新建用户</button>
+          <button class="btn" @click="addNewUser">新建VIP</button>
         </Col>
       </Row>
     </Col>
@@ -38,7 +38,7 @@
         </a>
         <Dropdown-menu slot="list">
             <Dropdown-item class="listItem" name="search" >搜索</Dropdown-item>
-            <Dropdown-item class="listItem" name="addnew" >新建用户</Dropdown-item>
+            <Dropdown-item class="listItem" name="addnew" >新建VIP</Dropdown-item>
             <Dropdown-item class="listItem" name="returnIndex" >返回主页</Dropdown-item>
         </Dropdown-menu>
       </Dropdown>

@@ -3,7 +3,7 @@
     <!-- <p @click="getTotal">1</p>    -->
     <empty :toempty="emptyPage" :class="{show:emptyPage.isShow}"></empty>
     <div class="itemList">
-      <div class="item" :class="{vague:itemVague}" v-for="(item,index) in list">
+      <div class="item" :class="{vague:itemVague}" v-for="(item,index) in list" :key="item+index">
         <!-- <img v-show="item.matchStatus==0" src="../../assets/stranger.png"  alt="stranger">
         <img v-show="item.matchStatus==1" src="../../assets/user.png"  alt="user"> -->
         <div class="content">
@@ -46,7 +46,8 @@ export default {
         userkey: config.userkey,
         deviceId: config.deviceId,
         personId: '',
-        images:[]
+        images:[],
+        department:{}
       },
       pageInfo: {
         totalRecord: 0,
@@ -152,6 +153,7 @@ export default {
       this.personData = config.deepCopy(data)
       this.personData.index = index
       this.personData.time = new Date().getTime()
+      /**TODO 前往编辑页面的检查是否填充department */
       console.log('编辑用户personData数据')
       console.log(this.personData)
     },
@@ -161,6 +163,7 @@ export default {
       if (msg === 'update') {
         // 更新数据
         console.log(msg)
+        this.getParams.endTime=new Date().getTime()
         this.getAllUser()
       }else {
         this.viewWhich = msg
@@ -170,7 +173,8 @@ export default {
     },
     deleteItem: function (msg) {
       // alert('delete NO' + msg)
-      this.list.splice(msg, 1)
+      // this.list.splice(msg, 1) //数组删除一项
+      this.getAllUser()//重新请求一次
     },
     changePage: function (msg) {
       this.getParams.pageNo = msg
@@ -218,8 +222,8 @@ export default {
         // this.$el.removeEventListener('touchmove',config.bodyEvent,false)
       }else {
         // this.$el.addEventListener('touchmove',config.bodyEvent,false)
-
         if (val === 'addNewUser') {
+          /**TODO前往新建用户，检查department */
           this.personData.headImage = ''
           this.personData.userName = ''
           this.personData.cardId = ''

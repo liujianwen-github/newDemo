@@ -12,8 +12,8 @@
     <Col span="8" class="contentBtnList">
       <!-- <div > -->
         <button class="contentBtn isActive" @click="viewContent('0')">今日到访</button>
-        <button class="contentBtn" @click="viewContent('1')">陌生人</button>
-        <button class="contentBtn" @click="viewContent('2')">到访用户</button>
+        <button class="contentBtn" @click="viewContent('1')">陌生客户</button>
+        <button class="contentBtn" @click="viewContent('2')">VIP客户</button>
         <!-- <router-link to="//model1" exact>1</router-link> -->
       <!-- </div> -->
     </Col>
