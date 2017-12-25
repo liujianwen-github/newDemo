@@ -7,9 +7,9 @@ const pro = {
   projectpath:window.location.origin + window.location.pathname,
 }
 const dev = {
-  HOST: 'http://172.16.1.89:8080/',
+  HOST: 'http://172.16.1.50:8080/',
   projectName: '../deeppassterminate',
-  projectpath:'http://172.16.1.89:8080/'
+  projectpath:'http://172.16.1.50:8080/'
 }
 const base = pro
 export default{
@@ -41,6 +41,7 @@ export default{
   minImageCount: 1,
   maxImageCount: 1,
   pageShow: 5,
+  refreshTime:10000,
   /**
    * [veevalidate插件筛选条件参数]
    * @type {Object}

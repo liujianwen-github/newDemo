@@ -257,7 +257,7 @@ export default {
     position: relative;
   }
   .show{
-    display: block
+    display: block!important
   }
   .itemList{
     text-align: left

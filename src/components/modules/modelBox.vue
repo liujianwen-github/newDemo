@@ -243,7 +243,7 @@ export default {
     },
     refreshStatus(val,old){
       if(val){
-        this.pushlet(1000)
+        this.pushlet(config.refreshTime)
       }else{
         clearTimeout(this.pushlet)
       }
@@ -257,7 +257,7 @@ export default {
     console.log(Object.prototype.toString.call(this.notice))
     console.log(this.$store)
     if(this.$store.getters.getRefreshStatus){
-      this.pushlet(1000)
+      this.pushlet(config.refreshTime)
       // alert(this.$store.state.refreshStatus)
     }
     // this.getTotal()
