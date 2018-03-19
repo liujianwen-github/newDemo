@@ -31,13 +31,13 @@ module.exports = {
         $: "jquery",
         jQuery: "jquery"
      }),
-     new webpack.optimize.UglifyJsPlugin({
-       compress:{
-         warnings: false,
-         drop_debugger: true,
-         drop_console: true
-      }
-    })
+    //  new webpack.optimize.UglifyJsPlugin({
+    //    compress:{
+    //      warnings: false,
+    //      drop_debugger: true,
+    //      drop_console: true
+    //   }
+    // })
   ],
   module: {
     rules: [
